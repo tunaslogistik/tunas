@@ -10,6 +10,7 @@ const mutations = {
 	createDaftar_sales_order: async (_parent, args, context: Context) => {
 		try {
 			const {
+				id,
 				nomor_ttb,
 				nomor_sales_order,
 				total_volume,
@@ -17,7 +18,12 @@ const mutations = {
 				pengirim,
 				kota_tujuan,
 				total_tagihan,
+				total_ttb,
 				dp,
+				nama_kapal,
+				tanggal_keberangkatan,
+				nomor_container,
+				nomor_seal,
 				tanggal_sales_order,
 				term_payment
 			} = args.input
@@ -25,14 +31,20 @@ const mutations = {
 			const daftar_sales_order = await context.prisma.daftar_sales_order.create(
 				{
 					data: {
+						id,
 						nomor_ttb,
 						nomor_sales_order,
+						total_ttb,
 						total_volume,
 						pengirim,
 						kota_tujuan,
 						dp,
 						harga,
 						total_tagihan,
+						nama_kapal,
+						tanggal_keberangkatan,
+						nomor_container,
+						nomor_seal,
 						tanggal_sales_order,
 						term_payment
 					}
@@ -58,11 +70,16 @@ const mutations = {
 				nomor_ttb,
 				nomor_sales_order,
 				total_volume,
+				total_ttb,
 				harga,
 				total_tagihan,
 				kota_tujuan,
+				nama_kapal,
 				dp,
+				tanggal_keberangkatan,
 				pengirim,
+				nomor_container,
+				nomor_seal,
 				tanggal_sales_order,
 				term_payment
 			} = args.input
@@ -75,11 +92,16 @@ const mutations = {
 					nomor_ttb,
 					nomor_sales_order,
 					total_volume,
+					total_ttb,
 					kota_tujuan,
 					harga,
 					total_tagihan,
 					dp,
 					pengirim,
+					nama_kapal,
+					tanggal_keberangkatan,
+					nomor_container,
+					nomor_seal,
 					tanggal_sales_order,
 					term_payment
 				}
