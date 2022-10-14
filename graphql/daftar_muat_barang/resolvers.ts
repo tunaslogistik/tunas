@@ -10,7 +10,6 @@ const mutations = {
 	createDaftar_muat_barang: async (_parent, args, context: Context) => {
 		try {
 			const {
-				id,
 				nomor_muat_barang,
 				nomor_ttb,
 				total_ttb,
@@ -37,28 +36,28 @@ const mutations = {
 			const daftar_muat_barang = await context.prisma.daftar_muat_barang.create(
 				{
 					data: {
-						id,
 						nomor_muat_barang,
-						nomor_ttb,
-						total_ttb,
-						total_koli,
-						kota_tujuan,
-						total_volume,
 						pengirim,
 						penerima,
-						estimated_date,
-						nomor_kendaraan,
-						vendor_pelayanan,
-						posisi,
-						nama_kapal,
-						nomor_container,
-						nomor_seal,
-						tanggal_muat_barang,
+						nomor_ttb,
+						total_ttb,
 						tanggal_masuk,
+						tanggal_muat_barang,
 						nama_barang,
 						volume,
 						koli,
-						satuan
+						satuan,
+						estimated_date,
+						total_koli,
+						nama_kapal,
+						origin,
+						kota_tujuan,
+						total_volume,
+						nomor_kendaraan,
+						vendor_pelayanan,
+						posisi,
+						nomor_container,
+						nomor_seal
 					}
 				}
 			)
