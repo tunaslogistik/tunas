@@ -10,7 +10,6 @@ const mutations = {
 	createDaftar_sales_order: async (_parent, args, context: Context) => {
 		try {
 			const {
-				id,
 				nomor_ttb,
 				nomor_sales_order,
 				total_volume,
@@ -26,7 +25,6 @@ const mutations = {
 			const daftar_sales_order = await context.prisma.daftar_sales_order.create(
 				{
 					data: {
-						id,
 						nomor_ttb,
 						nomor_sales_order,
 						total_volume,
