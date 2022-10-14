@@ -48,7 +48,6 @@ const mutations = {
 						satuan,
 						estimated_date,
 						total_koli,
-						origin,
 						kota_tujuan,
 						total_volume,
 						nomor_kendaraan,
