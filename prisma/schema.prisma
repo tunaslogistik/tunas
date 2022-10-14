@@ -122,7 +122,7 @@ model daftar_muat_barang {
   satuan              String
   estimated_date      String
   total_koli          String
-  nama_kapal          String
+  ship_name           String @default("null")
   kota_tujuan         String
   total_volume        String
   nomor_kendaraan     String

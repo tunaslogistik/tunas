@@ -569,7 +569,7 @@ export default function Home() {
 				item.nomor_seal = String(formData.nomor_seal)
 			})
 			dataFilter.map((item) => {
-				item.nama_kapal = formData.nama_kapal
+				item.ship_name = formData.ship_name
 			})
 
 			//sum all volume
@@ -625,7 +625,7 @@ export default function Home() {
 			}
 			dataFilter2.map((item) => {
 				delete item.tanggal_muat_barang
-				delete item.nama_kapal
+				delete item.ship_name
 			})
 			//create packing list
 			for (let i = 0; i < dataFilter2.length; i++) {
@@ -1877,7 +1877,7 @@ export default function Home() {
 									className="input"
 									type="text"
 									placeholder="Nama Kapal"
-									{...register(`nama_kapal`)}
+									{...register(`ship_name`)}
 								/>
 							</div>
 						</div>

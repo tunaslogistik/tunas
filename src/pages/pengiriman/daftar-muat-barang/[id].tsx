@@ -37,7 +37,7 @@ const GET_DATA = gql`
 			penerima
 			nomor_kendaraan
 			estimated_date
-			nama_kapal
+			ship_name
 			tanggal_masuk
 			satuan
 			nama_barang
@@ -211,7 +211,7 @@ export default function Home() {
 			estimated_date: moment(item.estimated_date).format(`DD MMMM YYYY`),
 			nomor_seal: item.nomor_seal,
 			nomor_kendaraan: item.nomor_kendaraan,
-			nama_kapal: item.nama_kapal,
+			ship_name: item.ship_name,
 			//kota tujuan where daftar tujuan equal to kode tujuan
 			kota_tujuan: dataDaftarTujuan?.daftar_tujuan.find(
 				(item2) => item2.kode_tujuan === item.kode_tujuan
@@ -287,7 +287,7 @@ export default function Home() {
 					nomor_container: formData.nomor_container,
 					nomor_seal: formData.nomor_seal,
 					nomor_kendaraan: formData.nomor_kendaraan,
-					nama_kapal: formData.nama_kapal,
+					ship_name: formData.ship_name,
 					kota_tujuan: dataMapfirst?.[0]?.kota_tujuan,
 					total_volume: item.total_volume,
 					total_koli: item.koli,
@@ -602,9 +602,9 @@ export default function Home() {
 									}}
 									className="input"
 									type="text"
-									defaultValue={dataMapfirst?.[0]?.nama_kapal}
+									defaultValue={dataMapfirst?.[0]?.ship_name}
 									placeholder="Nama Kapal"
-									{...register(`nama_kapal`)}
+									{...register(`ship_name`)}
 								/>
 							</div>
 						</div>
