@@ -23,6 +23,7 @@ const mutations = {
 				nomor_kendaraan,
 				vendor_pelayanan,
 				posisi,
+				nama_kapal,
 				nomor_container,
 				nomor_seal,
 				tanggal_muat_barang,
@@ -50,6 +51,7 @@ const mutations = {
 						estimated_date,
 						vendor_pelayanan,
 						posisi,
+						nama_kapal,
 						nomor_container,
 						nomor_seal,
 						tanggal_masuk,
@@ -60,6 +62,7 @@ const mutations = {
 					}
 				}
 			)
+
 			return {
 				code: `200`,
 				success: true,
@@ -91,6 +94,7 @@ const mutations = {
 				posisi,
 				nomor_container,
 				nomor_seal,
+				nama_kapal,
 				tanggal_masuk,
 				nama_barang,
 				volume,
@@ -111,6 +115,7 @@ const mutations = {
 					total_volume,
 					pengirim,
 					penerima,
+					nama_kapal,
 					estimated_date,
 					nomor_kendaraan,
 					tanggal_muat_barang,

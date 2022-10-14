@@ -19,10 +19,6 @@ const mutations = {
 				kota_tujuan,
 				total_tagihan,
 				dp,
-				nama_kapal,
-				tanggal_keberangkatan,
-				nomor_container,
-				nomor_seal,
 				tanggal_sales_order,
 				term_payment
 			} = args.input
@@ -39,10 +35,6 @@ const mutations = {
 						dp,
 						harga,
 						total_tagihan,
-						nama_kapal,
-						tanggal_keberangkatan,
-						nomor_container,
-						nomor_seal,
 						tanggal_sales_order,
 						term_payment
 					}
@@ -71,12 +63,8 @@ const mutations = {
 				harga,
 				total_tagihan,
 				kota_tujuan,
-				nama_kapal,
 				dp,
-				tanggal_keberangkatan,
 				pengirim,
-				nomor_container,
-				nomor_seal,
 				tanggal_sales_order,
 				term_payment
 			} = args.input
@@ -94,10 +82,6 @@ const mutations = {
 					total_tagihan,
 					dp,
 					pengirim,
-					nama_kapal,
-					tanggal_keberangkatan,
-					nomor_container,
-					nomor_seal,
 					tanggal_sales_order,
 					term_payment
 				}
