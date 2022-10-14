@@ -1,0 +1,290 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Setting {
+  name  String @id
+  value String
+
+  @@map("settings")
+}
+
+model Navigation {
+  id   String           @id @default(cuid())
+  name String
+  menu NavigationMenu[]
+
+  @@map("navigation")
+}
+
+model NavigationMenu {
+  id           String @id @default(cuid())
+  label        String
+  url          String
+  navigationId String
+
+  navigation Navigation @relation(fields: [navigationId], references: [id])
+
+  @@map("navigation_menu")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  name      String?
+  password  String
+  role      String
+  creator   String
+  cabang    String
+  email     String
+  createdAt DateTime @default(now())
+  userRole  UserRole @relation(fields: [role], references: [id])
+
+  @@map("users")
+}
+
+model UserRole {
+  id    String   @id @default(cuid())
+  name  String
+  read  String[]
+  write String[]
+  users User[]
+
+  @@map("user_roles")
+}
+
+model pengaturan {
+  id            Int    @id @default(autoincrement())
+  nama_pt       String
+  alamat        String
+  email         String
+  telepon       String
+  fax           String
+  bank          String
+  nama_rekening String
+  no_rekening   String
+}
+
+model daftar_harga {
+  id               Int    @id @default(autoincrement())
+  kode             String
+  kode_asal        String
+  kode_tujuan      String
+  jenis_pengiriman String
+  harga            Int
+  minimal_kubik    String
+  creator          String
+  updated_by       String
+}
+
+model daftar_akun_biaya {
+  id            Int    @id @default(autoincrement())
+  kode_biaya    String
+  nama_biaya    String
+  nomor_account String
+  nama_account  String
+  creator       String
+  updated_by    String
+}
+
+model daftar_invoice {
+  id             Int    @id @default(autoincrement())
+  invoice_number String
+  pengirim       String
+  kode_tujuan    String
+  alamat_tujuan  String
+  total_volume   Int
+  total_koli     Int
+  status         String
+  full_container String
+}
+
+model daftar_muat_barang {
+  id                  Int    @id @default(autoincrement())
+  nomor_muat_barang   String
+  pengirim            String
+  penerima            String
+  nomor_ttb           String
+  total_ttb           String
+  tanggal_masuk       String
+  tanggal_muat_barang String
+  nama_barang         String
+  volume              String
+  koli                String
+  satuan              String
+  estimated_date      String
+  total_koli          String
+  nama_kapal          String @default("null")
+  kota_tujuan         String
+  total_volume        String
+  nomor_kendaraan     String
+  vendor_pelayanan    String
+  posisi              String
+  nomor_container     String
+  nomor_seal          String
+}
+
+model daftar_sales_order {
+  id                  Int      @id @default(autoincrement())
+  nomor_ttb           String
+  pengirim            String
+  kota_tujuan         String
+  nomor_sales_order   String
+  total_volume        Int
+  harga               Int
+  dp                  Int
+  total_tagihan       Int
+  tanggal_sales_order DateTime
+  term_payment        String
+}
+
+model daftar_surat_pengantar {
+  id                Int    @id @default(autoincrement())
+  nomor_surat_jalan String
+  nomor_muat_barang String
+  pengirim          String
+  penerima          String
+  nomor_ttb         String
+  total_ttb         String
+  tanggal_masuk     String
+  nama_barang       String
+  volume            String
+  koli              String
+  estimated_date    String
+  satuan            String
+  total_koli        String
+  kota_tujuan       String
+  total_volume      String
+  nomor_kendaraan   String
+  vendor_pelayanan  String
+  posisi            String
+  nomor_container   String
+  nomor_seal        String
+}
+
+model daftar_surat_jalan {
+  id                    Int    @id @default(autoincrement())
+  nomor_surat_jalan     String
+  nomor_ttb             String
+  vendor_pelayanan      String
+  tanggal_surat_jalan   String
+  tanggal_keberangkatan String
+  nomor_container       String
+  nama_kapal            String
+  koli                  String
+  volume                String
+  total_koli            String
+  total_volume          String
+  nomor_seal            String
+  keterangan            String
+}
+
+model daftar_packing_list {
+  id                Int    @id @default(autoincrement())
+  nomor_muat_barang String
+  pengirim          String
+  penerima          String
+  nomor_ttb         String
+  total_ttb         String
+  tanggal_masuk     String
+  nama_barang       String
+  volume            String
+  koli              String
+  satuan            String
+  estimated_date    String
+  total_koli        String
+  kota_tujuan       String
+  total_volume      String
+  nomor_kendaraan   String
+  vendor_pelayanan  String
+  posisi            String
+  nomor_container   String
+  nomor_seal        String
+}
+
+model daftar_ttb {
+  id               Int    @id @default(autoincrement())
+  ttb_number       String
+  pengirim         String
+  kota_tujuan      String
+  tanggal_diterima String
+  nama_penerima    String
+  jenis_pengiriman String
+  nomor_telepon    String
+  total_volume     Int
+  nama_barang      String
+  panjang          Int
+  lebar            Int
+  tinggi           Int
+  koli             Int
+  alamat_tujuan    String
+  status           String
+  kategori         String
+  full_container   String
+}
+
+model daftar_tujuan {
+  id          Int    @id @default(autoincrement())
+  kode_tujuan String
+  nama_tujuan String
+  creator     String
+  updated_by  String
+}
+
+model jenis_pengiriman {
+  id              Int    @id @default(autoincrement())
+  nama_pengiriman String
+  creator         String
+  updated_by      String
+}
+
+model vendor {
+  id          Int      @id @default(autoincrement())
+  kode_vendor String
+  nama_vendor String
+  alamat      String
+  telepon     String
+  npwp        String
+  pic         String
+  status      String
+  jenis       String
+  last_update DateTime
+  creator     String
+  updated_by  String
+}
+
+model customer {
+  id            Int      @id @default(autoincrement())
+  kode_customer String
+  nama_customer String
+  alamat        String
+  telepon       String
+  npwp          String
+  pic           String
+  tipe_ppn      String
+  term_payment  String
+  status        String
+  last_update   DateTime
+  creator       String
+  updated_by    String
+}
+
+model vechnicle {
+  id              Int      @id @default(autoincrement())
+  nomor_kendaraan String
+  tipe_kendaraan  String
+  nama_supir      String
+  nama_kenek      String
+  status          String
+  last_update     DateTime
+  creator         String
+  updated_by      String
+}

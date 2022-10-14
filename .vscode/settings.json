@@ -1,0 +1,51 @@
+{
+	"javascript.preferences.quoteStyle": "double",
+	"typescript.preferences.quoteStyle": "double",
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": false,
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": true
+		},
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": false,
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": true
+		},
+	},
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": false,
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": true
+		},
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": false,
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": true
+		},
+	},
+	"[prisma]": {
+		"editor.defaultFormatter": "Prisma.prisma",
+		"editor.formatOnSave": true
+	},
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true,
+	},
+	"css.validate": false,
+	"less.validate": false,
+	"scss.validate": false,
+	"stylelint.validate": [
+		"css",
+		"scss"
+	],
+	"WillLuke.nextjs.hasPrompted": true,
+}

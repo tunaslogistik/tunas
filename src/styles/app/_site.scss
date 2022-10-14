@@ -1,0 +1,84 @@
+.site-container {
+	background-color: $white;
+	display: grid;
+	grid-auto-rows: auto;
+	grid-template-areas:
+		"head head"
+		"main main"
+		"side side"
+		"foot foot";
+	grid-template-columns: min-content 1fr;
+	grid-template-rows: auto 1fr auto;
+	min-height: 100vh;
+	position: relative;
+
+	@include breakpoint(runner) {
+		grid-template-areas:
+			"side head"
+			"side main"
+			"side foot";
+	}
+}
+
+.site-header {
+	grid-area: head;
+	position: relative;
+	width: 100%;
+	z-index: 8;
+
+	&-inner {
+		@include wrapper-xy($width-max, 1, center);
+	}
+}
+
+.site-content {
+	grid-area: main;
+	position: relative;
+
+	&-inner {
+		@include wrapper-grid;
+		height: 100%;
+
+		.main {
+			@include wrapper-xy(none, 1 0, left);
+			grid-column: full;
+			height: 100%;
+		}
+
+		.aside {
+			@include wrapper-xy(none, 0.5, left);
+			background-color: $color-100;
+			grid-column: wrapper;
+
+			@include breakpoint(runner) {
+				grid-column: sidebar;
+			}
+		}
+	}
+}
+
+.site-aside {
+	@include wrapper-xy(none, 0.5, left);
+	background-color: $color-200;
+	grid-area: sidebar;
+
+	@include breakpoint(runner) {
+		width: $width-sidebar;
+	}
+}
+
+.site-footer {
+	background-color: $color-bg-dark;
+	color: $white;
+	grid-area: foot;
+	position: relative;
+	transition: all 0.3s ease-out;
+	width: 100%;
+	z-index: 4;
+
+	&-inner {
+		@include wrapper-xy($width-max, 1, center);
+		padding-bottom: 24px;
+		padding-top: 24px;
+	}
+}
