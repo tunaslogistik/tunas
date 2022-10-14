@@ -15,6 +15,7 @@ export const types = gql`
 		vendor_pelayanan: String
 		posisi: String
 		nomor_container: String
+		nama_kapal: String
 		nomor_seal: String
 		estimated_date: String
 		tanggal_masuk: String
@@ -44,6 +45,7 @@ export const types = gql`
 		vendor_pelayanan: String
 		posisi: String
 		nomor_container: String
+		nama_kapal: String
 		estimated_date: String
 		nomor_seal: String
 		tanggal_masuk: String
@@ -68,6 +70,7 @@ export const types = gql`
 		tanggal_muat_barang: String
 		estimated_date: String
 		posisi: String
+		nama_kapal: String
 		nomor_container: String
 		nomor_seal: String
 		tanggal_masuk: String
