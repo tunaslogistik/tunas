@@ -16,7 +16,7 @@ export const GET_DAFTAR_MUAT_BARANG = gql`
 			vendor_pelayanan
 			estimated_date
 			posisi
-			ship_name
+			nama_kapal
 			nomor_container
 			tanggal_muat_barang
 			nomor_seal
