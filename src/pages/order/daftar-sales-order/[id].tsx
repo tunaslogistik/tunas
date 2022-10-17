@@ -529,9 +529,7 @@ export default function Home() {
 									placeholder="total tagihan"
 									defaultValue={filterSalesOrdered?.[0]?.dp}
 									{...register(`dp`)}
-									readOnly
 								/>
-								<p style={{ fontSize: `10px` }}>Include PPN 1%</p>
 							</div>
 						</div>
 						<div className="field" style={{ marginTop: `1%` }}>
