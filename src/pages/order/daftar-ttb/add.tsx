@@ -2,7 +2,6 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons"
 import { gql, useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
-import { DashboardContext } from "@contexts/DashboardContext.context"
 import { Button, DatePicker, Form, Input, message, Select, Space } from "antd"
 import "antd/dist/antd.css"
 import Checkbox from "antd/lib/checkbox/Checkbox"
@@ -13,7 +12,6 @@ import { GET_JENIS_PENGIRIMAN } from "graphql/jenis_pengiriman/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useContext } from "react"
 import { useForm } from "react-hook-form"
 import { CREATE_DAFTAR_TTB } from "../../../../graphql/daftar_ttb/mutations"
 //get data
@@ -43,8 +41,7 @@ const GET_DATA = gql`
 `
 
 export default function Home() {
-	const { state: dashboardState } = useContext(DashboardContext)
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DATA)
 	//GET DATA JENIS PENGIRIMAN
 	const { data: dataJenisPengiriman } = useQuery(GET_JENIS_PENGIRIMAN)
 	//GET DATA DAFTAR TUJUAN

@@ -12,7 +12,6 @@ import {
 } from "@react-pdf/renderer"
 import moment from "moment"
 import { useRouter } from "next/router"
-import { useRef } from "react"
 import { useForm } from "react-hook-form"
 import { GET_CUSTOMER } from "../../../../../graphql/customer/queries"
 
@@ -155,14 +154,8 @@ const styles = StyleSheet.create({
 	}
 })
 export default function Home() {
-	const { data, loading, error } = useQuery(GET_DATA)
-	const {
-		data: dataCustomer,
-		loading: loadingCustomer,
-		error: errorCustomer
-	} = useQuery(GET_CUSTOMER)
-
-	const componentRef = useRef()
+	const { data } = useQuery(GET_DATA)
+	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	const setForm = useForm()
 	const router = useRouter()
 	const id = router.query.id
@@ -175,17 +168,6 @@ export default function Home() {
 	const dataTTB = data?.daftar_ttb?.filter(
 		(item) => item.ttb_number === dataTTBfilter?.[0]?.ttb_number
 	)
-
-	//get ttb number
-	const ttbNumber = dataTTB?.[0]?.ttb_number
-
-	//filter data by ttb number
-	const dataFilter = data?.daftar_ttb?.filter(
-		(item) => item.ttb_number === ttbNumber
-	)
-
-	// store all data filter id
-	const dataFilterId = dataFilter?.map((item) => item.id)
 
 	// get data customer
 	const dataCustomerFilter = dataCustomer?.customer?.filter(

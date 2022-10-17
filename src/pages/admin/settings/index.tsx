@@ -2,11 +2,8 @@ import { gql, useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
-import { DashboardContext } from "@contexts/DashboardContext.context"
 import { Button, message } from "antd"
 import "antd/dist/antd.css"
-import { useRouter } from "next/router"
-import { useContext } from "react"
 import { useForm } from "react-hook-form"
 import { CREATE_PENGATURAN } from "../../../../graphql/pengaturan/mutations"
 
@@ -40,27 +37,10 @@ const inputStyles = {
 	fontSize: `12px`,
 	fontWeight: `bold`
 }
-//const form style
-const buttonStylee = {
-	color: `white`,
-	backgroundColor: `#1890ff`,
-	//no outline
-	border: `none`,
-	//size
-	width: `100px`,
-	height: `30px`
-}
 
 export default function Home() {
-	const { state: dashboardState } = useContext(DashboardContext)
-	const { data, loading, error } = useQuery(GET_DATA)
-	const router = useRouter()
+	const { data } = useQuery(GET_DATA)
 	const setForm = useForm()
-	const {
-		control,
-		reset,
-		formState: { isDirty, errors }
-	} = setForm
 
 	const [createPengaturan] = useMutation(CREATE_PENGATURAN, {
 		refetchQueries: [{ query: GET_DATA }]

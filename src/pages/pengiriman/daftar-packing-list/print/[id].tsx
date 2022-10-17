@@ -15,9 +15,7 @@ import { GET_DAFTAR_SURAT_JALAN } from "graphql/daftar_surat_jalan/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import moment from "moment"
 import { useRouter } from "next/router"
-import { useRef } from "react"
 import { useForm } from "react-hook-form"
-import { GET_CUSTOMER } from "../../../../../graphql/customer/queries"
 import { GET_DAFTAR_SALES_ORDER } from "../../../../../graphql/daftar_sales_order/queries"
 import { GET_DAFTAR_TTB } from "../../../../../graphql/daftar_ttb/queries"
 
@@ -149,9 +147,8 @@ const styles = StyleSheet.create({
 	}
 })
 export default function Home() {
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DATA)
 
-	const componentRef = useRef()
 	const setForm = useForm()
 	const router = useRouter()
 	const id = router.query.id
@@ -174,9 +171,6 @@ export default function Home() {
 
 	//get sales order
 	const { data: dataSalesOrder } = useQuery(GET_DAFTAR_SALES_ORDER)
-
-	//get customer
-	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 
 	//get daftar tujuan
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
@@ -226,23 +220,6 @@ export default function Home() {
 	})
 
 	console.log(`da`, dataTTB)
-
-	//sum count
-	const sumCount = dataTTB?.reduce((acc, item) => {
-		return acc + item.count
-	}, 0)
-
-	console.log(`dataTTB`, data_packing_list)
-
-	//filter data by sales order by nomor_sales_order ttb
-	const salesOrder = dataSalesOrder?.daftar_sales_order.filter(
-		(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number
-	)
-
-	//filter data customer
-	const dataCustomerFilter = dataCustomer?.customer.filter(
-		(item) => item.nama_customer === dataTTB?.[0]?.pengirim
-	)
 
 	const nomor_packing_list = daftar_packing_list?.nomor_muat_barang.slice(3)
 	//add 4 letter to nomor_surat_jalan

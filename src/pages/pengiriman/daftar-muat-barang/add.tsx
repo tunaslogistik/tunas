@@ -1,9 +1,9 @@
+/* eslint-disable array-callback-return */
 import { gql, useMutation, useQuery } from "@apollo/client"
 import IconPlus from "@assets/icons/icon-plus-fill.svg"
 import IconTrash from "@assets/icons/icon-trash.svg"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
-import { DashboardContext } from "@contexts/DashboardContext.context"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, DatePicker, message } from "antd"
 import "antd/dist/antd.css"
@@ -12,14 +12,12 @@ import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"
 import { CREATE_DAFTAR_SURAT_PENGANTAR } from "graphql/daftar_surat_pengantar/mutations"
 import { GET_DAFTAR_SURAT_PENGANTAR } from "graphql/daftar_surat_pengantar/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
-import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
-import { GET_JENIS_PENGIRIMAN } from "graphql/jenis_pengiriman/queries"
 import { GET_VECHNICLE } from "graphql/mobil/queries"
 import { GET_VENDOR } from "graphql/vendor/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useContext, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { CREATE_DAFTAR_MUAT_BARANG } from "../../../../graphql/daftar_muat_barang/mutations"
 //get data
@@ -42,45 +40,13 @@ const GET_DATA = gql`
 		}
 	}
 `
-
-//button on the right style
-const buttonStyle = {
-	color: `black`,
-	backgroundColor: `transparent`,
-	border: `1px solid black`,
-	marginLeft: `900px`,
-	marginBottom: `30px`
-}
-
-//text input style
-const inputStyle = {
-	width: `100%`,
-	marginBottom: `10px`
-}
-
-//const form style
-const buttonStylee = {
-	color: `white`,
-	backgroundColor: `#1890ff`,
-	//no outline
-	border: `none`,
-	//size
-	width: `100px`,
-	height: `30px`
-}
-
 export default function Home() {
 	const formRef = useRef(null)
 	const { setLoading } = useLoading()
-	const { state: dashboardState } = useContext(DashboardContext)
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DATA)
 
 	//GET DAFTAR TTB
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
-	//GET DATA JENIS PENGIRIMAN
-	const { data: dataJenisPengiriman } = useQuery(GET_JENIS_PENGIRIMAN)
-	//GET DATA DAFTAR TUJUAN
-	const { data: dataDaftarTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 	//GET DATA KENDARAAN
 	const { data: dataMobil } = useQuery(GET_VECHNICLE)
 	//GET DATA VENDOR
@@ -92,16 +58,7 @@ export default function Home() {
 
 	const router = useRouter()
 	const setForm = useForm()
-	const {
-		control,
-		reset,
-		register,
-		handleSubmit,
-		getValues,
-		watch,
-		setValue,
-		formState: { isDirty, errors }
-	} = setForm
+	const { control, register, handleSubmit, watch, setValue } = setForm
 
 	useEffect(() => {
 		formRef.current?.setFieldsValue({
@@ -113,9 +70,9 @@ export default function Home() {
 	const [selectednoTTBatas, setSelectednoTTBatas] = useState()
 	const [selectednoTTBtengah, setSelectednoTTBtengah] = useState()
 	const [selectednoTTBbawah, setSelectednoTTBbawah] = useState()
-	const [selectednoTTBA, setSelectednoTTBA] = useState([])
-	const [selectednoTTBT, setSelectednoTTBT] = useState([])
-	const [selectednoTTBB, setSelectednoTTBB] = useState([])
+	const [selectednoTTBA] = useState([])
+	const [selectednoTTBT] = useState([])
+	const [selectednoTTBB] = useState([])
 
 	const [createDaftar_muat_barang] = useMutation(CREATE_DAFTAR_MUAT_BARANG, {
 		refetchQueries: [{ query: GET_DATA }]
@@ -282,18 +239,6 @@ export default function Home() {
 			//new date but only date mont and year
 			const date = new Date()
 			const newDate = date.toISOString().slice(0, 10)
-
-			//formData.koliatas , formData.kolitengah, formData.kolibawah , formData.koliA, formData.koliB, formData.koliT = undefined then assign 0
-			const koliatas = formData.koliatas === undefined ? `` : formData.koliatas
-			const kolitengah =
-				formData.kolitengah === undefined ? `` : formData.kolitengah
-			const kolibawah =
-				formData.kolibawah === undefined ? `` : formData.kolibawah
-			const koliA = formData.koliA === undefined ? `` : formData.koliA
-			const koliB = formData.koliB === undefined ? `` : formData.koliB
-			const koliT = formData.koliT === undefined ? `` : formData.koliT
-			//sum total koli from form formData.koliatas , formData.kolitengah, formData.kolibawah , formData.koliA, formData.koliB, formData.koliT
-			const sumKoli = koliatas + kolitengah + kolibawah + koliA + koliB + koliT
 			for (let i = 0; i < 1; i++) {
 				temp1.push({
 					nomor_muat_barang:

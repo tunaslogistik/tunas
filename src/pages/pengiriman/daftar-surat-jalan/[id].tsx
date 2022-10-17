@@ -8,7 +8,6 @@ import { Button, message, Table } from "antd"
 import "antd/dist/antd.css"
 import { ColumnsType } from "antd/lib/table"
 import { GET_CUSTOMER } from "graphql/customer/queries"
-import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"
 import { UPDATE_DAFTAR_SURAT_JALAN } from "graphql/daftar_surat_jalan/mutations"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import moment from "moment"
@@ -69,13 +68,10 @@ export default function Home() {
 	//define id
 	const id = router.query.id
 
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data, loading } = useQuery(GET_DATA)
 
 	//get data ttb
 	const { data: dataTtb } = useQuery(GET_DAFTAR_TTB)
-
-	//get data sales order
-	const { data: dataSalesOrder } = useQuery(GET_DAFTAR_SALES_ORDER)
 
 	//get data customer
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)

@@ -14,7 +14,6 @@ import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import moment from "moment"
 import Link from "next/link"
 import router from "next/router"
-import { useState } from "react"
 import { useForm } from "react-hook-form"
 //import icon icon-car.svg
 
@@ -71,7 +70,7 @@ export default function Home() {
 	//define id
 	const id = router.query.id
 
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data, loading } = useQuery(GET_DATA)
 
 	//get data ttb
 	const { data: dataTtb } = useQuery(GET_DAFTAR_TTB)
@@ -82,13 +81,7 @@ export default function Home() {
 	//get data customer
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	const setForm = useForm()
-	const {
-		control,
-		reset,
-		handleSubmit,
-		register,
-		formState: { isDirty, errors }
-	} = setForm
+	const { handleSubmit } = setForm
 
 	const [updateDaftar_surat_jalan] = useMutation(
 		UPDATE_DAFTAR_SURAT_PENGANTAR,
@@ -100,20 +93,6 @@ export default function Home() {
 	const updateData = (data) => {
 		updateDaftar_surat_jalan({ variables: { input: data } })
 	}
-
-	//search
-	const [search, setSearch] = useState(``)
-	const handleSearch = (e) => {
-		setSearch(e.target.value)
-	}
-
-	//make filtered data
-	const filteredData = data?.daftar_surat_jalan.filter((item) => {
-		return (
-			item.nomor_muat_barang.toLowerCase().includes(search.toLowerCase()) ||
-			item.kota_tujuan.toLowerCase().includes(search.toLowerCase())
-		)
-	})
 
 	// {
 	// 	title: `Action`,
@@ -321,10 +300,6 @@ export default function Home() {
 		}
 		setLoading(false)
 	}
-	//daftar surat jalan remove first 4 letter
-	const nomor_surat_jalan = dataSource?.[0]?.nomor_surat_jalan.slice(4)
-	//add 4 letter to nomor_surat_jalan
-	const nomor_surat_jalan2 = `SP-${nomor_surat_jalan}`
 	return (
 		<AdminPage
 			parent={

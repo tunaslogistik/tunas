@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import { gql, useMutation, useQuery } from "@apollo/client"
 import IconPlus from "@assets/icons/icon-plus-fill.svg"
 import IconTrash from "@assets/icons/icon-trash.svg"
@@ -10,7 +11,6 @@ import { GET_DAFTAR_MUAT_BARANG } from "graphql/daftar_muat_barang/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import moment from "moment"
 import Link from "next/link"
-import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { CREATE_DAFTAR_SURAT_JALAN } from "../../../../graphql/daftar_surat_jalan/mutations"
@@ -40,17 +40,8 @@ export default function Home() {
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
 	//GET DATA DAFTAR MUAT BARANG
 	const { data: dataDaftarMuatBarang } = useQuery(GET_DAFTAR_MUAT_BARANG)
-	//GET DATA DAFTAR SALES ORDER
-	const router = useRouter()
 	const setForm = useForm()
-	const {
-		control,
-		register,
-		watch,
-		handleSubmit,
-		setValue,
-		formState: { isDirty, errors }
-	} = setForm
+	const { control, register, watch, handleSubmit, setValue } = setForm
 
 	useEffect(() => {
 		formRef.current?.setFieldsValue({
@@ -59,7 +50,7 @@ export default function Home() {
 	}, [data])
 
 	const [selectednoTTBatas, setSelectednoTTBatas] = useState()
-	const [selectednoTTBA, setSelectednoTTBA] = useState([])
+	const [selectednoTTBA] = useState([])
 
 	const [createDaftar_sales_jalan] = useMutation(CREATE_DAFTAR_SURAT_JALAN, {
 		refetchQueries: [{ query: GET_DATA }]
@@ -255,9 +246,8 @@ export default function Home() {
 
 	useEffect(() => {
 		// setValue(`total_tagihan`, total)
-
 		console.log(`watch`, watch(`harga`))
-	}, [watch(`harga`)])
+	}, [watch])
 
 	console.log(`ttb`, filterTTB)
 

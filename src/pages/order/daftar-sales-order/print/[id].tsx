@@ -13,7 +13,6 @@ import {
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import moment from "moment"
 import { useRouter } from "next/router"
-import { useRef } from "react"
 import { useForm } from "react-hook-form"
 import { GET_CUSTOMER } from "../../../../../graphql/customer/queries"
 import { GET_DAFTAR_TTB } from "../../../../../graphql/daftar_ttb/queries"
@@ -130,14 +129,13 @@ const styles = StyleSheet.create({
 	}
 })
 export default function Home() {
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DATA)
 	const { data: data_TTB } = useQuery(GET_DAFTAR_TTB)
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	console.log(`data_TTB`, data_TTB)
 	//get daftar tujuan
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 
-	const componentRef = useRef()
 	const setForm = useForm()
 	const router = useRouter()
 	const id = router.query.id
@@ -156,14 +154,6 @@ export default function Home() {
 	const dataTujuanFilter = dataTujuan?.daftar_tujuan.find(
 		(item2) => item2.kode_tujuan === dataTTB?.[0]?.kota_tujuan
 	)?.nama_tujuan
-
-	//get ttb number
-	const ttbNumber = dataTTB?.[0]?.ttb_number
-
-	//filter data by ttb number
-	const dataFilter = data?.daftar_ttb?.filter(
-		(item) => item.ttb_number === ttbNumber
-	)
 
 	//store all nama barang in dataTTB with comma
 	const namaBarang = dataTTB?.map((item) => item.nama_barang).join(`, `)

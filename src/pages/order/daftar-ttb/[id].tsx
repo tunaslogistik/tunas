@@ -116,6 +116,7 @@ export default function Home() {
 
 	//delete all
 	const deleteAll = () => {
+		// eslint-disable-next-line array-callback-return
 		dataFilterId.map((item) => {
 			deleteData(item)
 		})
@@ -190,6 +191,7 @@ export default function Home() {
 				createData(temp[i])
 			}
 			//delete datafilterid
+			// eslint-disable-next-line array-callback-return
 			dataFilterId.map((item) => {
 				deleteData(item)
 			})

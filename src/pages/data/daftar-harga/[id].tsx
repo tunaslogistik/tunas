@@ -15,7 +15,6 @@ import { useRouter } from "next/router"
 import { useContext } from "react"
 import { useForm } from "react-hook-form"
 import FormRepeater from "../../../components/form/FormRepeater.component"
-var _ = require(`lodash`)
 //get data
 const GET_DATA = gql`
 	query DaftarHarga {
@@ -47,13 +46,7 @@ export default function SettingUserEdit() {
 	const { state: dashboardState } = useContext(DashboardContext)
 	const setForm = useForm()
 	const { setLoading } = useLoading()
-	const {
-		control,
-		reset,
-		handleSubmit,
-		register,
-		formState: { isDirty, errors }
-	} = setForm
+	const { control, reset, handleSubmit, register } = setForm
 	const router = useRouter()
 	const { id } = router.query
 	const { data } = useQuery(GET_DATA, {

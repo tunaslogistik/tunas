@@ -91,6 +91,7 @@ export default function Home() {
 	const dataFilterId = filterSalesOrdered?.map((item) => item.id)
 
 	const deleteAll = () => {
+		// eslint-disable-next-line array-callback-return
 		dataFilterId.map((item) => {
 			deleteData(item)
 		})
@@ -221,11 +222,11 @@ export default function Home() {
 
 	useEffect(() => {
 		console.log(`watch`, watch(`harga`))
-	}, [watch(`harga`)])
+	}, [watch])
 
 	useEffect(() => {
 		console.log(`watch volume`, watch(`total_volume_ttb`))
-	}, [watch(`total_volume_ttb`)])
+	}, [watch])
 
 	const volume = watch(`total_volume_ttb`)
 	const harga = watch(`harga`)
@@ -233,7 +234,7 @@ export default function Home() {
 
 	useEffect(() => {
 		setValue(`total_tagihan`, total)
-	}, [total])
+	}, [setValue, total])
 
 	const handleChangeTTB = (value) => {
 		const data = mergeTTB?.find((item) => item.nomor_ttb === value)

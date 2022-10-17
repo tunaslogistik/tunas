@@ -235,6 +235,7 @@ export default function Home() {
 	})
 
 	const deleteAll = () => {
+		// eslint-disable-next-line array-callback-return
 		dataMapId.map((item) => {
 			deleteData(item)
 		})

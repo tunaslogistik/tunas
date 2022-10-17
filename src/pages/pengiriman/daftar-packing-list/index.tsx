@@ -1,15 +1,13 @@
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { gql, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
-import { message, Table } from "antd"
+import { Table } from "antd"
 import "antd/dist/antd.css"
 import { ColumnsType } from "antd/lib/table"
 import { GET_DAFTAR_MUAT_BARANG } from "graphql/daftar_muat_barang/queries"
-import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"
 import moment from "moment"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { DELETE_DAFTAR_MUAT_BARANG } from "../../../../graphql/daftar_muat_barang/mutations"
 import { GET_DAFTAR_TUJUAN } from "../../../../graphql/daftar_tujuan/queries"
 
 //get DATA
@@ -49,23 +47,12 @@ interface DataType {
 }
 
 export default function Home() {
-	const { data, loading, error } = useQuery(GET_DATA)
-
-	//get ttb
-	const { data: dataTtb } = useQuery(GET_DAFTAR_SALES_ORDER)
+	const { data, loading } = useQuery(GET_DATA)
 
 	//GET DAFTAR TUJUAN
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 	//GET DAFTAR MUAT BARANG
 	const { data: dataMuatBarang } = useQuery(GET_DAFTAR_MUAT_BARANG)
-
-	const [deleteDaftar_muat_barang] = useMutation(DELETE_DAFTAR_MUAT_BARANG, {
-		refetchQueries: [{ query: GET_DATA }]
-	})
-	const deleteData = (id) => {
-		deleteDaftar_muat_barang({ variables: { deleteDaftar_muat_barangId: id } })
-		message.success(`Data Berhasil Dihapus`)
-	}
 
 	const setForm = useForm()
 
@@ -162,24 +149,6 @@ export default function Home() {
 			)
 		}
 	]
-
-	//filter datattb where have nomor ttb in daftar muat barang
-	const filteredTtb = dataTtb?.daftar_sales_order.filter((item) => {
-		return !data?.daftar_packing_list.some(
-			(item2) => item2.nomor_ttb === item.nomor_ttb
-		)
-	})
-
-	//GET NAMA KAPAL FROM MUAT BARANG
-	const filteredMuatBarang = dataMuatBarang?.daftar_muat_barang.filter(
-		(item) => {
-			return (
-				item.nomor_muat_barang ===
-				data?.daftar_packing_list[0]?.nomor_muat_barang
-			)
-		}
-	)
-	console.log(`ttb`, filteredTtb)
 
 	const dataTable = filteredData?.map((item) => {
 		return {

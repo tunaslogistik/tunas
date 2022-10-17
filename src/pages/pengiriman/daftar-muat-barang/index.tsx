@@ -1,7 +1,7 @@
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { gql, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
-import { message, Table } from "antd"
+import { Table } from "antd"
 import "antd/dist/antd.css"
 import { ColumnsType } from "antd/lib/table"
 import { useState } from "react"
@@ -11,7 +11,6 @@ import Access from "@components/util/Access.component"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import Link from "next/link"
 import router from "next/router"
-import { DELETE_DAFTAR_MUAT_BARANG } from "../../../../graphql/daftar_muat_barang/mutations"
 
 //get DATA
 
@@ -54,14 +53,6 @@ export default function Home() {
 
 	//GET DAFTAR TUJUAN
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
-
-	const [deleteDaftar_muat_barang] = useMutation(DELETE_DAFTAR_MUAT_BARANG, {
-		refetchQueries: [{ query: GET_DATA }]
-	})
-	const deleteData = (id) => {
-		deleteDaftar_muat_barang({ variables: { deleteDaftar_muat_barangId: id } })
-		message.success(`Data Berhasil Dihapus`)
-	}
 
 	const setForm = useForm()
 

@@ -67,7 +67,6 @@ export default function Home() {
 	const { data: dataTtb } = useQuery(GET_DAFTAR_TTB)
 
 	const setForm = useForm()
-	const {} = setForm
 
 	const id = router.query.id
 	// {

@@ -12,11 +12,7 @@ import {
 } from "@react-pdf/renderer"
 import moment from "moment"
 import { useRouter } from "next/router"
-import { useRef } from "react"
 import { useForm } from "react-hook-form"
-import { GET_CUSTOMER } from "../../../../../graphql/customer/queries"
-import { GET_DAFTAR_SALES_ORDER } from "../../../../../graphql/daftar_sales_order/queries"
-import { GET_DAFTAR_TTB } from "../../../../../graphql/daftar_ttb/queries"
 
 const GET_DATA = gql`
 	query daftar_muat_barang {
@@ -137,9 +133,8 @@ const styles = StyleSheet.create({
 	}
 })
 export default function Home() {
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DATA)
 
-	const componentRef = useRef()
 	const setForm = useForm()
 	const router = useRouter()
 	const id = router.query.id
@@ -149,10 +144,6 @@ export default function Home() {
 	)
 
 	const nomor_muat_barang = daftar_muat_barang?.nomor_muat_barang
-	//filter data where nomor muat barang same daftar_muat_barang
-	const daftar_muat_barangfilter = data?.daftar_muat_barang.filter((item) => {
-		return item.nomor_muat_barang === nomor_muat_barang
-	})
 
 	//get daftar_muat_barangfilter where posisi = kepala
 	const kepalaArray2 = data?.daftar_muat_barang.filter((item) => {
@@ -198,61 +189,6 @@ export default function Home() {
 			nomor_ttb: item.nomor_ttb.replace(/\//g, `|`)
 		}
 	})
-
-	//get ttb number
-	const { data: dataTtb } = useQuery(GET_DAFTAR_TTB)
-
-	//get sales order
-	const { data: dataSalesOrder } = useQuery(GET_DAFTAR_SALES_ORDER)
-
-	//get customer
-	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
-
-	//filter data by ttb number by nomor_ttb daftar_muat_barang
-	const datadaftarTTB = dataTtb?.daftar_ttb?.filter(
-		(item) => item.ttb_number === daftar_muat_barang?.nomor_ttb
-	)
-
-	//datadaftarTTB map
-	const dataTTB = datadaftarTTB?.map((item) => {
-		return {
-			id: item.id,
-			ttb_number: item.ttb_number,
-			pengirim: item.pengirim,
-			nomor_telepon: item.nomor_telepon,
-			alamat_tujuan: item.alamat_tujuan,
-			kota_tujuan: item.kota_tujuan,
-			volume_m3: item.total_volume,
-			jenis_pengiriman: item.jenis_pengiriman,
-			penerima: item.nama_penerima,
-			nama_barang: item.nama_barang,
-			//count each nama barang
-			count: datadaftarTTB?.filter(
-				(item2) => item2.nama_barang === item.nama_barang
-			).length,
-			nomor_so: dataSalesOrder?.daftar_sales_order?.find(
-				(item) => item.nomor_ttb === datadaftarTTB.ttb_number
-			)?.nomor_so,
-			status: item.status
-		}
-	})
-
-	//sum count
-	const sumCount = dataTTB?.reduce((acc, item) => {
-		return acc + item.count
-	}, 0)
-
-	console.log(`dataTTB`, dataTTB)
-
-	//filter data by sales order by nomor_sales_order ttb
-	const salesOrder = dataSalesOrder?.daftar_sales_order.filter(
-		(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number
-	)
-
-	//filter data customer
-	const dataCustomerFilter = dataCustomer?.customer.filter(
-		(item) => item.nama_customer === dataTTB?.[0]?.pengirim
-	)
 
 	const MyDocument = () => (
 		<Document>

@@ -206,11 +206,6 @@ export default function Home() {
 		}
 	})
 
-	//sum count
-	const sumCount = dataTTB?.reduce((acc, item) => {
-		return acc + item.count
-	}, 0)
-
 	//sum koli
 	const sumKoli = dataTTB?.reduce((acc, item) => {
 		return parseInt(acc) + parseInt(item.koli)
@@ -218,10 +213,6 @@ export default function Home() {
 
 	console.log(`dataTTB`, dataTTB)
 
-	//filter data by sales order by nomor_sales_order ttb
-	const salesOrder = dataSalesOrder?.daftar_sales_order.filter(
-		(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number
-	)
 	const muatBarang = dataMuatBarang?.daftar_muat_barang.filter(
 		(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number
 	)

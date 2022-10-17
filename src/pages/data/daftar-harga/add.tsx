@@ -32,7 +32,6 @@ const GET_DATA = gql`
 
 export default function SettingUserEdit() {
 	const { state: dashboardState } = useContext(DashboardContext)
-	const { data } = useQuery(GET_DATA)
 	//GET DATA JENIS PENGIRIMAN
 	const { data: dataJenisPengiriman } = useQuery(GET_JENIS_PENGIRIMAN)
 	//GET DATA DAFTAR TUJUAN

@@ -14,7 +14,6 @@ import { GET_DAFTAR_SURAT_JALAN } from "graphql/daftar_surat_jalan/queries"
 import { GET_VECHNICLE } from "graphql/mobil/queries"
 import moment from "moment"
 import { useRouter } from "next/router"
-import { useRef } from "react"
 import { useForm } from "react-hook-form"
 import { GET_CUSTOMER } from "../../../../../graphql/customer/queries"
 import { GET_DAFTAR_SALES_ORDER } from "../../../../../graphql/daftar_sales_order/queries"
@@ -128,9 +127,7 @@ const styles = StyleSheet.create({
 	}
 })
 export default function Home() {
-	const { data, loading, error } = useQuery(GET_DATA)
-
-	const componentRef = useRef()
+	const { data } = useQuery(GET_DATA)
 	const setForm = useForm()
 	const router = useRouter()
 	const id = router.query.id
@@ -211,13 +208,6 @@ export default function Home() {
 	const sumVolume = dataTTB?.reduce((acc, item) => {
 		return acc + item.volume_m3
 	}, 0)
-
-	console.log(`dataTTB`, dataTTB)
-
-	//filter data by sales order by nomor_sales_order ttb
-	const salesOrder = dataSalesOrder?.daftar_sales_order.filter(
-		(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number
-	)
 
 	const MuatBarang = dataDaftarMuatBarang?.daftar_muat_barang.filter(
 		(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number
