@@ -182,11 +182,11 @@ export default function Home() {
 
 	useEffect(() => {
 		setValue(`total_tagihan`, total)
-	}, [total])
+	}, [setValue, total])
 
 	useEffect(() => {
 		console.log(`watch`, watch(`harga`))
-	}, [watch(`harga`)])
+	}, [watch])
 
 	console.log(`watch total`, tipePPNPercentage)
 

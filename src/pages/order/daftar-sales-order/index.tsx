@@ -25,8 +25,6 @@ const GET_DATA = gql`
 			harga
 			total_tagihan
 			kota_tujuan
-			nama_kapal
-			tanggal_keberangkatan
 			tanggal_sales_order
 			term_payment
 		}

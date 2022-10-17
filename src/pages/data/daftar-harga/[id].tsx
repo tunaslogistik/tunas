@@ -148,6 +148,7 @@ export default function SettingUserEdit() {
 			})
 
 			//delete all no filtered data
+			// eslint-disable-next-line array-callback-return
 			nofilteredData?.map((item) => {
 				deleteData(item.id)
 			})

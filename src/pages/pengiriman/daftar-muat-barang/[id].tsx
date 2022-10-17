@@ -104,7 +104,7 @@ export default function Home() {
 	const { register, handleSubmit } = setForm
 
 	//search
-	const [search, setSearch] = useState(``)
+	const [search] = useState(``)
 	//make filtered data
 	const filteredData = data?.daftar_muat_barang.filter((item) => {
 		return (
