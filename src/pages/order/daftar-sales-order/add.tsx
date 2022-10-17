@@ -1,19 +1,16 @@
 import { gql, useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
-import { DashboardContext } from "@contexts/DashboardContext.context"
 import useLoading from "@hooks/useLoading.hook"
-import { Button, DatePicker, message, Select } from "antd"
+import { Button, DatePicker, message } from "antd"
 import "antd/dist/antd.css"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
-import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
-import { GET_JENIS_PENGIRIMAN } from "graphql/jenis_pengiriman/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useContext, useEffect, useRef } from "react"
-import { Controller, useFieldArray, useForm } from "react-hook-form"
+import { useEffect, useRef } from "react"
+import { Controller, useForm } from "react-hook-form"
 import { CREATE_DAFTAR_SALES_ORDER } from "../../../../graphql/daftar_sales_order/mutations"
 //get data
 
@@ -35,57 +32,18 @@ const GET_DATA = gql`
 	}
 `
 
-//button on the right style
-const buttonStyle = {
-	color: `black`,
-	backgroundColor: `transparent`,
-	border: `1px solid black`,
-	marginLeft: `900px`,
-	marginBottom: `30px`
-}
-
-//text input style
-const inputStyle = {
-	width: `100%`,
-	marginBottom: `10px`
-}
-
-//const form style
-const buttonStylee = {
-	color: `white`,
-	backgroundColor: `#1890ff`,
-	//no outline
-	border: `none`,
-	//size
-	width: `100px`,
-	height: `30px`
-}
-
 export default function Home() {
 	const formRef = useRef(null)
 	const { setLoading } = useLoading()
-	const { state: dashboardState } = useContext(DashboardContext)
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DATA)
 	//GET DAFTAR TTB
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
-	//GET DATA JENIS PENGIRIMAN
-	const { data: dataJenisPengiriman } = useQuery(GET_JENIS_PENGIRIMAN)
-	//GET DATA DAFTAR TUJUAN
-	const { data: dataDaftarTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 	//GET DATA CUSTOMER
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	const router = useRouter()
 	const setForm = useForm()
-	const {
-		control,
-		reset,
-		register,
-		watch,
-		handleSubmit,
-		getValues,
-		setValue,
-		formState: { isDirty, errors }
-	} = setForm
+	const { control, register, watch, handleSubmit, getValues, setValue } =
+		setForm
 
 	useEffect(() => {
 		formRef.current?.setFieldsValue({
@@ -102,15 +60,6 @@ export default function Home() {
 		createDaftar_sales_order({ variables: { input: data } })
 	}
 
-	const { Option } = Select
-	const handleChange = (value: string[]) => {
-		console.log(`selected ${value}`)
-	}
-
-	const { fields, append, remove } = useFieldArray({
-		control,
-		name: `test`
-	})
 	function addLeadingZeros(num, totalLength) {
 		return String(num).padStart(totalLength, `0`)
 	}
@@ -119,10 +68,6 @@ export default function Home() {
 		setLoading(true)
 		try {
 			const objArray = Object.keys(formData).map((i) => formData[i])
-
-			const myChildren = objArray
-			const datas = myChildren.shift()
-			//get panjang sales order
 
 			//get term payment from customer where nama customer = formdata.pengirim
 			const termPayment = dataCustomer?.customer.find(

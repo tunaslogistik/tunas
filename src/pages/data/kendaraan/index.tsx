@@ -1,11 +1,10 @@
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { gql, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
-import { message, Table } from "antd"
+import { Table } from "antd"
 import "antd/dist/antd.css"
 import { ColumnsType } from "antd/lib/table"
-import { DELETE_VECHNICLE } from "graphql/mobil/mutations"
 import moment from "moment"
 import Link from "next/link"
 import router from "next/router"
@@ -41,15 +40,7 @@ interface DataType {
 }
 
 export default function Home() {
-	const { data, loading, error } = useQuery(GET_DATA)
-
-	const [deleteVechnicle] = useMutation(DELETE_VECHNICLE, {
-		refetchQueries: [{ query: GET_DATA }]
-	})
-	const deleteData = (id) => {
-		deleteVechnicle({ variables: { deleteVechnicleId: id } })
-		message.success(`Data Berhasil Dihapus`)
-	}
+	const { data, loading } = useQuery(GET_DATA)
 
 	const setForm = useForm()
 	console.log(data)

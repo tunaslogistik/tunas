@@ -50,7 +50,7 @@ interface DataType {
 }
 
 export default function Home() {
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data, loading } = useQuery(GET_DATA)
 
 	//GET DAFTAR TUJUAN
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
@@ -88,7 +88,7 @@ export default function Home() {
 			sortDirections: [`descend`, `ascend`]
 		},
 		{
-			title: `Container/seal`,
+			title: `Container/eal`,
 			dataIndex: [`nomor_container`, `nomor_seal`],
 			key: `nomor_container`,
 			width: `20%`,

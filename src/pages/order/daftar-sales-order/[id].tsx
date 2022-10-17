@@ -3,19 +3,16 @@ import IconPrint from "@assets/icons/icon-print.svg"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
-import { DashboardContext } from "@contexts/DashboardContext.context"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, message, Popconfirm } from "antd"
 import "antd/dist/antd.css"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
-import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
-import { GET_JENIS_PENGIRIMAN } from "graphql/jenis_pengiriman/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useContext, useEffect, useRef } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
 import {
 	CREATE_DAFTAR_SALES_ORDER,
 	DELETE_DAFTAR_SALES_ORDER
@@ -38,60 +35,19 @@ const GET_DATA = gql`
 	}
 `
 
-//button on the right style
-const buttonStyle = {
-	color: `black`,
-	backgroundColor: `transparent`,
-	border: `1px solid black`,
-	marginLeft: `900px`,
-	marginBottom: `30px`
-}
-
-//text input style
-const inputStyle = {
-	width: `100%`,
-	marginBottom: `10px`
-}
-
-//const form style
-const buttonStylee = {
-	color: `white`,
-	backgroundColor: `#1890ff`,
-	//no outline
-	border: `none`,
-	//size
-	width: `100px`,
-	height: `30px`
-}
-
 export default function Home() {
-	const formRef = useRef(null)
 	const { setLoading } = useLoading()
-	const { state: dashboardState } = useContext(DashboardContext)
-	// const { data } = useQuery(GET_DATA)
 
 	const router = useRouter()
 	const id = router.query.id
 
 	//GET DAFTAR TTB
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
-	//GET DATA JENIS PENGIRIMAN
-	const { data: dataJenisPengiriman } = useQuery(GET_JENIS_PENGIRIMAN)
-	//GET DATA DAFTAR TUJUAN
-	const { data: dataDaftarTujuan } = useQuery(GET_DAFTAR_TUJUAN)
+
 	//GET DATA CUSTOMER
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	const setForm = useForm()
-	const {
-		control,
-		register,
-		handleSubmit,
-		watch,
-		getValues,
-		setValue,
-		reset,
-		formState: { isDirty, errors }
-	} = setForm
+	const { register, handleSubmit, watch, setValue, reset } = setForm
 	const { data } = useQuery(GET_DATA, {
 		onCompleted({ daftar_sales_order }) {
 			const data = daftar_sales_order
@@ -102,7 +58,7 @@ export default function Home() {
 			const pengirim = filteredData[0]?.pengirim
 			//filter by kode_t
 			var sales = data.filter(function (el) {
-				return el.ttb_number == ttb_number && el.pengirim == pengirim
+				return el.ttb_number === ttb_number && el.pengirim === pengirim
 			})
 			reset({ sales })
 		}
@@ -123,12 +79,6 @@ export default function Home() {
 		deleteDaftar_sales_order({ variables: { deleteDaftar_sales_orderId: id } })
 		router.push(`/order/daftar-sales-order`)
 	}
-
-	const { fields, append, remove } = useFieldArray({
-		control,
-		name: `test`
-	})
-
 	//get all ttb number in sales order
 	const daftar_sales_order = data?.daftar_sales_order?.map(
 		(item) => item.nomor_ttb
@@ -153,20 +103,22 @@ export default function Home() {
 		try {
 			const objArray = Object.keys(formData).map((i) => formData[i])
 
-			const myChildren = objArray
-			if (formData.total_volume == ``) {
+			if (formData.total_volume === ``) {
 				formData.total_volume = filterSalesOrdered?.[0]?.total_volume
 			}
-			if (formData.harga == ``) {
+			if (formData.harga === ``) {
 				formData.harga = filterSalesOrdered?.[0]?.harga
 			}
-			if (formData.total_tagihan == undefined || formData.total_tagihan == ``) {
+			if (
+				formData.total_tagihan === undefined ||
+				formData.total_tagihan === ``
+			) {
 				formData.total_tagihan = filterSalesOrdered?.[0]?.total_tagihan
 			}
-			if (formData.nama_kapal == ``) {
+			if (formData.nama_kapal === ``) {
 				formData.nama_kapal = filterSalesOrdered?.[0]?.nama_kapal
 			}
-			if (formData.tanggal_sales_order == ``) {
+			if (formData.tanggal_sales_order === ``) {
 				formData.tanggal_sales_order =
 					filterSalesOrdered?.[0]?.tanggal_sales_order
 			}
@@ -294,10 +246,6 @@ export default function Home() {
 	//change millideimal filterSalesOrdered?.[0]?.tanggal_sales_order to yyyy-mm-dd with mommnet
 	const tanggal_sales_order_date = moment
 		.unix(filterSalesOrdered?.[0]?.tanggal_sales_order / 1000)
-		.format(`YYYY-MM-DD`)
-
-	const tanggal_keberangkatan_date = moment
-		.unix(filterSalesOrdered?.[0]?.tanggal_keberangkatan / 1000)
 		.format(`YYYY-MM-DD`)
 
 	return (

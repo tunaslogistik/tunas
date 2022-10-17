@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { gql, useQuery } from "@apollo/client"
 import IconPrint from "@assets/icons/icon-print.svg"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
@@ -8,9 +8,7 @@ import Table, { ColumnsType } from "antd/lib/table"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import Link from "next/link"
 import router from "next/router"
-import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { UPDATE_DAFTAR_SURAT_PENGANTAR } from "../../../../graphql/daftar_surat_pengantar/mutations"
 //import icon icon-car.svg
 
 //get DATA
@@ -69,30 +67,7 @@ export default function Home() {
 	const { data: dataTtb } = useQuery(GET_DAFTAR_TTB)
 
 	const setForm = useForm()
-	const {
-		control,
-		reset,
-		handleSubmit,
-		register,
-		formState: { isDirty, errors }
-	} = setForm
-
-	const [updateDaftar_surat_jalan] = useMutation(
-		UPDATE_DAFTAR_SURAT_PENGANTAR,
-		{
-			refetchQueries: [{ query: GET_DATA }]
-		}
-	)
-
-	const updateData = (data) => {
-		updateDaftar_surat_jalan({ variables: { input: data } })
-	}
-
-	//search
-	const [search, setSearch] = useState(``)
-	const handleSearch = (e) => {
-		setSearch(e.target.value)
-	}
+	const {} = setForm
 
 	const id = router.query.id
 	// {

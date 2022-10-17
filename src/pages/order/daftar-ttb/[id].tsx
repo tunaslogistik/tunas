@@ -48,53 +48,18 @@ const GET_DATA = gql`
 	}
 `
 
-//button on the right style
-const buttonStyle = {
-	color: `black`,
-	backgroundColor: `transparent`,
-	border: `1px solid black`,
-	marginLeft: `900px`,
-	marginBottom: `30px`
-}
-
-//text input style
-const inputStyle = {
-	width: `100%`,
-	marginBottom: `10px`
-}
-
-//const form style
-const buttonStylee = {
-	color: `white`,
-	backgroundColor: `#1890ff`,
-	//no outline
-	border: `none`,
-	//size
-	width: `100px`,
-	height: `30px`
-}
-
-interface DataType {
-	id: number
-}
 const schema = yup.object({})
 export default function Home() {
-	const { dispatch, state } = useContext(DashboardContext)
+	const { dispatch } = useContext(DashboardContext)
 	const { setLoading } = useLoading()
 	const setForm = useForm({
 		resolver: yupResolver(schema)
 	})
-	const {
-		control,
-		reset,
-		handleSubmit,
-		register,
-		formState: { isDirty, errors }
-	} = setForm
+	const { control, reset, handleSubmit, register } = setForm
 
 	const router = useRouter()
 	const id = router.query.id
-	const { data, loading, error } = useQuery(GET_DATA, {
+	const { data } = useQuery(GET_DATA, {
 		onCompleted({ daftar_ttb }) {
 			const data = daftar_ttb
 			const filteredData = daftar_ttb?.filter(
@@ -104,7 +69,7 @@ export default function Home() {
 			const pengirim = filteredData[0]?.pengirim
 			//filter by kode_t
 			var newArray = data.filter(function (el) {
-				return el.ttb_number == ttb_number && el.pengirim == pengirim
+				return el.ttb_number === ttb_number && el.pengirim === pengirim
 			})
 			reset({ newArray })
 		}

@@ -1,7 +1,7 @@
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { gql, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
-import { message, Table } from "antd"
+import { Table } from "antd"
 import "antd/dist/antd.css"
 import { ColumnsType } from "antd/lib/table"
 import Link from "next/link"
@@ -11,7 +11,6 @@ import { useForm } from "react-hook-form"
 //import icon icon-car.svg
 import Access from "@components/util/Access.component"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
-import { DELETE_DAFTAR_SALES_ORDER } from "../../../../graphql/daftar_sales_order/mutations"
 
 //get DATA
 
@@ -57,14 +56,6 @@ export default function Home() {
 
 	//GET DAFTAR TUJUAN
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
-
-	const [deleteDaftar_sales_order] = useMutation(DELETE_DAFTAR_SALES_ORDER, {
-		refetchQueries: [{ query: GET_DATA }]
-	})
-	const deleteData = (id) => {
-		deleteDaftar_sales_order({ variables: { deleteDaftar_sales_orderId: id } })
-		message.success(`Data Berhasil Dihapus`)
-	}
 
 	const setForm = useForm()
 

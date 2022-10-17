@@ -87,7 +87,7 @@ export default function Home() {
 	//make antd table with search
 	const columns: ColumnsType<DataType> = [
 		{
-			title: `TTB Number`,
+			title: `No. TTB`,
 			dataIndex: `ttb_number`,
 			key: `ttb_number`,
 			width: `20%`,

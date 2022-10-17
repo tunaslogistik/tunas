@@ -52,7 +52,7 @@ interface DataType {
 }
 
 export default function Home() {
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data, loading } = useQuery(GET_DATA)
 
 	//GET DATA MOBIL
 	const { data: dataMobil } = useQuery(GET_VECHNICLE)
@@ -137,7 +137,7 @@ export default function Home() {
 			)
 		},
 		{
-			title: `Volume m3`,
+			title: `Volume M³`,
 			dataIndex: `volume`,
 			key: `total_volume`,
 			width: `20%`,

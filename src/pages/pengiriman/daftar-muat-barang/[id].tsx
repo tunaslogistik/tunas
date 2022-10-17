@@ -72,7 +72,7 @@ interface DataType {
 export default function Home() {
 	const { setLoading } = useLoading()
 
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data, loading } = useQuery(GET_DATA)
 
 	//GET DATA KENDARAAN
 	const { data: dataMobil } = useQuery(GET_VECHNICLE)
@@ -101,17 +101,10 @@ export default function Home() {
 
 	const setForm = useForm()
 
-	const {
-		register,
-		handleSubmit,
-		formState: { isDirty, errors }
-	} = setForm
+	const { register, handleSubmit } = setForm
 
 	//search
 	const [search, setSearch] = useState(``)
-	const handleSearch = (e) => {
-		setSearch(e.target.value)
-	}
 	//make filtered data
 	const filteredData = data?.daftar_muat_barang.filter((item) => {
 		return (

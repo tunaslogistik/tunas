@@ -25,15 +25,6 @@ const GET_DATA = gql`
 	}
 `
 
-//button on the right style
-const buttonStyle = {
-	color: `black`,
-	backgroundColor: `transparent`,
-	border: `1px solid black`,
-	marginLeft: `900px`,
-	marginBottom: `30px`
-}
-
 //text input style
 const inputStyle = {
 	width: `100%`,
@@ -48,30 +39,12 @@ const inputStyles = {
 	fontWeight: `bold`
 }
 
-interface DataType {
-	id: number
-}
-
-//const form style
-const buttonStylee = {
-	color: `white`,
-	backgroundColor: `#1890ff`,
-	//no outline
-	border: `none`,
-	//size
-	width: `100px`,
-	height: `30px`
-}
-
 export default function SettingUserEdit() {
 	const { state: dashboardState } = useContext(DashboardContext)
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DATA)
 	const router = useRouter()
 	const { id } = router.query
 	const setForm = useForm()
-	const {
-		formState: { isDirty, errors }
-	} = setForm
 
 	const [updateJenisPengiriman] = useMutation(UPDATE_JENIS_PENGIRIMAN, {
 		refetchQueries: [{ query: GET_DATA }]

@@ -44,27 +44,12 @@ const inputStyles = {
 	fontSize: `12px`,
 	fontWeight: `bold`
 }
-//const form style
-const buttonStylee = {
-	color: `white`,
-	backgroundColor: `#1890ff`,
-	//no outline
-	border: `none`,
-	//size
-	width: `100px`,
-	height: `30px`
-}
 
 export default function Home() {
 	const { state: dashboardState } = useContext(DashboardContext)
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DATA)
 	const router = useRouter()
 	const setForm = useForm()
-	const {
-		control,
-		reset,
-		formState: { isDirty, errors }
-	} = setForm
 
 	const [createCustomer] = useMutation(CREATE_CUSTOMER, {
 		refetchQueries: [{ query: GET_DATA }]

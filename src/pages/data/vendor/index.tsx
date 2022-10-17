@@ -1,12 +1,11 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { gql, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
-import { message, Table } from "antd"
+import { Table } from "antd"
 import "antd/dist/antd.css"
 import { ColumnsType } from "antd/lib/table"
-import { DELETE_VENDOR } from "graphql/vendor/mutations"
 import moment from "moment"
 import Link from "next/link"
 import router from "next/router"
@@ -50,14 +49,6 @@ interface DataType {
 
 export default function Home() {
 	const { data, loading } = useQuery(GET_DATA)
-
-	const [deleteVendor] = useMutation(DELETE_VENDOR, {
-		refetchQueries: [{ query: GET_DATA }]
-	})
-	const deleteData = (id) => {
-		deleteVendor({ variables: { deleteVendorId: id } })
-		message.success(`Data Berhasil Dihapus`)
-	}
 
 	const setForm = useForm()
 

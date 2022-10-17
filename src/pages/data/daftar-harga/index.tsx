@@ -1,10 +1,9 @@
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { gql, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
-import { message, Table } from "antd"
+import { Table } from "antd"
 import "antd/dist/antd.css"
-import { DELETE_DAFTAR_HARGA } from "graphql/daftar_harga/mutations"
 import Link from "next/link"
 import router from "next/router"
 import { useState } from "react"
@@ -27,27 +26,8 @@ const GET_DATA = gql`
 	}
 `
 
-interface DataType {
-	id: number
-	kode_asal: any
-	kode_tujuan: any
-	harga: any
-	minimal_kubik: any
-	jenis_pengiriman: any
-	creator: any
-	updated_by: any
-}
-
 export default function Home() {
-	const { data, loading, error } = useQuery(GET_DATA)
-
-	const [deleteDaftar_harga] = useMutation(DELETE_DAFTAR_HARGA, {
-		refetchQueries: [{ query: GET_DATA }]
-	})
-	const deleteData = (id) => {
-		deleteDaftar_harga({ variables: { deleteDaftar_hargaId: id } })
-		message.success(`Data Berhasil Dihapus`)
-	}
+	const { data, loading } = useQuery(GET_DATA)
 
 	const setForm = useForm()
 	//search
@@ -91,10 +71,6 @@ export default function Home() {
 			updated_by: item.updated_by
 		}
 	})
-	const filterDataTable = mapDataTable?.filter((item) => {
-		return item.kode_asal !== item.kode_tujuan
-	})
-
 	const mergeSimilarRows = (rowsData = []) => {
 		const pageSize = 10
 		const uniqueUserIdsPerPage = new Set()

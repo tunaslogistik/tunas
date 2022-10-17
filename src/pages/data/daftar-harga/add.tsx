@@ -30,47 +30,15 @@ const GET_DATA = gql`
 	}
 `
 
-//button on the right style
-const buttonStyle = {
-	color: `black`,
-	backgroundColor: `transparent`,
-	border: `1px solid black`,
-	marginLeft: `900px`,
-	marginBottom: `30px`
-}
-
-//text input style
-const inputStyle = {
-	width: `100%`,
-	marginBottom: `10px`
-}
-
-//const form style
-const buttonStylee = {
-	color: `white`,
-	backgroundColor: `#1890ff`,
-	//no outline
-	border: `none`,
-	//size
-	width: `100px`,
-	height: `30px`
-}
-
 export default function SettingUserEdit() {
 	const { state: dashboardState } = useContext(DashboardContext)
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DATA)
 	//GET DATA JENIS PENGIRIMAN
 	const { data: dataJenisPengiriman } = useQuery(GET_JENIS_PENGIRIMAN)
 	//GET DATA DAFTAR TUJUAN
 	const { data: dataDaftarTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 	const router = useRouter()
 	const setForm = useForm()
-	const {
-		control,
-		reset,
-		register,
-		formState: { isDirty, errors }
-	} = setForm
 
 	//use state selected
 	const [selectedTujuan, setSelectedTujuan] = useState()

@@ -3,20 +3,15 @@ import IconPlus from "@assets/icons/icon-plus-fill.svg"
 import IconTrash from "@assets/icons/icon-trash.svg"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
-import { DashboardContext } from "@contexts/DashboardContext.context"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, DatePicker, message } from "antd"
 import "antd/dist/antd.css"
-import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_MUAT_BARANG } from "graphql/daftar_muat_barang/queries"
-import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
-import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
-import { GET_JENIS_PENGIRIMAN } from "graphql/jenis_pengiriman/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useContext, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { CREATE_DAFTAR_SURAT_JALAN } from "../../../../graphql/daftar_surat_jalan/mutations"
 //get data
@@ -40,29 +35,19 @@ const GET_DATA = gql`
 export default function Home() {
 	const formRef = useRef(null)
 	const { setLoading } = useLoading()
-	const { state: dashboardState } = useContext(DashboardContext)
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DATA)
 	//GET DAFTAR TTB
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
-	//GET DATA JENIS PENGIRIMAN
-	const { data: dataJenisPengiriman } = useQuery(GET_JENIS_PENGIRIMAN)
-	//GET DATA DAFTAR TUJUAN
-	const { data: dataDaftarTujuan } = useQuery(GET_DAFTAR_TUJUAN)
-	//GET DATA CUSTOMER
-	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	//GET DATA DAFTAR MUAT BARANG
 	const { data: dataDaftarMuatBarang } = useQuery(GET_DAFTAR_MUAT_BARANG)
 	//GET DATA DAFTAR SALES ORDER
-	const { data: dataDaftarSalesOrder } = useQuery(GET_DAFTAR_SALES_ORDER)
 	const router = useRouter()
 	const setForm = useForm()
 	const {
 		control,
-		reset,
 		register,
 		watch,
 		handleSubmit,
-		getValues,
 		setValue,
 		formState: { isDirty, errors }
 	} = setForm

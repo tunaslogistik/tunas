@@ -4,19 +4,15 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import { DashboardContext } from "@contexts/DashboardContext.context"
 import useLoading from "@hooks/useLoading.hook"
-import useToast from "@hooks/useToast"
 import { Button, message, Popconfirm } from "antd"
 import "antd/dist/antd.css"
 import {
 	CREATE_DAFTAR_HARGA,
-	DELETE_DAFTAR_HARGA,
-	UPDATE_DAFTAR_HARGA
+	DELETE_DAFTAR_HARGA
 } from "graphql/daftar_harga/mutations"
-import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
-import { GET_JENIS_PENGIRIMAN } from "graphql/jenis_pengiriman/queries"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import { useForm } from "react-hook-form"
 import FormRepeater from "../../../components/form/FormRepeater.component"
 var _ = require(`lodash`)
@@ -36,15 +32,6 @@ const GET_DATA = gql`
 	}
 `
 
-//button on the right style
-const buttonStyle = {
-	color: `black`,
-	backgroundColor: `transparent`,
-	border: `1px solid black`,
-	marginLeft: `900px`,
-	marginBottom: `30px`
-}
-
 //text input style
 const inputStyle = {
 	width: `100%`,
@@ -56,22 +43,10 @@ const inputStyles = {
 	marginBottom: `10px`
 }
 
-//const form style
-const buttonStylee = {
-	color: `white`,
-	backgroundColor: `red`,
-	//no outline
-	border: `none`,
-	//size
-	width: `100px`,
-	height: `30px`
-}
-
 export default function SettingUserEdit() {
 	const { state: dashboardState } = useContext(DashboardContext)
 	const setForm = useForm()
 	const { setLoading } = useLoading()
-	const { setToast } = useToast()
 	const {
 		control,
 		reset,
@@ -81,7 +56,7 @@ export default function SettingUserEdit() {
 	} = setForm
 	const router = useRouter()
 	const { id } = router.query
-	const { data, loading, error } = useQuery(GET_DATA, {
+	const { data } = useQuery(GET_DATA, {
 		onCompleted({ daftar_harga }) {
 			const data = daftar_harga
 			const filteredData = daftar_harga?.filter(
@@ -92,17 +67,11 @@ export default function SettingUserEdit() {
 			const kode_tujuan = filteredData[0].kode_tujuan
 			//filter by kode_t
 			var newArray = data.filter(function (el) {
-				return el.kode_asal == kode_asal && el.kode_tujuan == kode_tujuan
+				return el.kode_asal === kode_asal && el.kode_tujuan === kode_tujuan
 			})
-			const newArr = newArray
 			reset({ newArray })
 		}
 	})
-
-	//GET DATA JENIS PENGIRIMAN
-	const { data: dataJenisPengiriman } = useQuery(GET_JENIS_PENGIRIMAN)
-	//GET DATA DAFTAR TUJUAN
-	const { data: dataDaftarTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 
 	const [createDaftar_harga] = useMutation(CREATE_DAFTAR_HARGA, {
 		refetchQueries: [{ query: GET_DATA }]
@@ -121,19 +90,6 @@ export default function SettingUserEdit() {
 		router.push(`/data/daftar-harga`)
 	}
 
-	//form state
-	const [formState, setFormState] = useState({
-		isDirty: false,
-		errors: {}
-	})
-
-	const [updateDaftar_harga] = useMutation(UPDATE_DAFTAR_HARGA, {
-		refetchQueries: [{ query: GET_DATA }]
-	})
-	//create mutation function
-	const updateData = (data) => {
-		updateDaftar_harga({ variables: { input: data } })
-	}
 	const filteredData = data?.daftar_harga.filter(
 		(item) => item.id === parseInt(id as string)
 	)
@@ -184,7 +140,6 @@ export default function SettingUserEdit() {
 			const myChildren = objArray
 
 			const datas = myChildren.shift()
-			const random = Math.floor(Math.random() * 1000000) + 1
 			const temp = datas.map((datum) => {
 				return {
 					id: datum.id,

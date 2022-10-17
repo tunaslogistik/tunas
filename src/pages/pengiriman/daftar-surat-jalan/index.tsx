@@ -9,7 +9,6 @@ import { useForm } from "react-hook-form"
 //import icon icon-car.svg
 import Access from "@components/util/Access.component"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
-import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import Link from "next/link"
 import router from "next/router"
 
@@ -54,10 +53,8 @@ interface DataType {
 }
 
 export default function Home() {
-	const { data, loading, error } = useQuery(GET_DATA)
+	const { data, loading } = useQuery(GET_DATA)
 
-	//GET DAFTAR TUJUAN
-	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 	//GET DAftar ttb
 	const { data: dataTTB } = useQuery(GET_DAFTAR_TTB)
 
@@ -124,7 +121,7 @@ export default function Home() {
 			)
 		},
 		{
-			title: `Volume (M³)`,
+			title: `Volume M³`,
 			dataIndex: `volume`,
 			key: `total_volume`,
 			width: `20%`,

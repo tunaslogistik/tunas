@@ -14,7 +14,6 @@ import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import moment from "moment"
 import Link from "next/link"
 import router from "next/router"
-import { useState } from "react"
 import { useForm } from "react-hook-form"
 //import icon icon-car.svg
 
@@ -82,13 +81,7 @@ export default function Home() {
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 
 	const setForm = useForm()
-	const {
-		control,
-		reset,
-		handleSubmit,
-		register,
-		formState: { isDirty, errors }
-	} = setForm
+	const { handleSubmit, register } = setForm
 
 	const [updateDaftar_surat_jalan] = useMutation(UPDATE_DAFTAR_SURAT_JALAN, {
 		refetchQueries: [{ query: GET_DATA }]
@@ -97,20 +90,6 @@ export default function Home() {
 	const updateData = (data) => {
 		updateDaftar_surat_jalan({ variables: { input: data } })
 	}
-
-	//search
-	const [search, setSearch] = useState(``)
-	const handleSearch = (e) => {
-		setSearch(e.target.value)
-	}
-
-	//make filtered data
-	const filteredData = data?.daftar_surat_jalan.filter((item) => {
-		return (
-			item.nomor_surat_jalan.toLowerCase().includes(search.toLowerCase()) ||
-			item.kota_tujuan.toLowerCase().includes(search.toLowerCase())
-		)
-	})
 
 	// {
 	// 	title: `Action`,
@@ -139,15 +118,6 @@ export default function Home() {
 	const filteredDataById = data?.daftar_surat_jalan?.filter((item) => {
 		return item.id === parseInt(id as string)
 	})
-
-	//ttb
-
-	//filter sales order by filtereddatabyid nomor_ttb
-	const filteredSalesOrder = dataSalesOrder?.daftar_sales_order?.filter(
-		(item) => {
-			return item.nomor_ttb === filteredDataById?.[0]?.nomor_ttb
-		}
-	)
 
 	const filteredDatasurat = data?.daftar_surat_jalan.filter(
 		(item) =>
@@ -282,49 +252,9 @@ export default function Home() {
 		// 	)
 		// }
 	]
-	//filteredDataTtb map
-	const mapDataTtb = filteredDataTtb?.map((item) => {
-		return {
-			key: item.id,
-			nama_barang: item.nama_barang,
-			nomor_ttb: item.ttb_number,
-			koli: item.koli
-		}
-	})
-
-	const columns2: ColumnsType<DataType> = [
-		{
-			title: `nama_barang`,
-			dataIndex: `nama_barang`,
-			key: `nama_barang`,
-			width: `20%`,
-			sortDirections: [`descend`, `ascend`]
-		},
-		{
-			title: `No. TTB`,
-			dataIndex: `nomor_ttb`,
-			key: `nomor_ttb`,
-			width: `20%`,
-			sortDirections: [`descend`, `ascend`]
-		},
-		{
-			title: `koli`,
-			dataIndex: `koli`,
-			key: `koli`,
-			width: `20%`,
-			sortDirections: [`descend`, `ascend`]
-		}
-	]
 
 	const dataMap = mapData
 	const dataSource = dataMap
-
-	//get id surat jalan
-	const filteredDataIdSurat = filteredDatasurat?.map((item) => {
-		return {
-			id: item.id
-		}
-	})
 
 	async function onSubmit(formData) {
 		setLoading(true)
