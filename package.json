@@ -55,6 +55,7 @@
     "react-table": "^7.7.0",
     "react-to-print": "^2.14.7",
     "sass": "^1.43.4",
+    "shell-quote": "^1.7.4",
     "use-immer": "^0.6.0",
     "yup": "^0.32.11"
   },
