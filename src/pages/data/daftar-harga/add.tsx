@@ -278,7 +278,7 @@ export default function SettingUserEdit() {
 											block
 											icon={<PlusOutlined />}
 										>
-											Add field
+											Tambahkan List Harga
 										</Button>
 									</Form.Item>
 								</>

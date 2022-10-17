@@ -240,7 +240,7 @@ export default function Home() {
 			sortDirections: [`descend`, `ascend`]
 		},
 		{
-			title: `Container/seal`,
+			title: `Container/Seal`,
 			dataIndex: [`nomor_container`, `nomor_seal`],
 			key: `nomor_container`,
 			width: `20%`,

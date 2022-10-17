@@ -422,7 +422,7 @@ export default function Home() {
 											block
 											icon={<PlusOutlined />}
 										>
-											Add field
+											Tambahkan List Barang
 										</Button>
 									</Form.Item>
 								</>
