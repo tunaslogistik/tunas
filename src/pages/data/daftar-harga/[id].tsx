@@ -316,22 +316,23 @@ export default function SettingUserEdit() {
 													`harga`,
 													`minimal_kubik`
 												]}
-												inputLabels={[``, ``, ``]}
+												inputLabels={[
+													`Jenis Pengiriman`,
+													`Harga`,
+													`Minimal Kubik`
+												]}
 												inputProps={[
 													{
-														label: `Jenis Pengiriman`,
 														type: `text`,
 														placeholder: `Jenis Pengiriman`,
 														style: { width: `400px`, marginLeft: `0px` }
 													},
 													{
-														label: `Harga`,
 														type: `text`,
 														placeholder: `Harga`,
 														style: { width: `100%`, marginLeft: `0px` }
 													},
 													{
-														label: `Minimal Kubik`,
 														type: `text`,
 														placeholder: `Minimal Kubik`,
 														style: { width: `100%` }
