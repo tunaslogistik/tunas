@@ -519,7 +519,7 @@ export default function Home() {
 							}}
 						>
 							<label style={{ fontWeight: `bolder` }} className="label">
-								DP
+								Pembayaran DP
 							</label>
 							<div className="control">
 								<input
@@ -530,6 +530,9 @@ export default function Home() {
 									defaultValue={filterSalesOrdered?.[0]?.dp}
 									{...register(`dp`)}
 								/>
+								<p style={{ fontSize: `10px`, color: `white` }}>
+									Dalam satuan rupiah
+								</p>
 							</div>
 						</div>
 						<div className="field" style={{ marginTop: `1%` }}>

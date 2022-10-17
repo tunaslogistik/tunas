@@ -383,8 +383,10 @@ export default function Home() {
 									placeholder="Pembayaran DP"
 									{...register(`dp`)}
 								/>
-								<p style={{ fontSize: `10px` }}>Include PPN 1%</p>
 							</div>
+							<p style={{ fontSize: `10px`, color: `white` }}>
+								Dalam satuan rupiah
+							</p>
 						</div>
 						<div className="field" style={{ marginTop: `1%` }}>
 							<label style={{ fontWeight: `bolder` }} className="label">
