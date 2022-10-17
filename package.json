@@ -18,7 +18,7 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} ./prisma/seed.ts"
   },
   "dependencies": {
-    "@ant-design/charts": "^1.2.14",
+    "@ant-design/charts": "^1.4.2",
     "@ant-design/plots": "^1.2.2",
     "@apollo/client": "^3.5.10",
     "@hookform/resolvers": "^2.8.8",
@@ -31,7 +31,6 @@
     "@tiptap/react": "^2.0.0-beta.108",
     "@tiptap/starter-kit": "^2.0.0-beta.183",
     "@types/react-datepicker": "^4.4.0",
-    "@xmldom/xmldom": "^0.8.3",
     "antd": "^4.22.6",
     "apollo-server-micro": "^3.6.1",
     "bcrypt": "^5.0.1",
@@ -39,6 +38,7 @@
     "dotenv-cli": "^6.0.0",
     "framer-motion": "^6.5.1",
     "graphql": "^16.2.0",
+    "immer": "^9.0.7",
     "lodash": "^4.17.21",
     "micro": "^9.3.4",
     "micro-cors": "^0.1.1",
@@ -56,7 +56,6 @@
     "react-table": "^7.7.0",
     "react-to-print": "^2.14.7",
     "sass": "^1.43.4",
-    "shell-quote": "^1.7.4",
     "use-immer": "^0.6.0",
     "yup": "^0.32.11"
   },

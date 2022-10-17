@@ -143,9 +143,9 @@ export default function SettingUserEdit() {
 					input: {
 						id,
 						username: formData.username,
-						email : formData.email,
-						cabang : formData.cabang,
-						creator : String(dashboardState.auth.id),
+						email: formData.email,
+						cabang: formData.cabang,
+						creator: String(dashboardState.auth.id),
 						name: formData.name,
 						role: formData.role,
 						password: formData.password ? formData.password : ``
@@ -273,7 +273,6 @@ export default function SettingUserEdit() {
 										<FormInput
 											setForm={setForm}
 											name="name"
-											error={errors.name?.message}
 											label="Full Name"
 										/>
 									</div>
@@ -281,25 +280,14 @@ export default function SettingUserEdit() {
 										<FormInput
 											setForm={setForm}
 											name="username"
-											error={errors.username?.message}
 											label="Username"
 										/>
 									</div>
 									<div className="row">
-										<FormInput
-											setForm={setForm}
-											name="email"
-											error={errors.email?.message}
-											label="Email"
-										/>
+										<FormInput setForm={setForm} name="email" label="Email" />
 									</div>
 									<div className="row">
-										<FormInput
-											setForm={setForm}
-											name="cabang"
-											error={errors.cabang?.message}
-											label="Cabang"
-										/>
+										<FormInput setForm={setForm} name="cabang" label="Cabang" />
 									</div>
 									<div className="row">
 										<FormSelect
@@ -349,7 +337,6 @@ export default function SettingUserEdit() {
 											type="password"
 											setForm={setForm}
 											name="password"
-											error={errors.password?.message}
 											label="New Password"
 											placeholder="••••••••••••••"
 										/>
@@ -359,7 +346,6 @@ export default function SettingUserEdit() {
 											type="password"
 											setForm={setForm}
 											name="password_confirmation"
-											error={errors.password_confirmation?.message}
 											label="Repeat New Password"
 											placeholder="••••••••••••••"
 										/>
