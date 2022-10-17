@@ -219,7 +219,7 @@ export default function SettingRoleEdit() {
 										<FormInput
 											setForm={setForm}
 											name="name"
-											error={errors.name?.message}
+											error={String(errors.name?.message)}
 											label="Role name"
 										/>
 									</div>

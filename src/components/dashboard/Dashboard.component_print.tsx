@@ -1,9 +1,7 @@
-import { useReactiveVar } from "@apollo/client"
 import { DashboardContext } from "@contexts/DashboardContext.context"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import { ReactNode, useContext, useEffect } from "react"
-import { toastsVar } from "src/store/apollo.store"
 
 interface Props {
 	children: ReactNode
@@ -12,7 +10,6 @@ interface Props {
 
 export default function Dashboard({ children }: Props) {
 	const { state } = useContext(DashboardContext)
-	const toasts = useReactiveVar(toastsVar)
 
 	const { data: session, status } = useSession()
 	const router = useRouter()
