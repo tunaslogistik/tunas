@@ -143,7 +143,7 @@ export default function SettingRoleNew() {
 									<FormInput
 										setForm={setForm}
 										name="name"
-										error={String(errors.name?.message)}
+										error={errors.name?.message}
 										label="Role name"
 									/>
 								</div>

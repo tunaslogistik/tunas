@@ -273,7 +273,7 @@ export default function SettingUserEdit() {
 										<FormInput
 											setForm={setForm}
 											name="name"
-											error={String(errors.name?.message)}
+											error={errors.name?.message}
 											label="Full Name"
 										/>
 									</div>
@@ -281,7 +281,7 @@ export default function SettingUserEdit() {
 										<FormInput
 											setForm={setForm}
 											name="username"
-											error={String(errors.username?.message)}
+											error={errors.username?.message}
 											label="Username"
 										/>
 									</div>
@@ -289,7 +289,7 @@ export default function SettingUserEdit() {
 										<FormInput
 											setForm={setForm}
 											name="email"
-											error={String(errors.email?.message)}
+											error={errors.email?.message}
 											label="Email"
 										/>
 									</div>
@@ -297,7 +297,7 @@ export default function SettingUserEdit() {
 										<FormInput
 											setForm={setForm}
 											name="cabang"
-											error={String(errors.cabang?.message)}
+											error={errors.cabang?.message}
 											label="Cabang"
 										/>
 									</div>
@@ -349,7 +349,7 @@ export default function SettingUserEdit() {
 											type="password"
 											setForm={setForm}
 											name="password"
-											error={String(errors.password?.message)}
+											error={errors.password?.message}
 											label="New Password"
 											placeholder="••••••••••••••"
 										/>
@@ -359,7 +359,7 @@ export default function SettingUserEdit() {
 											type="password"
 											setForm={setForm}
 											name="password_confirmation"
-											error={String(errors.password_confirmation?.message)}
+											error={errors.password_confirmation?.message}
 											label="Repeat New Password"
 											placeholder="••••••••••••••"
 										/>

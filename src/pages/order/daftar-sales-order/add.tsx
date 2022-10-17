@@ -45,12 +45,6 @@ export default function Home() {
 	const { control, register, watch, handleSubmit, getValues, setValue } =
 		setForm
 
-	useEffect(() => {
-		formRef.current?.setFieldsValue({
-			nomor_ttb: data?.nomor_ttb
-		})
-	}, [data])
-
 	const [createDaftar_sales_order] = useMutation(CREATE_DAFTAR_SALES_ORDER, {
 		refetchQueries: [{ query: GET_DATA }]
 	})
