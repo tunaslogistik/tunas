@@ -18,7 +18,7 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} ./prisma/seed.ts"
   },
   "dependencies": {
-    "@ant-design/charts": "^1.4.2",
+    "@ant-design/charts": "^1.2.14",
     "@ant-design/plots": "^1.2.2",
     "@apollo/client": "^3.5.10",
     "@hookform/resolvers": "^2.8.8",
@@ -38,7 +38,6 @@
     "dotenv-cli": "^6.0.0",
     "framer-motion": "^6.5.1",
     "graphql": "^16.2.0",
-    "immer": "^9.0.7",
     "lodash": "^4.17.21",
     "micro": "^9.3.4",
     "micro-cors": "^0.1.1",
