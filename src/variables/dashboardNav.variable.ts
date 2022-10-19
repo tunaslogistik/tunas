@@ -1,4 +1,3 @@
-import IconAccount from "@assets/icons/icon-account.svg"
 import IconDashboard from "@assets/icons/icon-dashboard.svg"
 import IconData from "@assets/icons/icon-data.svg"
 import IconFinance from "@assets/icons/icon-finance.svg"
@@ -138,8 +137,7 @@ export const dashboardSettingsNav = [
 	{
 		key: `settings-users`,
 		href: `/admin/settings/users`,
-		label: `Users`,
-		icon: IconAccount
+		label: `Users`
 	},
 	{
 		key: `Pengaturan`,
