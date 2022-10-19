@@ -161,7 +161,7 @@ export default function SettingUserNew() {
 										<FormInput
 											setForm={setForm}
 											name="name"
-											error={String(errors.name?.message)}
+											error={errors.name?.message}
 											label="Full Name"
 										/>
 									</div>
@@ -169,7 +169,7 @@ export default function SettingUserNew() {
 										<FormInput
 											setForm={setForm}
 											name="username"
-											error={String(errors.username?.message)}
+											error={errors.username?.message}
 											label="Username"
 										/>
 									</div>
@@ -177,7 +177,7 @@ export default function SettingUserNew() {
 										<FormInput
 											setForm={setForm}
 											name="email"
-											error={String(errors.email?.message)}
+											error={errors.email?.message}
 											label="email"
 										/>
 									</div>
@@ -185,7 +185,7 @@ export default function SettingUserNew() {
 										<FormInput
 											setForm={setForm}
 											name="cabang"
-											error={String(errors.cabang?.message)}
+											error={errors.cabang?.message}
 											label="cabang"
 										/>
 									</div>
@@ -237,7 +237,7 @@ export default function SettingUserNew() {
 											setForm={setForm}
 											type="password"
 											name="password"
-											error={String(errors.password?.message)}
+											error={errors.password?.message}
 											label="Password"
 											placeholder="••••••••••••••"
 										/>
@@ -247,7 +247,7 @@ export default function SettingUserNew() {
 											setForm={setForm}
 											type="password"
 											name="password_confirmation"
-											error={String(errors.password_confirmation?.message)}
+											error={errors.password_confirmation?.message}
 											label="Repeat Password"
 											placeholder="••••••••••••••"
 										/>
