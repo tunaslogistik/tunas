@@ -9,7 +9,7 @@ import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { CREATE_DAFTAR_SALES_ORDER } from "../../../../graphql/daftar_sales_order/mutations"
 //get data
@@ -24,8 +24,6 @@ const GET_DATA = gql`
 			harga
 			total_tagihan
 			kota_tujuan
-			nama_kapal
-			tanggal_keberangkatan
 			tanggal_sales_order
 			term_payment
 		}
@@ -33,7 +31,6 @@ const GET_DATA = gql`
 `
 
 export default function Home() {
-	const formRef = useRef(null)
 	const { setLoading } = useLoading()
 	const { data } = useQuery(GET_DATA)
 	//GET DAFTAR TTB
@@ -132,7 +129,6 @@ export default function Home() {
 		}
 		return acc
 	}, [])
-	console.log(`data nya ialah`, mergeTTB)
 
 	//filter ttb where ttb number not in sales order
 	const filterTTB = mergeTTB?.filter((item) => {
