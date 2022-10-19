@@ -143,10 +143,5 @@ export const dashboardSettingsNav = [
 		key: `Pengaturan`,
 		href: `/admin/settings/rekening`,
 		label: `Pengaturan`
-	},
-	{
-		key: `settings-navigation`,
-		href: `/admin/settings/navigation`,
-		label: `Navigation`
 	}
 ]
