@@ -28,6 +28,7 @@ const GET_DATA = gql`
 			jenis_pengiriman
 			nomor_telepon
 			nama_barang
+			container_size
 			panjang
 			lebar
 			tinggi
@@ -104,6 +105,7 @@ export default function Home() {
 					jenis_pengiriman: values.jenis_pengiriman,
 					nomor_telepon: values.nomor_telepon,
 					nama_barang: item.nama_barang,
+					container_size: String(values.container_size),
 					panjang: parseInt(item.panjang),
 					lebar: parseInt(item.lebar),
 					tinggi: parseInt(item.tinggi),
@@ -356,6 +358,14 @@ export default function Home() {
 						>
 							<DatePicker format="DD-MM-YYYY" style={{ width: `100%` }} />
 						</Form.Item>
+						<div>
+							<label style={{ fontWeight: `bold` }} className="label">
+								Container Size
+							</label>
+							<Form.Item name="container_size">
+								<Input style={{ width: `100%` }} required />
+							</Form.Item>
+						</div>
 						<h6>List Barang</h6>
 						<Form.List name="daftar_ttb">
 							{(fields, { add, remove }) => (

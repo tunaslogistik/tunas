@@ -6,6 +6,7 @@ import { Button, DatePicker, message } from "antd"
 import "antd/dist/antd.css"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
+import { GET_PENGATURAN } from "graphql/pengaturan/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -23,6 +24,7 @@ const GET_DATA = gql`
 			total_volume
 			harga
 			total_tagihan
+			rekening
 			kota_tujuan
 			tanggal_sales_order
 			term_payment
@@ -37,6 +39,9 @@ export default function Home() {
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
 	//GET DATA CUSTOMER
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
+	//GET DATA PENGATURAN
+	const { data: dataPengaturan } = useQuery(GET_PENGATURAN)
+
 	const router = useRouter()
 	const setForm = useForm()
 	const { control, register, watch, handleSubmit, getValues, setValue } =
@@ -80,6 +85,7 @@ export default function Home() {
 					harga: parseInt(formData.harga),
 					pengirim: formData.pengirim,
 					total_tagihan: parseInt(formData.total_tagihan),
+					rekening: formData.rekening,
 					kota_tujuan: formData.kota_tujuan,
 					dp: parseInt(formData.dp),
 					tanggal_sales_order: formData.tanggal_sales_order,
@@ -178,9 +184,13 @@ export default function Home() {
 		console.log(`watch`, watch(`harga`))
 	}, [watch])
 
-	console.log(`watch total`, tipePPNPercentage)
+	const dataBank = dataPengaturan?.pengaturan?.map((item) => {
+		return {
+			nama_bank: item.bank
+		}
+	})
 
-	//total volume * harga + 1%
+	console.log(`dataBank`, dataPengaturan)
 	return (
 		<AdminPage
 			parent={
@@ -377,6 +387,27 @@ export default function Home() {
 							<p style={{ fontSize: `10px`, color: `white` }}>
 								Dalam satuan rupiah
 							</p>
+						</div>
+						<div className="field">
+							<label style={{ fontWeight: `bolder` }} className="label">
+								Rekening
+							</label>
+							<div className="control">
+								<select
+									style={{ width: `100%` }}
+									className="input"
+									{...register(`rekening`)}
+								>
+									<option value="">Pilih Bank</option>
+									{dataBank?.map((item, index) => {
+										return (
+											<option key={index} value={item.nama_bank}>
+												{item.nama_bank}
+											</option>
+										)
+									})}
+								</select>
+							</div>
 						</div>
 						<div className="field" style={{ marginTop: `1%` }}>
 							<label style={{ fontWeight: `bolder` }} className="label">

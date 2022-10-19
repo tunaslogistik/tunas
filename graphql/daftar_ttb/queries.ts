@@ -14,6 +14,7 @@ export const GET_DAFTAR_TTB = gql`
 			nomor_telepon
 			nama_barang
 			panjang
+			container_size
 			lebar
 			tinggi
 			koli

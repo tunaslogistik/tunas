@@ -12,6 +12,7 @@ export const types = gql`
 		total_volume: Int
 		nomor_telepon: String
 		nama_barang: String
+		container_size: String
 		panjang: Int
 		lebar: Int
 		tinggi: Int
@@ -41,6 +42,7 @@ export const types = gql`
 		lebar: Int
 		tinggi: Int
 		koli: Int
+		container_size: String
 		alamat_tujuan: String
 		status: String
 		kategori: String
@@ -58,6 +60,7 @@ export const types = gql`
 		nomor_telepon: String
 		total_volume: Int
 		nama_barang: String
+		container_size: String
 		panjang: Int
 		lebar: Int
 		tinggi: Int

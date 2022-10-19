@@ -12,6 +12,7 @@ export const GET_DAFTAR_MUAT_BARANG = gql`
 			pengirim
 			penerima
 			total_volume
+			nama_kapal
 			nomor_kendaraan
 			vendor_pelayanan
 			estimated_date

@@ -8,6 +8,7 @@ import { Button, message, Popconfirm } from "antd"
 import "antd/dist/antd.css"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
+import { GET_PENGATURAN } from "graphql/pengaturan/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -28,6 +29,7 @@ const GET_DATA = gql`
 			harga
 			total_tagihan
 			kota_tujuan
+			rekening
 			dp
 			tanggal_sales_order
 			term_payment
@@ -41,8 +43,14 @@ export default function Home() {
 	const router = useRouter()
 	const id = router.query.id
 
+	useEffect(() => {
+		router.replace(router.asPath)
+	}, [router])
+
 	//GET DAFTAR TTB
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
+	//GET PENGATURAN
+	const { data: dataPengaturan } = useQuery(GET_PENGATURAN)
 
 	//GET DATA CUSTOMER
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
@@ -61,10 +69,9 @@ export default function Home() {
 				return el.nomor_ttb === ttb_number && el.pengirim === pengirim
 			})
 			//set form with reset
+			console.log(`sales[0]?.nomor_ttb`, sales[0]?.nomor_ttb)
 			reset({
 				nomor_ttb: sales[0]?.nomor_ttb,
-				nomor_sales_order: sales[0]?.nomor_sales_order,
-				total_volume: sales[0]?.total_volume,
 				harga: sales[0]?.harga,
 				total_tagihan: sales[0]?.total_tagihan,
 				kota_tujuan: sales[0]?.kota_tujuan,
@@ -153,6 +160,7 @@ export default function Home() {
 					pengirim: formData.pengirim,
 					total_tagihan: parseInt(formData.total_tagihan),
 					kota_tujuan: formData.kota_tujuan,
+					rekening: formData.rekening,
 					nama_kapal: formData.nama_kapal,
 					dp: formData.dp,
 					tanggal_sales_order: generateDateSalesOrder(),
@@ -250,7 +258,7 @@ export default function Home() {
 
 	useEffect(() => {
 		setValue(`total_tagihan`, totalTagihan)
-	}, [totalTagihan])
+	}, [setValue, totalTagihan])
 
 	const handleChangeTTB = (value) => {
 		const data = mergeTTB?.find((item) => item.nomor_ttb === value)
@@ -264,6 +272,12 @@ export default function Home() {
 	const tanggal_sales_order_date = moment
 		.unix(filterSalesOrdered?.[0]?.tanggal_sales_order / 1000)
 		.format(`YYYY-MM-DD`)
+
+	const dataBank = dataPengaturan?.pengaturan?.map((item) => {
+		return {
+			nama_bank: item.bank
+		}
+	})
 
 	return (
 		<AdminPage
@@ -548,6 +562,29 @@ export default function Home() {
 								<p style={{ fontSize: `10px`, color: `white` }}>
 									Dalam satuan rupiah
 								</p>
+							</div>
+						</div>
+						<div className="field">
+							<label style={{ fontWeight: `bolder` }} className="label">
+								Rekening
+							</label>
+							<div className="control">
+								<select
+									style={{ width: `100%` }}
+									className="input"
+									{...register(`rekening`)}
+								>
+									<option defaultValue={filterSalesOrdered?.[0]?.rekening}>
+										{filterSalesOrdered?.[0]?.rekening}
+									</option>
+									{dataBank?.map((item, index) => {
+										return (
+											<option key={index} value={item.nama_bank}>
+												{item.nama_bank}
+											</option>
+										)
+									})}
+								</select>
 							</div>
 						</div>
 						<div className="field" style={{ marginTop: `1%` }}>

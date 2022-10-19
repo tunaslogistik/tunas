@@ -9,6 +9,7 @@ export const types = gql`
 		harga: Int
 		pengirim: String
 		kota_tujuan: String
+		rekening: String
 		total_tagihan: Int
 		dp: Int
 		tanggal_sales_order: String
@@ -25,6 +26,7 @@ export const types = gql`
 		nomor_sales_order: String
 		total_volume: Int
 		pengirim: String
+		rekening: String
 		harga: Int
 		dp: Int
 		total_tagihan: Int
@@ -40,6 +42,7 @@ export const types = gql`
 		total_volume: Int
 		kota_tujuan: String
 		pengirim: String
+		rekening: String
 		harga: Int
 		dp: Int
 		total_tagihan: Int

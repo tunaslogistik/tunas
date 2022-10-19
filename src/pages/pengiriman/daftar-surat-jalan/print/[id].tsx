@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form"
 import { GET_CUSTOMER } from "../../../../../graphql/customer/queries"
 import { GET_DAFTAR_SALES_ORDER } from "../../../../../graphql/daftar_sales_order/queries"
 import { GET_DAFTAR_TTB } from "../../../../../graphql/daftar_ttb/queries"
+import { GET_DAFTAR_TUJUAN } from "../../../../../graphql/daftar_tujuan/queries"
 
 const GET_DATA = gql`
 	query daftar_surat_jalan {
@@ -147,7 +148,6 @@ export default function Home() {
 		)
 	})
 
-	console.log(`daftar_surat_jalan`, data?.daftar_surat_jalan)
 	//get ttb number
 	const { data: dataTtb } = useQuery(GET_DAFTAR_TTB)
 
@@ -158,6 +158,9 @@ export default function Home() {
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	//get muat barang
 	const { data: dataMuatBarang } = useQuery(GET_DAFTAR_MUAT_BARANG)
+
+	//get tujuan
+	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 
 	//return nomor ttb from daftar surat jalan
 	const nomor_ttb = daftar_surat_jalan?.map((item) => {
@@ -178,7 +181,11 @@ export default function Home() {
 			pengirim: item.pengirim,
 			nomor_telepon: item.nomor_telepon,
 			alamat_tujuan: item.alamat_tujuan,
-			kota_tujuan: item.kota_tujuan,
+			kode_tujuan: item.kota_tujuan,
+			//find from data tujuan
+			kota_tujuan: dataTujuan?.daftar_tujuan?.find((item2) => {
+				return item2.kota_tujuan === item.kode_tujuan
+			})?.nama_tujuan,
 			panjang: item.panjang,
 			lebar: item.lebar,
 			volume_m3: item.total_volume,
@@ -205,7 +212,6 @@ export default function Home() {
 			status: item.status
 		}
 	})
-
 	//sum koli
 	const sumKoli = dataTTB?.reduce((acc, item) => {
 		return parseInt(acc) + parseInt(item.koli)
@@ -356,9 +362,9 @@ export default function Home() {
 								borderRight: `1px solid #000000`
 							}}
 						>
-							No.Kontainer : {`       `}
+							No.Kontainer : {`             `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
-								{muatBarang?.[0]?.nomor_container}
+								{daftar_surat_jalan?.[0]?.nomor_container}
 							</Text>
 						</Text>
 						<Text>{`\n`}</Text>
@@ -371,9 +377,9 @@ export default function Home() {
 								borderRight: `1px solid #000000`
 							}}
 						>
-							No.Seal : {`               `}
+							No.Seal : {`                     `}
 							<Text style={{ paddingTop: `4px`, fontFamily: `Helvetica-Bold` }}>
-								{muatBarang?.[0]?.nomor_seal}
+								{daftar_surat_jalan?.[0]?.nomor_seal}
 							</Text>
 						</Text>
 						<Text>{`\n`}</Text>
@@ -387,7 +393,7 @@ export default function Home() {
 								borderRight: `1px solid #000000`
 							}}
 						>
-							Nama Kapal : {`        `}
+							Nama Kapal : {`              `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
 								{daftar_surat_jalan?.[0]?.nama_kapal}
 							</Text>
@@ -403,11 +409,43 @@ export default function Home() {
 								borderRight: `1px solid #000000`
 							}}
 						>
-							Tgl Pengiriman : {`    `}
+							Tgl Pengiriman : {`         `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
 								{moment(daftar_surat_jalan?.[0]?.tanggal_keberangkatan).format(
 									`DD-MM-YYYY`
 								)}
+							</Text>
+						</Text>
+						<Text>{`\n`}</Text>
+						<Text>{`\n`}</Text>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `11px`,
+								padding: `10px`,
+								paddingTop: `4px`,
+								borderRight: `1px solid #000000`
+							}}
+						>
+							Tgl Keberangkatan : {`   `}
+							<Text style={{ fontFamily: `Helvetica-Bold` }}>
+								{moment(dataTTB?.[0]?.tanggal_diterima).format(`DD-MM-YYYY`)}
+							</Text>
+						</Text>
+						<Text>{`\n`}</Text>
+						<Text>{`\n`}</Text>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `11px`,
+								padding: `10px`,
+								paddingTop: `4px`,
+								borderRight: `1px solid #000000`
+							}}
+						>
+							Tujuan : {`                       `}
+							<Text style={{ fontFamily: `Helvetica-Bold` }}>
+								{dataTTB?.[0]?.kota_tujuan}
 							</Text>
 						</Text>
 					</Text>

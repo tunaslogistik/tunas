@@ -11,6 +11,7 @@ import {
 } from "@react-pdf/renderer"
 import { GET_DAFTAR_MUAT_BARANG } from "graphql/daftar_muat_barang/queries"
 import { GET_DAFTAR_SURAT_JALAN } from "graphql/daftar_surat_jalan/queries"
+import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import { GET_VECHNICLE } from "graphql/mobil/queries"
 import moment from "moment"
 import { useRouter } from "next/router"
@@ -150,6 +151,8 @@ export default function Home() {
 	const { data: dataDaftarMuatBarang } = useQuery(GET_DAFTAR_MUAT_BARANG)
 	//get daftar surat jalan
 	const { data: dataDaftarSuratJalan } = useQuery(GET_DAFTAR_SURAT_JALAN)
+	//get daftar tujuan
+	const { data: dataDaftarTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 
 	// get all data where nomor_surat_jalan equal to daftar_surat_jalan[0].nomor_surat_jalan
 	const daftar_surat_jalan = data?.daftar_surat_pengantar?.filter((item) => {
@@ -175,12 +178,17 @@ export default function Home() {
 			id: item.id,
 			ttb_number: item.ttb_number,
 			pengirim: item.pengirim,
+			container_size: item.container_size,
 			nomor_telepon: item.nomor_telepon,
 			panjang: item.panjang,
 			lebar: item.lebar,
 			tinggi: item.tinggi,
 			alamat_tujuan: item.alamat_tujuan,
-			kota_tujuan: item.kota_tujuan,
+			kode_tujuan: item.kota_tujuan,
+			//get nama tujuan from customer
+			nama_tujuan: dataDaftarTujuan?.daftar_tujuan?.filter((item2) => {
+				return item2.kota_customer === item.kode_tujuan
+			})?.[0]?.nama_tujuan,
 			volume_m3: item.panjang * item.lebar * item.tinggi * item.koli,
 			jenis_pengiriman: item.jenis_pengiriman,
 			penerima: item.nama_penerima,
@@ -212,6 +220,8 @@ export default function Home() {
 	const MuatBarang = dataDaftarMuatBarang?.daftar_muat_barang.filter(
 		(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number
 	)
+
+	console.log(`nama kapal`, MuatBarang)
 
 	const SuratJalan = dataDaftarSuratJalan?.daftar_surat_jalan.filter(
 		(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number
@@ -415,7 +425,7 @@ export default function Home() {
 						>
 							Nama Kapal : {`               `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
-								{SuratJalan?.[0]?.nama_kapal}
+								{MuatBarang?.[0]?.nama_kapal}
 							</Text>
 						</Text>
 						<Text>{`\n`}</Text>
@@ -475,26 +485,26 @@ export default function Home() {
 						</Text>
 						<Text
 							style={{
-								width: `100px`,
+								width: `150px`,
 								fontSize: `10px`,
 								fontFamily: `Helvetica-Bold`,
-								textAlign: `center`,
+								textAlign: `right`,
 								padding: `10px`,
 								borderRight: `1px solid #000000`
 							}}
 						>
-							KOLI
+							TUJUAN
 						</Text>
 						<Text
 							style={{
-								width: `100px`,
+								width: `150px`,
 								fontSize: `9px`,
 								fontFamily: `Helvetica-Bold`,
-								textAlign: `center`,
+								textAlign: `right`,
 								padding: `10px`
 							}}
 						>
-							VOL M³
+							CONTAINER SIZE
 						</Text>
 					</View>
 					<View style={styles.tblBody}>
@@ -535,74 +545,27 @@ export default function Home() {
 								</Text>
 								<Text
 									style={{
-										width: `100px`,
+										width: `150px`,
 										fontSize: `11px`,
 										textAlign: `right`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.koli}
+									{item.nama_tujuan}
 								</Text>
 								<Text
 									style={{
-										width: `100px`,
+										width: `150px`,
 										fontSize: `11px`,
 										textAlign: `right`,
 										padding: `10px`
 									}}
 								>
-									{item.volume_m3}
+									{item.container_size}
 								</Text>
 							</View>
 						))}
-						<View style={styles.tblRow2} key="">
-							<Text
-								style={{
-									width: `365px`,
-									fontSize: `11px`,
-									textAlign: `center`,
-									borderRight: `1px solid #000000`
-								}}
-							>
-								{}
-							</Text>
-							<Text
-								style={{
-									width: `103px`,
-									fontSize: `11px`,
-									fontFamily: `Helvetica-Bold`,
-									textAlign: `center`,
-									padding: `10px`
-								}}
-							>
-								TOTAL
-							</Text>
-							<Text style={styles.tableText2}></Text>
-							<Text
-								style={{
-									width: `85px`,
-									fontFamily: `Helvetica-Bold`,
-									fontSize: `11px`,
-									textAlign: `right`,
-									padding: `10px`,
-									borderRight: `1px solid #000000`
-								}}
-							>
-								{sumKoli}
-							</Text>
-							<Text
-								style={{
-									width: `85px`,
-									fontFamily: `Helvetica-Bold`,
-									fontSize: `11px`,
-									padding: `10px`,
-									textAlign: `right`
-								}}
-							>
-								{sumVolume}
-							</Text>
-						</View>
 					</View>
 				</View>
 				<View

@@ -3,7 +3,6 @@ import IconData from "@assets/icons/icon-data.svg"
 import IconFinance from "@assets/icons/icon-finance.svg"
 import IconOrder from "@assets/icons/icon-order.svg"
 import IconSend from "@assets/icons/icon-send.svg"
-import IconSettings from "@assets/icons/icon-setting.svg"
 
 interface Nav {
 	key: string
@@ -19,6 +18,7 @@ interface Subnav {
 	href: string
 	redirectHref?: string
 	label: string
+	subnav?: Subnav[]
 }
 
 export const dashboardPagesNav: Nav[] = [
@@ -142,12 +142,11 @@ export const dashboardSettingsNav = [
 	{
 		key: `Pengaturan`,
 		href: `/admin/settings/rekening`,
-		label: `Pengaturan`,
-		icon: IconSettings
+		label: `Pengaturan`
+	},
+	{
+		key: `settings-navigation`,
+		href: `/admin/settings/navigation`,
+		label: `Navigation`
 	}
-	// {
-	// 	key: `settings-navigation`,
-	// 	href: `/admin/settings/navigation`,
-	// 	label: `Navigation`
-	// }
 ]

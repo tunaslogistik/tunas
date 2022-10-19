@@ -11,6 +11,7 @@ import {
 	View
 } from "@react-pdf/renderer"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
+import { GET_PENGATURAN } from "graphql/pengaturan/queries"
 import moment from "moment"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
@@ -27,9 +28,8 @@ const GET_DATA = gql`
 			harga
 			pengirim
 			kota_tujuan
+			rekening
 			total_tagihan
-			nama_kapal
-			tanggal_keberangkatan
 			tanggal_sales_order
 			term_payment
 		}
@@ -135,6 +135,8 @@ export default function Home() {
 	console.log(`data_TTB`, data_TTB)
 	//get daftar tujuan
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
+	//get pengaturan
+	const { data: dataPengaturan } = useQuery(GET_PENGATURAN)
 
 	const setForm = useForm()
 	const router = useRouter()
@@ -147,7 +149,10 @@ export default function Home() {
 	const dataTTBfilter = data_TTB?.daftar_ttb?.filter(
 		(item) => item.ttb_number === dataSalesOrderfilter?.[0]?.nomor_ttb
 	)
-
+	//get bank from datapengaturan where have same bank with datasalesorder
+	const dataBank = dataPengaturan?.pengaturan?.filter(
+		(item) => item.bank === dataSalesOrderfilter?.[0]?.rekening
+	)
 	const dataTTB = dataTTBfilter
 
 	//get kota tujuan from daftar tujuan where kode tujuan equal to kode tujuan
@@ -332,7 +337,7 @@ export default function Home() {
 							TOP:
 						</Text>
 						<Text style={{ paddingTop: `5px`, fontSize: `10px`, flex: 1 }}>
-							No. REK BCA:
+							No. REK {dataSalesOrderfilter?.[0]?.rekening}:
 						</Text>
 					</View>
 					<View style={{ marginLeft: `10px`, width: `515px` }}>
@@ -433,7 +438,7 @@ export default function Home() {
 								fontSize: `10px`
 							}}
 						>
-							244-2877-999 a/n PT Tunas Kreasi Perkasa Logistik
+							{dataBank?.[0]?.no_rekening} a/n PT Tunas Kreasi Perkasa Logistik
 						</Text>
 					</View>
 				</View>

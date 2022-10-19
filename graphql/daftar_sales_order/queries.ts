@@ -9,6 +9,7 @@ export const GET_DAFTAR_SALES_ORDER = gql`
 			total_volume
 			harga
 			pengirim
+			rekening
 			kota_tujuan
 			total_tagihan
 			dp

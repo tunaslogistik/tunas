@@ -36,6 +36,7 @@ const GET_DATA = gql`
 			jenis_pengiriman
 			nomor_telepon
 			nama_barang
+			container_size
 			panjang
 			lebar
 			tinggi
@@ -143,6 +144,7 @@ export default function Home() {
 					jenis_pengiriman: formData.jenis_pengiriman,
 					nomor_telepon: formData.nomor_telepon,
 					nama_barang: datum.nama_barang,
+					container_size: String(formData.container_size),
 					panjang: parseInt(datum.panjang),
 					lebar: parseInt(datum.lebar),
 					tinggi: parseInt(datum.tinggi),
@@ -490,6 +492,19 @@ export default function Home() {
 								defaultValue={dataTTB?.[0]?.alamat_tujuan}
 								id="alamat_tujuan"
 								{...register(`alamat_tujuan`)}
+								required
+							/>
+						</div>
+						<div className="form-group">
+							<label style={{ fontWeight: `bold` }} className="label">
+								Container Size
+							</label>
+							<input
+								type="text"
+								style={{ width: `100%` }}
+								defaultValue={dataTTB?.[0]?.container_size}
+								id="container_size"
+								{...register(`container_size`)}
 								required
 							/>
 						</div>

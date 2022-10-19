@@ -10,6 +10,7 @@ import {
 	Text,
 	View
 } from "@react-pdf/renderer"
+import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_MUAT_BARANG } from "graphql/daftar_muat_barang/queries"
 import { GET_DAFTAR_SURAT_JALAN } from "graphql/daftar_surat_jalan/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
@@ -178,6 +179,9 @@ export default function Home() {
 	//get daftar SURAT JALAN
 	const { data: dataSuratJalan } = useQuery(GET_DAFTAR_SURAT_JALAN)
 
+	//get daftar CUSTOMER
+	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
+
 	//loop to filter datattb by all daftar_packing_list
 	const datadaftarTTB = dataTtb?.daftar_ttb.filter((item) =>
 		data_packing_list?.map((item) => item.nomor_ttb).includes(item.ttb_number)
@@ -190,6 +194,12 @@ export default function Home() {
 			pengirim: item.pengirim,
 			nomor_telepon: item.nomor_telepon,
 			koli: item.koli,
+			no_pengirim: dataCustomer?.customer.find(
+				(item2) => item2.nama_customer === item.pengirim
+			)?.telepon,
+			alamat_pengirim: dataCustomer?.customer.find(
+				(item2) => item2.nama_customer === item.pengirim
+			)?.alamat,
 			alamat_tujuan: item.alamat_tujuan,
 			tanggal_diterima: moment(item.tanggal_diterima).format(`YYYY-MM-DD`),
 			kota_tujuan: dataTujuan?.daftar_tujuan.find(
@@ -208,10 +218,10 @@ export default function Home() {
 			nama_kapal: dataSuratJalan?.daftar_surat_jalan?.find(
 				(item2) => item2.nomor_ttb === item.ttb_number
 			)?.nama_kapal,
-			nomor_container: dataMuatBarang?.daftar_muat_barang?.find(
+			nomor_container: dataSuratJalan?.daftar_surat_jalan?.find(
 				(item2) => item2.nomor_ttb === item.ttb_number
 			)?.nomor_container,
-			nomor_seal: dataMuatBarang?.daftar_muat_barang?.find(
+			nomor_seal: dataSuratJalan?.daftar_surat_jalan?.find(
 				(item2) => item2.nomor_ttb === item.ttb_number
 			)?.nomor_seal,
 			status: item.status,
@@ -297,11 +307,11 @@ export default function Home() {
 					<View style={styles.tblHeaders}>
 						<Text
 							style={{
-								width: `215px`,
+								width: `430px`,
 								fontSize: `10px`,
 								textAlign: `left`,
 								fontFamily: `Helvetica-Bold`,
-								padding: `10px`,
+								padding: `20px`,
 								borderRight: `1px solid #000000`
 							}}
 						>
@@ -329,12 +339,10 @@ export default function Home() {
 						<Text
 							style={{
 								width: `150px`,
-								fontSize: `10px`,
+								fontSize: `8px`,
 								textAlign: `center`,
 								fontFamily: `Helvetica-Bold`,
-								padding: `10px`,
-								paddingRight: `15px`,
-								paddingLeft: `15px`,
+								paddingTop: `25px`,
 								borderRight: `1px solid #000000`
 							}}
 						>
@@ -343,10 +351,11 @@ export default function Home() {
 						<Text
 							style={{
 								width: `150px`,
-								fontSize: `10px`,
+								fontSize: `8px`,
 								fontFamily: `Helvetica-Bold`,
 								textAlign: `center`,
 								padding: `10px`,
+								paddingTop: `20px`,
 								borderRight: `1px solid #000000`
 							}}
 						>
@@ -355,16 +364,29 @@ export default function Home() {
 						<Text
 							style={{
 								width: `100px`,
-								fontSize: `10px`,
+								fontSize: `8px`,
 								fontFamily: `Helvetica-Bold`,
 								textAlign: `center`,
-								padding: `10px`
+								padding: `10px`,
+								paddingTop: `25px`
 							}}
 						>
 							KET
 						</Text>
 					</View>
 					<View style={styles.tblHeader}>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `10px`,
+								textAlign: `center`,
+								fontFamily: `Helvetica-Bold`,
+								padding: `10px`,
+								borderRight: `1px solid #000000`
+							}}
+						>
+							Pengirim / Alamat
+						</Text>
 						<Text
 							style={{
 								width: `215px`,
@@ -476,6 +498,26 @@ export default function Home() {
 					<View style={styles.tblBody}>
 						{dataTTB?.map((item, index) => (
 							<View style={styles.tblRow} key={index}>
+								<Text
+									style={{
+										width: `215px`,
+										fontSize: `10px`,
+										fontFamily: `Helvetica-Bold`,
+										textAlign: `left`,
+										padding: `10px`,
+										borderRight: `1px solid #000000`,
+										borderBottom: `1px solid #000000`
+									}}
+								>
+									{`${item.pengirim} / ${item.alamat_pengirim}`}
+									{`\n`}
+									<Text
+										style={{
+											fontSize: `8px`,
+											fontFamily: `Helvetica`
+										}}
+									>{`T. ${item.no_pengirim}`}</Text>
+								</Text>
 								<Text
 									style={{
 										width: `215px`,

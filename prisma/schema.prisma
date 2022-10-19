@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -142,6 +143,7 @@ model daftar_sales_order {
   harga               Int
   dp                  Int
   total_tagihan       Int
+  rekening            String
   tanggal_sales_order DateTime
   term_payment        String
 }
@@ -225,6 +227,7 @@ model daftar_ttb {
   lebar            Int
   tinggi           Int
   koli             Int
+  container_size   String
   alamat_tujuan    String
   status           String
   kategori         String
