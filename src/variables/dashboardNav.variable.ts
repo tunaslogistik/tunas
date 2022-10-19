@@ -141,7 +141,7 @@ export const dashboardSettingsNav = [
 	},
 	{
 		key: `Pengaturan`,
-		href: `/admin/rekening`,
+		href: `/admin/settings/rekening`,
 		label: `Pengaturan`,
 		icon: IconSettings
 	}

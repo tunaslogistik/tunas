@@ -5,7 +5,7 @@ import Access from "@components/util/Access.component"
 import { Button, message } from "antd"
 import "antd/dist/antd.css"
 import { useForm } from "react-hook-form"
-import { CREATE_PENGATURAN } from "../../../../graphql/pengaturan/mutations"
+import { CREATE_PENGATURAN } from "../../../../../graphql/pengaturan/mutations"
 
 //get data
 const GET_DATA = gql`
