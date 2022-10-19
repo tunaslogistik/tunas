@@ -58,9 +58,22 @@ export default function Home() {
 			const pengirim = filteredData[0]?.pengirim
 			//filter by kode_t
 			var sales = data.filter(function (el) {
-				return el.ttb_number === ttb_number && el.pengirim === pengirim
+				return el.nomor_ttb === ttb_number && el.pengirim === pengirim
 			})
-			reset({ sales })
+			//set form with reset
+			reset({
+				nomor_ttb: sales[0]?.nomor_ttb,
+				nomor_sales_order: sales[0]?.nomor_sales_order,
+				total_volume: sales[0]?.total_volume,
+				harga: sales[0]?.harga,
+				total_tagihan: sales[0]?.total_tagihan,
+				kota_tujuan: sales[0]?.kota_tujuan,
+				dp: sales[0]?.dp,
+				tanggal_sales_order: moment
+					.unix(sales?.[0]?.tanggal_sales_order / 1000)
+					.format(`YYYY-MM-DD`),
+				term_payment: sales[0]?.term_payment
+			})
 		}
 	})
 
@@ -232,9 +245,12 @@ export default function Home() {
 	const harga = watch(`harga`)
 	const total = volume * harga * tipePPNPercentage
 
+	//if total = 0 or NaN then return default value total_tagihan use effect else return total
+	const totalTagihan = total === 0 || isNaN(total) ? 0 : total
+
 	useEffect(() => {
-		setValue(`total_tagihan`, total)
-	}, [setValue, total])
+		setValue(`total_tagihan`, totalTagihan)
+	}, [totalTagihan])
 
 	const handleChangeTTB = (value) => {
 		const data = mergeTTB?.find((item) => item.nomor_ttb === value)
@@ -503,7 +519,6 @@ export default function Home() {
 									className="input"
 									type="text"
 									placeholder="total tagihan"
-									defaultValue={filterSalesOrdered?.[0]?.total_tagihan}
 									{...register(`total_tagihan`)}
 									readOnly
 								/>
@@ -537,7 +552,7 @@ export default function Home() {
 						</div>
 						<div className="field" style={{ marginTop: `1%` }}>
 							<label style={{ fontWeight: `bolder` }} className="label">
-								Tanggal sales Order
+								Tanggal Sales Order
 							</label>
 							<div className="control">
 								<input

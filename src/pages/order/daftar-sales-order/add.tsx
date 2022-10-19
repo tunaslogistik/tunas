@@ -380,7 +380,7 @@ export default function Home() {
 						</div>
 						<div className="field" style={{ marginTop: `1%` }}>
 							<label style={{ fontWeight: `bolder` }} className="label">
-								Tanggal sales Order
+								Tanggal Sales Order
 							</label>
 							<div className="control">
 								<Controller

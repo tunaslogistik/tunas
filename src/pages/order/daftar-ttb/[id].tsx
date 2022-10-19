@@ -71,6 +71,7 @@ export default function Home() {
 			var newArray = data.filter(function (el) {
 				return el.ttb_number === ttb_number && el.pengirim === pengirim
 			})
+
 			reset({ newArray })
 		}
 	})
