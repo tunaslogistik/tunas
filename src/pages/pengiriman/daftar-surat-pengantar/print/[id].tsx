@@ -442,7 +442,7 @@ export default function Home() {
 								width: `215px`,
 								fontSize: `10px`,
 								fontFamily: `Helvetica-Bold`,
-								textAlign: `center`,
+								textAlign: `left`,
 								padding: `10px`,
 								borderRight: `1px solid #000000`
 							}}
@@ -504,7 +504,7 @@ export default function Home() {
 									style={{
 										width: `215px`,
 										fontSize: `11px`,
-										textAlign: `center`,
+										textAlign: `left`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
 									}}

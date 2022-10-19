@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form"
 //import icon icon-car.svg
 import Access from "@components/util/Access.component"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
+import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import Link from "next/link"
 import router from "next/router"
 
@@ -57,6 +58,9 @@ export default function Home() {
 
 	//GET DAftar ttb
 	const { data: dataTTB } = useQuery(GET_DAFTAR_TTB)
+
+	//GET DAFTAR TUJUAN
+	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 
 	const setForm = useForm()
 
@@ -166,11 +170,13 @@ export default function Home() {
 			kota_tujuan: dataTTB?.daftar_ttb.find(
 				(ttb) => ttb.ttb_number === item.nomor_ttb
 			)?.kota_tujuan,
+			nama_tujuan: dataTujuan?.daftar_tujuan.find(
+				(tujuan) => tujuan.kode_tujuan === item.kode_tujuan
+			)?.nama_tujuan,
 			vendor_pelayanan: item.vendor_pelayanan,
 			total_ttb: item.total_ttb
 		}
 	})
-
 	//merge duplicate data nomor ttb
 	const mergeData = dataTable?.reduce((acc, current) => {
 		const x = acc.find(
