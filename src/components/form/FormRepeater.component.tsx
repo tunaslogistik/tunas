@@ -340,7 +340,7 @@ function FormRepeaterField({
 					)}
 					{!disabled && (
 						<li className="item">
-							<i className="icon" role="img" style={{ marginTop: `25px` }}>
+							<i className="icon" role="img" onClick={() => removeRepeater(i)}>
 								<IconTrash className="svg" />
 							</i>
 						</li>

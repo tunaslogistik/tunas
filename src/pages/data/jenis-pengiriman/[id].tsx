@@ -15,8 +15,8 @@ import {
 } from "../../../../graphql/jenis_pengiriman/mutations"
 //get data using id
 const GET_DATA = gql`
-	query Jenis_pengiriman {
-		jenis_pengiriman {
+	query jenis_pengiriman_by_id($id: Int) {
+		jenis_pengiriman_by_id(id: $id) {
 			id
 			nama_pengiriman
 			updated_by
@@ -41,10 +41,22 @@ const inputStyles = {
 
 export default function SettingUserEdit() {
 	const { state: dashboardState } = useContext(DashboardContext)
-	const { data } = useQuery(GET_DATA)
 	const router = useRouter()
 	const { id } = router.query
+
 	const setForm = useForm()
+	const { reset, register } = setForm
+
+	const { data } = useQuery(GET_DATA, {
+		variables: {
+			id: parseInt(id as string)
+		},
+		onCompleted: (data) => {
+			reset({
+				nama_pengiriman: data.jenis_pengiriman_by_id.nama_pengiriman
+			})
+		}
+	})
 
 	const [updateJenisPengiriman] = useMutation(UPDATE_JENIS_PENGIRIMAN, {
 		refetchQueries: [{ query: GET_DATA }]
@@ -62,22 +74,6 @@ export default function SettingUserEdit() {
 		message.success(`Data Berhasil Dihapus`)
 		router.push(`/data/jenis-pengiriman`)
 	}
-
-	//filter data by id
-	const filteredData = data?.jenis_pengiriman.filter(
-		(item) => item.id === parseInt(id as string)
-	)
-	//map fileteredData
-	const mappedData = filteredData
-		?.map((item) => {
-			return {
-				id: item.id,
-				nama_pengiriman: item.nama_pengiriman,
-				creator: String(dashboardState.auth.id),
-				updated_by: String(dashboardState.auth.id)
-			}
-		})
-		.pop()
 
 	const handleSubmitEdit = (e) => {
 		e.preventDefault()
@@ -101,7 +97,7 @@ export default function SettingUserEdit() {
 					<a>Jenis Pengiriman</a>
 				</Link>
 			}
-			title={mappedData?.nama_pengiriman}
+			title={data?.jenis_pengiriman_by_id?.nama_pengiriman}
 			authId=""
 			legend=""
 			setForm={setForm}
@@ -153,31 +149,22 @@ export default function SettingUserEdit() {
 		>
 			<section className="section">
 				<div className="container">
-					<div className="columns">
-						<div className="column is-half is-offset-one-quarter">
-							<div className="card">
-								<div className="card-content">
-									<div className="content">
-										<form id="formPengiriman" onSubmit={handleSubmitEdit}>
-											<div className="form-group" style={{ paddingTop: `5%` }}>
-												<label style={inputStyles} htmlFor="nama_pengiriman">
-													Nama Tujuan
-												</label>
-												<input
-													type="text"
-													className="form-control"
-													style={inputStyle}
-													id="nama_pengiriman"
-													defaultValue={mappedData?.nama_pengiriman}
-													required
-												/>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
+					<form id="formPengiriman" onSubmit={handleSubmitEdit}>
+						<div className="form-group" style={{ paddingTop: `5%` }}>
+							<label style={inputStyles} htmlFor="nama_pengiriman">
+								Jenis Pengiriman
+							</label>
+							<input
+								type="text"
+								className="form-control"
+								style={inputStyle}
+								name="nama_pengiriman"
+								{...register(`nama_pengiriman`)}
+								id="nama_pengiriman"
+								required
+							/>
 						</div>
-					</div>
+					</form>
 				</div>
 			</section>
 		</AdminPage>

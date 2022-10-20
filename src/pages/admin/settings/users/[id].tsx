@@ -105,7 +105,7 @@ export default function SettingUserEdit() {
 		reset,
 		watch,
 		handleSubmit,
-		formState: { isDirty, errors }
+		formState: { isDirty }
 	} = setForm
 	const watchRole = watch(`role`)
 
@@ -273,7 +273,7 @@ export default function SettingUserEdit() {
 										<FormInput
 											setForm={setForm}
 											name="name"
-											error={errors.name?.message}
+											required
 											label="Full Name"
 										/>
 									</div>
@@ -281,7 +281,7 @@ export default function SettingUserEdit() {
 										<FormInput
 											setForm={setForm}
 											name="username"
-											error={errors.username?.message}
+											required
 											label="Username"
 										/>
 									</div>
@@ -289,7 +289,7 @@ export default function SettingUserEdit() {
 										<FormInput
 											setForm={setForm}
 											name="email"
-											error={errors.email?.message}
+											required
 											label="Email"
 										/>
 									</div>
@@ -297,7 +297,7 @@ export default function SettingUserEdit() {
 										<FormInput
 											setForm={setForm}
 											name="cabang"
-											error={errors.cabang?.message}
+											required
 											label="Cabang"
 										/>
 									</div>
@@ -349,7 +349,7 @@ export default function SettingUserEdit() {
 											type="password"
 											setForm={setForm}
 											name="password"
-											error={errors.password?.message}
+											required
 											label="New Password"
 											placeholder="••••••••••••••"
 										/>
@@ -359,7 +359,7 @@ export default function SettingUserEdit() {
 											type="password"
 											setForm={setForm}
 											name="password_confirmation"
-											error={errors.password_confirmation?.message}
+											required
 											label="Repeat New Password"
 											placeholder="••••••••••••••"
 										/>

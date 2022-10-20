@@ -7,6 +7,7 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, DatePicker, message } from "antd"
 import "antd/dist/antd.css"
+import { CREATE_DAFTAR_INVOICE } from "graphql/daftar_invoice/mutations"
 import { GET_DAFTAR_MUAT_BARANG } from "graphql/daftar_muat_barang/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import moment from "moment"
@@ -14,6 +15,7 @@ import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { CREATE_DAFTAR_SURAT_JALAN } from "../../../../graphql/daftar_surat_jalan/mutations"
+
 //get data
 
 const GET_DATA = gql`
@@ -59,6 +61,15 @@ export default function Home() {
 	//create mutation function
 	const createData = (data) => {
 		createDaftar_sales_jalan({ variables: { input: data } })
+	}
+	//create invoice
+	const [createDaftar_invoice] = useMutation(CREATE_DAFTAR_INVOICE, {
+		refetchQueries: [{ query: GET_DATA }]
+	})
+
+	//create mutation function
+	const createDataInvoice = (data) => {
+		createDaftar_invoice({ variables: { input: data } })
 	}
 
 	const { fields, append, remove } = useFieldArray({
@@ -174,7 +185,21 @@ export default function Home() {
 			for (let i = 0; i < myChildrenArrayMerge2.length; i++) {
 				createData(myChildrenArrayMerge2[i])
 			}
-			console.log(`myChildrenArrayMerge2`, myChildrenArrayMerge2)
+
+			const invoice = myChildrenArrayMerge2
+
+			invoice.map((item) => {
+				item.nomor_invoice = `INV` + item.nomor_surat_jalan.slice(2)
+			})
+
+			invoice.map((item) => {
+				item.tanggal_invoice = formData.tanggal_surat_jalan
+				delete item.tanggal_surat_jalan
+			})
+
+			for (let i = 0; i < myChildrenArrayMerge2.length; i++) {
+				createDataInvoice(invoice[i])
+			}
 			message.success(`Data Berhasil Disimpan`)
 			// router.push(`/pengiriman/daftar-surat-jalan`)
 		} catch (error) {

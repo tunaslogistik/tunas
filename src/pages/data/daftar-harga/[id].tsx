@@ -56,8 +56,8 @@ export default function SettingUserEdit() {
 				(item) => item.id === parseInt(id as string)
 			)
 
-			const kode_asal = filteredData[0].kode_asal
-			const kode_tujuan = filteredData[0].kode_tujuan
+			const kode_asal = filteredData[0]?.kode_asal
+			const kode_tujuan = filteredData[0]?.kode_tujuan
 			//filter by kode_t
 			var newArray = data.filter(function (el) {
 				return el.kode_asal === kode_asal && el.kode_tujuan === kode_tujuan
@@ -65,7 +65,6 @@ export default function SettingUserEdit() {
 			reset({ newArray })
 		}
 	})
-
 	const [createDaftar_harga] = useMutation(CREATE_DAFTAR_HARGA, {
 		refetchQueries: [{ query: GET_DATA }]
 	})
@@ -82,7 +81,6 @@ export default function SettingUserEdit() {
 		deleteDaftar_harga({ variables: { deleteDaftar_hargaId: id } })
 		router.push(`/data/daftar-harga`)
 	}
-
 	const filteredData = data?.daftar_harga.filter(
 		(item) => item.id === parseInt(id as string)
 	)
@@ -222,79 +220,61 @@ export default function SettingUserEdit() {
 			}
 		>
 			<section className="section">
-				<div className="container">
-					<div className="columns">
-						<div className="column is-half is-offset-one-quarter">
-							<div className="card">
-								<div className="card-content">
-									<form id="formHarga" onSubmit={handleSubmit(onSubmit)}>
-										<div className="form-group" style={{ paddingTop: `5%` }}>
-											<label style={inputStyle} htmlFor="kode_asal">
-												Kode asal
-											</label>
-											<input
-												type="text"
-												className="form-control"
-												style={inputStyles}
-												id="kode_asal"
-												defaultValue={mappedDataall?.kode_asal}
-												disabled
-											/>
-										</div>
-										<div className="form-group">
-											<label style={inputStyle} htmlFor="kode_tujuan">
-												Kode tujuan
-											</label>
-											<input
-												type="text"
-												className="form-control"
-												style={inputStyles}
-												id="kode_tujuan"
-												defaultValue={mappedDataall?.kode_tujuan}
-												disabled
-											/>
-										</div>
-										<div className="content">
-											<FormRepeater
-												setForm={setForm}
-												control={control}
-												register={register}
-												name="newArray"
-												inputNames={[
-													`jenis_pengiriman`,
-													`harga`,
-													`minimal_kubik`
-												]}
-												inputLabels={[
-													`Jenis Pengiriman`,
-													`Harga`,
-													`Minimal Kubik`
-												]}
-												inputProps={[
-													{
-														type: `text`,
-														placeholder: `Jenis Pengiriman`,
-														style: { width: `400px`, marginLeft: `0px` }
-													},
-													{
-														type: `text`,
-														placeholder: `Harga`,
-														style: { width: `100%`, marginLeft: `0px` }
-													},
-													{
-														type: `text`,
-														placeholder: `Minimal Kubik`,
-														style: { width: `100%` }
-													}
-												]}
-											/>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
+				<form id="formHarga" onSubmit={handleSubmit(onSubmit)}>
+					<div className="form-group" style={{ paddingTop: `5%` }}>
+						<label style={inputStyle} htmlFor="kode_asal">
+							Kode asal
+						</label>
+						<input
+							type="text"
+							className="form-control"
+							style={inputStyles}
+							id="kode_asal"
+							defaultValue={mappedDataall?.kode_asal}
+							disabled
+						/>
 					</div>
-				</div>
+					<div className="form-group">
+						<label style={inputStyle} htmlFor="kode_tujuan">
+							Kode tujuan
+						</label>
+						<input
+							type="text"
+							className="form-control"
+							style={inputStyles}
+							id="kode_tujuan"
+							defaultValue={mappedDataall?.kode_tujuan}
+							disabled
+						/>
+					</div>
+					<div className="content">
+						<FormRepeater
+							setForm={setForm}
+							control={control}
+							register={register}
+							name="newArray"
+							inputNames={[`jenis_pengiriman`, `harga`, `minimal_kubik`]}
+							inputLabels={[`Jenis Pengiriman`, `Harga`, `Minimal Kubik`]}
+							inputProps={[
+								{
+									type: `text`,
+									placeholder: `Jenis Pengiriman`,
+									style: { width: `400px`, marginLeft: `0px` }
+								},
+								{
+									type: `text`,
+									placeholder: `Harga`,
+									style: { width: `100%`, marginLeft: `0px` }
+								},
+								{
+									type: `text`,
+									placeholder: `Minimal Kubik`,
+									style: { width: `100%` }
+								}
+							]}
+						/>
+					</div>
+				</form>
 			</section>
 		</AdminPage>
 	)

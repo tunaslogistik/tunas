@@ -13,6 +13,18 @@ export const types = gql`
 		updated_by: String
 	}
 
+	type daftar_harga_by_id {
+		id: Int
+		kode_asal: String
+		kode: String
+		kode_tujuan: String
+		jenis_pengiriman: String
+		harga: Int
+		minimal_kubik: String
+		creator: String
+		updated_by: String
+	}
+
 	type daftar_harga {
 		daftar_harga: [daftar_harga!]
 	}

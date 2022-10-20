@@ -32,7 +32,7 @@ export default function SettingRoleNew() {
 		watch,
 		handleSubmit,
 		setValue,
-		formState: { errors, isDirty }
+		formState: { isDirty }
 	} = setForm
 
 	const watchAuthRead = watch(`read`)
@@ -143,7 +143,7 @@ export default function SettingRoleNew() {
 									<FormInput
 										setForm={setForm}
 										name="name"
-										error={errors.name?.message}
+										required
 										label="Role name"
 									/>
 								</div>

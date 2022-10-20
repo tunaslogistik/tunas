@@ -57,7 +57,7 @@ export default function SettingUserEdit() {
 			creator: String(dashboardState.auth.id),
 			updated_by: String(dashboardState.auth.id)
 		}
-		//check duplicate
+
 		const duplicate = data.jenis_pengiriman.find(
 			(item) => item.nama_pengiriman === dataSubmit.nama_pengiriman
 		)
@@ -84,35 +84,25 @@ export default function SettingUserEdit() {
 		>
 			<section className="section">
 				<div className="container">
-					<div className="columns">
-						<div className="column is-half is-offset-one-quarter">
-							<div className="card">
-								<div className="card-content">
-									<div className="content">
-										<form onSubmit={handleSubmit}>
-											<div className="form-group">
-												<label htmlFor="nama_pengiriman" style={inputStyles}>
-													Nama Pengiriman
-												</label>
-												<input
-													type="text"
-													className="form-control"
-													style={inputStyle}
-													id="nama_pengiriman"
-													required
-												/>
-											</div>
-											<div className="form-group" style={{ marginLeft: `91%` }}>
-												<button type="submit" className="button is-primary">
-													Tambah
-												</button>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
+					<form onSubmit={handleSubmit}>
+						<div className="form-group">
+							<label htmlFor="nama_pengiriman" style={inputStyles}>
+								Nama Pengiriman
+							</label>
+							<input
+								type="text"
+								className="form-control"
+								style={inputStyle}
+								id="nama_pengiriman"
+								required
+							/>
 						</div>
-					</div>
+						<div className="form-group" style={{ marginLeft: `91%` }}>
+							<button type="submit" className="button is-primary">
+								Tambah
+							</button>
+						</div>
+					</form>
 				</div>
 			</section>
 		</AdminPage>

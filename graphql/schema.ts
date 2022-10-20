@@ -1,6 +1,7 @@
 import { gql } from "apollo-server-micro"
 import { customer } from "./customer"
 import { daftar_harga } from "./daftar_harga"
+import { daftar_invoice } from "./daftar_invoice"
 import { daftar_muat_barang } from "./daftar_muat_barang"
 import { daftar_packing_list } from "./daftar_packing_list"
 import { daftar_sales_order } from "./daftar_sales_order"
@@ -33,6 +34,7 @@ export const typeDefs = gql`
 	${daftar_packing_list.types}
 	${pengaturan.types}
 	${daftar_surat_jalan.types}
+	${daftar_invoice.types}
 
 	type Query {
 		settings: [Setting!]
@@ -44,11 +46,14 @@ export const typeDefs = gql`
 		userRoles: [UserRole!]
 		userRole(id: ID): UserRole
 
+		daftar_tujuan_by_id(id: Int): daftar_tujuan
 		daftar_tujuan: [daftar_tujuan!]
 		vendor: [vendor!]
 		customer: [customer!]
+		jenis_pengiriman_by_id(id: Int): jenis_pengiriman
 		jenis_pengiriman: [jenis_pengiriman!]
 		vechnicle: [vechnicle!]
+		daftar_harga_by_id(id: Int): daftar_harga
 		daftar_harga: [daftar_harga!]
 		daftar_ttb: [daftar_ttb!]
 		daftar_sales_order: [daftar_sales_order!]
@@ -57,6 +62,8 @@ export const typeDefs = gql`
 		daftar_packing_list: [daftar_packing_list!]
 		pengaturan: [pengaturan!]
 		daftar_surat_jalan: [daftar_surat_jalan!]
+
+		daftar_invoice: [daftar_invoice!]
 	}
 
 	type Mutation {
@@ -154,6 +161,14 @@ export const typeDefs = gql`
 			input: UpdateDaftar_surat_jalanInput!
 		): MutateDaftar_surat_jalanResponse!
 		deleteDaftar_surat_jalan(id: Int): MutateDaftar_surat_jalanResponse!
+
+		createDaftar_invoice(
+			input: CreateDaftar_invoiceInput!
+		): MutateDaftar_invoiceResponse!
+		updateDaftar_invoice(
+			input: UpdateDaftar_invoiceInput!
+		): MutateDaftar_invoiceResponse!
+		deleteDaftar_invoice(id: Int): MutateDaftar_invoiceResponse!
 	}
 `
 
@@ -174,7 +189,8 @@ export const resolvers = {
 		...daftar_surat_pengantar.resolvers.queries,
 		...daftar_packing_list.resolvers.queries,
 		...pengaturan.resolvers.queries,
-		...daftar_surat_jalan.resolvers.queries
+		...daftar_surat_jalan.resolvers.queries,
+		...daftar_invoice.resolvers.queries
 	},
 	Mutation: {
 		...setting.resolvers.mutations,
@@ -192,6 +208,7 @@ export const resolvers = {
 		...daftar_surat_pengantar.resolvers.mutations,
 		...daftar_packing_list.resolvers.mutations,
 		...pengaturan.resolvers.mutations,
-		...daftar_surat_jalan.resolvers.mutations
+		...daftar_surat_jalan.resolvers.mutations,
+		...daftar_invoice.resolvers.mutations
 	}
 }

@@ -40,7 +40,6 @@ export default function Home() {
 
 	const setForm = useForm()
 
-	//search
 	const [search, setSearch] = useState(``)
 	const handleSearch = (e) => {
 		setSearch(e.target.value)

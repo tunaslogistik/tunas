@@ -96,18 +96,6 @@ model daftar_akun_biaya {
   updated_by    String
 }
 
-model daftar_invoice {
-  id             Int    @id @default(autoincrement())
-  invoice_number String
-  pengirim       String
-  kode_tujuan    String
-  alamat_tujuan  String
-  total_volume   Int
-  total_koli     Int
-  status         String
-  full_container String
-}
-
 model daftar_muat_barang {
   id                  Int    @id @default(autoincrement())
   nomor_muat_barang   String
@@ -178,6 +166,24 @@ model daftar_surat_jalan {
   nomor_ttb             String
   vendor_pelayanan      String
   tanggal_surat_jalan   String
+  tanggal_keberangkatan String
+  nomor_container       String
+  nama_kapal            String
+  koli                  String
+  volume                String
+  total_koli            String
+  total_volume          String
+  nomor_seal            String
+  keterangan            String
+}
+
+model daftar_invoice {
+  id                    Int    @id @default(autoincrement())
+  nomor_surat_jalan     String
+  nomor_invoice         String
+  nomor_ttb             String
+  vendor_pelayanan      String
+  tanggal_invoice       String
   tanggal_keberangkatan String
   nomor_container       String
   nama_kapal            String

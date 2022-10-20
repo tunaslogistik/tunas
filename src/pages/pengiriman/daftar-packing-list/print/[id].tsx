@@ -11,7 +11,6 @@ import {
 	View
 } from "@react-pdf/renderer"
 import { GET_CUSTOMER } from "graphql/customer/queries"
-import { GET_DAFTAR_MUAT_BARANG } from "graphql/daftar_muat_barang/queries"
 import { GET_DAFTAR_SURAT_JALAN } from "graphql/daftar_surat_jalan/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import moment from "moment"
@@ -158,7 +157,7 @@ export default function Home() {
 		(item) => item.id === parseInt(id as string)
 	)
 	// GET DAFTAR MUAT BARANG
-	const { data: dataMuatBarang } = useQuery(GET_DAFTAR_MUAT_BARANG)
+	// const { data: dataMuatBarang } = useQuery(GET_DAFTAR_MUAT_BARANG)
 
 	//get daftar_packing_list nomor muat barang
 	const nomor_muat_barang = daftar_packing_list?.nomor_muat_barang

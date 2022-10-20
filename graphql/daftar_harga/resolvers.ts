@@ -3,6 +3,13 @@ import { Context } from "../context"
 const queries = {
 	daftar_harga: (_parent, _args, context: Context) => {
 		return context.prisma.daftar_harga.findMany()
+	},
+	daftar_harga_by_id: (_parent, args, context: Context) => {
+		return context.prisma.daftar_harga.findUnique({
+			where: {
+				id: args.id
+			}
+		})
 	}
 }
 

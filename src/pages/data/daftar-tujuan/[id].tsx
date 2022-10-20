@@ -15,8 +15,8 @@ import {
 } from "../../../../graphql/daftar_tujuan/mutations"
 //get data using id
 const GET_DATA = gql`
-	query Daftar_tujuan {
-		daftar_tujuan {
+	query daftar_tujuan_by_id($id: Int) {
+		daftar_tujuan_by_id(id: $id) {
 			id
 			kode_tujuan
 			nama_tujuan
@@ -42,10 +42,23 @@ const inputStyles = {
 
 export default function SettingUserEdit() {
 	const { state: dashboardState } = useContext(DashboardContext)
-	const { data } = useQuery(GET_DATA)
 	const router = useRouter()
 	const { id } = router.query
 	const setForm = useForm()
+	const { reset, register } = setForm
+
+	//get data using id reset form
+	const { data } = useQuery(GET_DATA, {
+		variables: {
+			id: parseInt(id as string)
+		},
+		onCompleted: (data) => {
+			reset({
+				kode_tujuan: data.daftar_tujuan_by_id.kode_tujuan,
+				nama_tujuan: data.daftar_tujuan_by_id.nama_tujuan
+			})
+		}
+	})
 
 	const [updateDaftarTujuan] = useMutation(UPDATE_DAFTAR_TUJUAN, {
 		refetchQueries: [{ query: GET_DATA }]
@@ -65,21 +78,7 @@ export default function SettingUserEdit() {
 	}
 
 	//filter data by id
-	const filteredData = data?.daftar_tujuan.filter(
-		(item) => item.id === parseInt(id as string)
-	)
-	//map fileteredData
-	const mappedData = filteredData
-		?.map((item) => {
-			return {
-				id: item.id,
-				kode_tujuan: item.kode_tujuan,
-				nama_tujuan: item.nama_tujuan,
-				creator: String(dashboardState.auth.id),
-				updated_by: String(dashboardState.auth.id)
-			}
-		})
-		.pop()
+	const filteredData = data?.daftar_tujuan_by_id
 
 	const handleSubmitEdit = (e) => {
 		e.preventDefault()
@@ -104,7 +103,7 @@ export default function SettingUserEdit() {
 					<a>Daftar Kota</a>
 				</Link>
 			}
-			title={mappedData?.kode_tujuan}
+			title={filteredData?.nama_tujuan}
 			authId=""
 			legend=""
 			setForm={setForm}
@@ -155,46 +154,36 @@ export default function SettingUserEdit() {
 			}
 		>
 			<section className="section">
-				<div className="container">
-					<div className="columns">
-						<div className="column is-half is-offset-one-quarter">
-							<div className="card">
-								<div className="card-content">
-									<div className="content">
-										<form id="formTujuan" onSubmit={handleSubmitEdit}>
-											<div className="form-group" style={{ paddingTop: `5%` }}>
-												<label style={inputStyles} htmlFor="kode_biaya">
-													Kode Tujuan
-												</label>
-												<input
-													type="text"
-													className="form-control"
-													style={inputStyle}
-													id="kode_tujuan"
-													defaultValue={mappedData?.kode_tujuan}
-													required
-												/>
-											</div>
-											<div className="form-group">
-												<label style={inputStyles} htmlFor="nama_biaya">
-													Nama Tujuan
-												</label>
-												<input
-													type="text"
-													className="form-control"
-													style={inputStyle}
-													id="nama_tujuan"
-													defaultValue={mappedData?.nama_tujuan}
-													required
-												/>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
+				<form id="formTujuan" onSubmit={handleSubmitEdit}>
+					<div className="form-group" style={{ paddingTop: `5%` }}>
+						<label style={inputStyles} htmlFor="kode_biaya">
+							Kode Tujuan
+						</label>
+						<input
+							type="text"
+							className="form-control"
+							style={inputStyle}
+							id="kode_tujuan"
+							name="kode_tujuan"
+							{...register(`kode_tujuan`)}
+							required
+						/>
 					</div>
-				</div>
+					<div className="form-group">
+						<label style={inputStyles} htmlFor="nama_biaya">
+							Nama Tujuan
+						</label>
+						<input
+							type="text"
+							className="form-control"
+							style={inputStyle}
+							id="nama_tujuan"
+							name="nama_tujuan"
+							{...register(`nama_tujuan`)}
+							required
+						/>
+					</div>
+				</form>
 			</section>
 		</AdminPage>
 	)

@@ -207,16 +207,6 @@ export default function Home() {
 		}
 	})
 
-	//sum koli
-	const sumKoli = dataTTB?.reduce((acc, item) => {
-		return acc + item.koli
-	}, 0)
-
-	//sum volume
-	const sumVolume = dataTTB?.reduce((acc, item) => {
-		return acc + item.volume_m3
-	}, 0)
-
 	const MuatBarang = dataDaftarMuatBarang?.daftar_muat_barang.filter(
 		(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number
 	)

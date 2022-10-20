@@ -10,6 +10,7 @@ import {
 	Text,
 	View
 } from "@react-pdf/renderer"
+import { GET_PENGATURAN } from "graphql/pengaturan/queries"
 import moment from "moment"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
@@ -19,9 +20,10 @@ import { GET_DAFTAR_TTB } from "../../../../../graphql/daftar_ttb/queries"
 import { GET_DAFTAR_TUJUAN } from "../../../../../graphql/daftar_tujuan/queries"
 
 const GET_DATA = gql`
-	query daftar_surat_jalan {
-		daftar_surat_jalan {
+	query daftar_invoice {
+		daftar_invoice {
 			id
+			nomor_invoice
 			nomor_surat_jalan
 			nomor_ttb
 			vendor_pelayanan
@@ -30,7 +32,7 @@ const GET_DATA = gql`
 			total_koli
 			nama_kapal
 			total_volume
-			tanggal_surat_jalan
+			tanggal_invoice
 			tanggal_keberangkatan
 			nomor_container
 			nomor_seal
@@ -38,6 +40,7 @@ const GET_DATA = gql`
 		}
 	}
 `
+
 Font.register({
 	family: `Helvetica-Bold`,
 	src: `https://fonts.gstatic.com/s/helveticaneue/v70/1Ptsg8zYS_SKggPNyC0IT0kLW-43aMEzIO6XUTLjad8.woff2`
@@ -76,6 +79,15 @@ const styles = StyleSheet.create({
 		border: `1px solid #000000`,
 		marginRight: `40px`
 	},
+	table2: {
+		marginTop: `24px`,
+		marginLeft: `40px`,
+		marginRight: `40px`
+	},
+	table3: {
+		marginLeft: `40px`,
+		marginRight: `40px`
+	},
 	tblHeading: {
 		marginTop: `12px`,
 		marginLeft: `12px`,
@@ -86,6 +98,11 @@ const styles = StyleSheet.create({
 	tblHeader: {
 		display: `flex`,
 		borderTop: `1px solid #000000`,
+		flexDirection: `row`,
+		justifyContent: `space-between`
+	},
+	tblHeader2: {
+		display: `flex`,
 		flexDirection: `row`,
 		justifyContent: `space-between`
 	},
@@ -136,19 +153,20 @@ export default function Home() {
 	const router = useRouter()
 	const id = router.query.id
 	// GET DATA ttb number where id eqaul to id
-	const daftar_surat_jalan_id = data?.daftar_surat_jalan?.filter((item) => {
+	const daftar_invoice_id = data?.daftar_invoice?.filter((item) => {
 		return item.id === parseInt(id as string)
 	})
 
-	// get all data where nomor_surat_jalan equal to daftar_surat_jalan[0].nomor_surat_jalan
-	const daftar_surat_jalan = data?.daftar_surat_jalan?.filter((item) => {
-		return (
-			item.nomor_surat_jalan === daftar_surat_jalan_id?.[0]?.nomor_surat_jalan
-		)
+	// get all data where nomor_invoice equal to daftar_invoice[0].nomor_invoice
+	const daftar_invoice = data?.daftar_invoice?.filter((item) => {
+		return item.nomor_invoice === daftar_invoice_id?.[0]?.nomor_invoice
 	})
-
+	console.log(`daftar_invoice`, daftar_invoice)
 	//get ttb number
 	const { data: dataTtb } = useQuery(GET_DAFTAR_TTB)
+
+	//get pengaturan
+	const { data: dataPengaturan } = useQuery(GET_PENGATURAN)
 
 	//get sales order
 	const { data: dataSalesOrder } = useQuery(GET_DAFTAR_SALES_ORDER)
@@ -162,15 +180,31 @@ export default function Home() {
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 
 	//return nomor ttb from daftar surat jalan
-	const nomor_ttb = daftar_surat_jalan?.map((item) => {
+	const nomor_ttb = daftar_invoice?.map((item) => {
 		return item.nomor_ttb
 	})
 
-	console.log(`nomor ttb`, nomor_ttb)
-	//filter data by ttb number in nomor_ttb daftar_surat_jalan
+	//filter data by ttb number in nomor_ttb daftar_invoice
 	const datadaftarTTB = dataTtb?.daftar_ttb?.filter((item) => {
 		return nomor_ttb?.includes(item.ttb_number)
 	})
+
+	//get dataSalesOrder where nomor ttb in nomor_ttb
+	const dataSalesOrderFilter = dataSalesOrder?.daftar_sales_order?.filter(
+		(item) => {
+			return nomor_ttb?.includes(item.nomor_ttb)
+		}
+	)
+
+	//get dataPengaturan no_rekening where bank = rekening
+	const dataPengaturanFilter = dataPengaturan?.pengaturan?.filter((item) => {
+		return item.bank === dataSalesOrderFilter?.[0]?.rekening
+	})
+
+	//sum total tagihan dataSalesOrderFilter
+	const totalTagihan = dataSalesOrderFilter?.reduce((acc, item) => {
+		return acc + item.total_tagihan
+	}, 0)
 
 	//datadaftarTTB map
 	const dataTTB = datadaftarTTB?.map((item) => {
@@ -189,17 +223,15 @@ export default function Home() {
 			lebar: item.lebar,
 			volume_m3: item.total_volume,
 			jenis_pengiriman: item.jenis_pengiriman,
+			tanggal_diterima: item.tanggal_diterima,
 			penerima: item.nama_penerima,
-			koli: daftar_surat_jalan?.find((item2) => {
-				return item2.nomor_ttb === item.ttb_number
-			})?.koli,
-			total_koli: daftar_surat_jalan?.find((item2) => {
+			koli: item.koli,
+			total_koli: daftar_invoice?.find((item2) => {
 				return item2.nomor_ttb === item.ttb_number
 			})?.total_koli,
-			total_volume: daftar_surat_jalan?.find((item2) => {
+			total_volume: daftar_invoice?.find((item2) => {
 				return item2.nomor_ttb === item.ttb_number
 			})?.total_volume,
-			//volume = panjang * lebar * tinggi * koli from ttb
 			volume: item.panjang * item.lebar * item.tinggi * item.koli,
 			nama_barang: item.nama_barang,
 			count: datadaftarTTB?.filter(
@@ -208,13 +240,36 @@ export default function Home() {
 			nomor_so: dataSalesOrder?.daftar_sales_order?.find(
 				(item2) => item2.nomor_ttb === item.ttb_number
 			)?.nomor_sales_order,
+			TOP: dataSalesOrder?.daftar_sales_order?.find(
+				(item2) => item2.nomor_ttb === item.ttb_number
+			)?.term_payment,
+			harga: dataSalesOrder?.daftar_sales_order?.find(
+				(item2) => item2.nomor_ttb === item.ttb_number
+			)?.harga,
+			//total harga  = harga * volume
+			total_harga:
+				dataSalesOrder?.daftar_sales_order?.find(
+					(item2) => item2.nomor_ttb === item.ttb_number
+				)?.harga *
+				item.panjang *
+				item.lebar *
+				item.tinggi *
+				item.koli,
 			status: item.status
 		}
 	})
-	//sum koli
+
+	//SUM KOLI
 	const sumKoli = dataTTB?.reduce((acc, item) => {
-		return parseInt(acc) + parseInt(item.koli)
+		return acc + item.koli
 	}, 0)
+
+	//sum datattb total harga
+	const total_harga = dataTTB?.reduce((acc, item) => {
+		return parseInt(acc) + parseInt(item.total_harga)
+	}, 0)
+
+	const total_ppn = parseInt(totalTagihan) - parseInt(total_harga)
 
 	// console.log(`dataTTB`, dataTTB)
 
@@ -226,14 +281,17 @@ export default function Home() {
 	const dataCustomerFilter = dataCustomer?.customer.filter(
 		(item) => item.nama_customer === dataTTB?.[0]?.pengirim
 	)
+
+	//change totalTagihan to letter in indonesia
+
 	const MyDocument = () => (
 		<Document>
 			<Page style={styles.body}>
-				<View style={{ flexDirection: `row` }}>
+				<View style={{ flexDirection: `row` }} fixed>
 					<View
 						style={{
-							marginTop: `40px`,
-							marginLeft: `40px`,
+							padding: `40px`,
+							paddingLeft: `40px`,
 							fontSize: `12px`
 						}}
 					>
@@ -250,25 +308,26 @@ export default function Home() {
 					<View
 						style={{
 							marginTop: `40px`,
-							marginLeft: `27%`
+							marginLeft: `33%`
 						}}
 					>
 						<Text
 							style={{
-								fontFamily: `Helvetica-Bold`
+								fontFamily: `Helvetica-Bold`,
+								marginLeft: `20%`
 							}}
 						>
-							SURAT JALAN
+							INVOICE
 						</Text>
 						<Text
 							style={{
 								fontFamily: `Helvetica-Bold`,
-								marginLeft: `33px`,
 								paddingTop: `4px`,
+								marginLeft: `5%`,
 								fontSize: `10px`
 							}}
 						>
-							{daftar_surat_jalan?.[0]?.nomor_surat_jalan}
+							{daftar_invoice?.[0]?.nomor_invoice}
 						</Text>
 					</View>
 				</View>
@@ -277,7 +336,6 @@ export default function Home() {
 						flexDirection: `row`,
 						marginLeft: `40px`,
 						marginRight: `40px`,
-						marginTop: `40px`,
 						paddingBottom: `40px`,
 						borderTop: `1px solid black`,
 						borderBottom: `1px solid black`
@@ -356,14 +414,14 @@ export default function Home() {
 						<Text
 							style={{
 								width: `215px`,
-								fontSize: `11px`,
+								fontSize: `10px`,
 								paddingTop: `3px`,
 								borderRight: `1px solid #000000`
 							}}
 						>
-							No.Kontainer : {`             `}
+							No. Surat Jalan : {`   `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
-								{daftar_surat_jalan?.[0]?.nomor_container}
+								{daftar_invoice?.[0]?.nomor_surat_jalan}
 							</Text>
 						</Text>
 						<Text>{`\n`}</Text>
@@ -371,14 +429,29 @@ export default function Home() {
 						<Text
 							style={{
 								width: `215px`,
-								fontSize: `11px`,
+								fontSize: `10px`,
+								paddingTop: `3px`,
+								borderRight: `1px solid #000000`
+							}}
+						>
+							No.Kontainer : {`       `}
+							<Text style={{ fontFamily: `Helvetica-Bold` }}>
+								{daftar_invoice?.[0]?.nomor_container}
+							</Text>
+						</Text>
+						<Text>{`\n`}</Text>
+						<Text>{`\n`}</Text>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `10px`,
 								paddingTop: `40px`,
 								borderRight: `1px solid #000000`
 							}}
 						>
-							No.Seal : {`                     `}
+							No.Seal : {`               `}
 							<Text style={{ paddingTop: `4px`, fontFamily: `Helvetica-Bold` }}>
-								{daftar_surat_jalan?.[0]?.nomor_seal}
+								{daftar_invoice?.[0]?.nomor_seal}
 							</Text>
 						</Text>
 						<Text>{`\n`}</Text>
@@ -386,15 +459,15 @@ export default function Home() {
 						<Text
 							style={{
 								width: `215px`,
-								fontSize: `11px`,
+								fontSize: `10px`,
 								padding: `100px`,
 								paddingTop: `4px`,
 								borderRight: `1px solid #000000`
 							}}
 						>
-							Nama Kapal : {`              `}
+							Nama Kapal : {`        `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
-								{daftar_surat_jalan?.[0]?.nama_kapal}
+								{daftar_invoice?.[0]?.nama_kapal}
 							</Text>
 						</Text>
 						<Text>{`\n`}</Text>
@@ -402,15 +475,31 @@ export default function Home() {
 						<Text
 							style={{
 								width: `215px`,
-								fontSize: `11px`,
+								fontSize: `10px`,
+								padding: `100px`,
+								paddingTop: `4px`,
+								borderRight: `1px solid #000000`
+							}}
+						>
+							Term Of Payment : {``}
+							<Text style={{ fontFamily: `Helvetica-Bold` }}>
+								{dataTTB?.[0]?.TOP}
+							</Text>
+						</Text>
+						<Text>{`\n`}</Text>
+						<Text>{`\n`}</Text>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `10px`,
 								padding: `10px`,
 								paddingTop: `4px`,
 								borderRight: `1px solid #000000`
 							}}
 						>
-							Tgl Pengiriman : {`         `}
+							Tgl Invoice : {`           `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
-								{moment(daftar_surat_jalan?.[0]?.tanggal_keberangkatan).format(
+								{moment(daftar_invoice?.[0]?.tanggal_invoice).format(
 									`DD-MM-YYYY`
 								)}
 							</Text>
@@ -420,29 +509,13 @@ export default function Home() {
 						<Text
 							style={{
 								width: `215px`,
-								fontSize: `11px`,
+								fontSize: `10px`,
 								padding: `10px`,
 								paddingTop: `4px`,
 								borderRight: `1px solid #000000`
 							}}
 						>
-							Tgl Keberangkatan : {`   `}
-							<Text style={{ fontFamily: `Helvetica-Bold` }}>
-								{moment(dataTTB?.[0]?.tanggal_diterima).format(`DD-MM-YYYY`)}
-							</Text>
-						</Text>
-						<Text>{`\n`}</Text>
-						<Text>{`\n`}</Text>
-						<Text
-							style={{
-								width: `215px`,
-								fontSize: `11px`,
-								padding: `10px`,
-								paddingTop: `4px`,
-								borderRight: `1px solid #000000`
-							}}
-						>
-							Tujuan : {`                       `}
+							Tujuan : {`                 `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
 								{dataTTB?.[0]?.kota_tujuan}
 							</Text>
@@ -487,26 +560,38 @@ export default function Home() {
 						</Text>
 						<Text
 							style={{
-								width: `100px`,
-								fontSize: `10px`,
+								width: `120px`,
+								fontSize: `9px`,
 								textAlign: `center`,
 								fontFamily: `Helvetica-Bold`,
 								padding: `10px`,
 								borderRight: `1px solid #000000`
 							}}
 						>
-							KOLI
+							VOL M³
 						</Text>
 						<Text
 							style={{
-								width: `100px`,
+								width: `200px`,
 								fontSize: `9px`,
-								textAlign: `center`,
+								textAlign: `right`,
+								fontFamily: `Helvetica-Bold`,
+								padding: `10px`,
+								borderRight: `1px solid #000000`
+							}}
+						>
+							RATE
+						</Text>
+						<Text
+							style={{
+								width: `200px`,
+								fontSize: `9px`,
+								textAlign: `right`,
 								fontFamily: `Helvetica-Bold`,
 								padding: `10px`
 							}}
 						>
-							VOL M³
+							AMOUNT
 						</Text>
 					</View>
 					<View style={styles.tblBody}>
@@ -526,7 +611,7 @@ export default function Home() {
 								<Text
 									style={{
 										width: `215px`,
-										fontSize: `11px`,
+										fontSize: `9px`,
 										textAlign: `center`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
@@ -537,7 +622,7 @@ export default function Home() {
 								<Text
 									style={{
 										width: `215px`,
-										fontSize: `11px`,
+										fontSize: `9px`,
 										textAlign: `center`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
@@ -547,74 +632,241 @@ export default function Home() {
 								</Text>
 								<Text
 									style={{
-										width: `100px`,
+										width: `120px`,
 										fontSize: `11px`,
 										textAlign: `right`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.koli}
+									{item.volume}
 								</Text>
 								<Text
 									style={{
-										width: `100px`,
+										width: `200px`,
+										fontSize: `11px`,
+										textAlign: `right`,
+										padding: `10px`,
+										borderRight: `1px solid #000000`
+									}}
+								>
+									{item.harga}
+								</Text>
+								<Text
+									style={{
+										width: `200px`,
 										fontSize: `11px`,
 										textAlign: `right`,
 										padding: `10px`
 									}}
 								>
-									{item.volume}
+									{item.total_harga}
 								</Text>
 							</View>
 						))}
-						<View style={styles.tblRow2} key="">
-							<Text
-								style={{
-									width: `365px`,
-									fontSize: `11px`,
-									textAlign: `center`,
-									borderRight: `1px solid #000000`
-								}}
-							>
-								{}
-							</Text>
-							<Text
-								style={{
-									width: `103px`,
-									fontSize: `11px`,
-									textAlign: `center`,
-									padding: `10px`,
-									fontFamily: `Helvetica-Bold`
-								}}
-							>
-								Total
-							</Text>
-							<Text style={styles.tableText2}></Text>
-							<Text
-								style={{
-									width: `85px`,
-									padding: `10px`,
-									fontSize: `11px`,
-									textAlign: `right`,
-									fontFamily: `Helvetica-Bold`,
-									borderRight: `1px solid #000000`
-								}}
-							>
-								{sumKoli}
-							</Text>
-							<Text
-								style={{
-									width: `85px`,
-									padding: `10px`,
-									fontSize: `11px`,
-									textAlign: `right`,
-									fontFamily: `Helvetica-Bold`
-								}}
-							>
-								{dataTTB?.[0]?.total_volume}
-							</Text>
-						</View>
+					</View>
+				</View>
+				<View style={styles.table2}>
+					<View style={styles.tblHeader2}>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `10px`,
+								textAlign: `left`,
+								padding: `10px`,
+								fontFamily: `Helvetica-Bold`
+							}}
+						></Text>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `10px`,
+								textAlign: `center`,
+								padding: `10px`,
+								fontFamily: `Helvetica-Bold`
+							}}
+						></Text>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `10px`,
+								textAlign: `center`,
+								padding: `10px`,
+								fontFamily: `Helvetica-Bold`
+							}}
+						></Text>
+						<Text
+							style={{
+								width: `100px`,
+								fontSize: `9px`,
+								textAlign: `center`,
+								fontFamily: `Helvetica-Bold`,
+								padding: `10px`,
+								borderRight: `1px solid #000000`
+							}}
+						></Text>
+						<Text
+							style={{
+								width: `200px`,
+								fontSize: `9px`,
+								textAlign: `left`,
+								fontFamily: `Helvetica-Bold`,
+								padding: `5px`,
+								borderTop: `1px solid #000000`,
+								borderRight: `1px solid #000000`
+							}}
+						>
+							SUB TOTAL
+						</Text>
+						<Text
+							style={{
+								width: `200px`,
+								fontSize: `9px`,
+								textAlign: `right`,
+								fontFamily: `Helvetica-Bold`,
+								borderTop: `1px solid #000000`,
+								borderRight: `1px solid #000000`,
+								padding: `5px`
+							}}
+						>
+							{`RP. ` + total_harga}
+						</Text>
+					</View>
+				</View>
+				<View style={styles.table3}>
+					<View style={styles.tblHeader2}>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `10px`,
+								textAlign: `left`,
+								padding: `10px`,
+								fontFamily: `Helvetica-Bold`
+							}}
+						></Text>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `10px`,
+								textAlign: `center`,
+								padding: `10px`,
+								fontFamily: `Helvetica-Bold`
+							}}
+						></Text>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `10px`,
+								textAlign: `center`,
+								padding: `10px`,
+								fontFamily: `Helvetica-Bold`
+							}}
+						></Text>
+						<Text
+							style={{
+								width: `100px`,
+								fontSize: `9px`,
+								textAlign: `center`,
+								fontFamily: `Helvetica-Bold`,
+								padding: `10px`,
+								borderRight: `1px solid #000000`
+							}}
+						></Text>
+						<Text
+							style={{
+								width: `200px`,
+								fontSize: `9px`,
+								textAlign: `left`,
+								fontFamily: `Helvetica-Bold`,
+								padding: `5px`,
+								borderTop: `1px solid #000000`,
+								borderRight: `1px solid #000000`
+							}}
+						>
+							PPN
+						</Text>
+						<Text
+							style={{
+								width: `200px`,
+								fontSize: `9px`,
+								textAlign: `right`,
+								fontFamily: `Helvetica-Bold`,
+								borderTop: `1px solid #000000`,
+								borderRight: `1px solid #000000`,
+								padding: `5px`
+							}}
+						>
+							{`RP. ` + total_ppn}
+						</Text>
+					</View>
+				</View>
+				<View style={styles.table3}>
+					<View style={styles.tblHeader2}>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `10px`,
+								textAlign: `left`,
+								padding: `10px`,
+								fontFamily: `Helvetica-Bold`
+							}}
+						></Text>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `10px`,
+								textAlign: `center`,
+								padding: `10px`,
+								fontFamily: `Helvetica-Bold`
+							}}
+						></Text>
+						<Text
+							style={{
+								width: `215px`,
+								fontSize: `10px`,
+								textAlign: `center`,
+								padding: `10px`,
+								fontFamily: `Helvetica-Bold`
+							}}
+						></Text>
+						<Text
+							style={{
+								width: `100px`,
+								fontSize: `9px`,
+								textAlign: `center`,
+								fontFamily: `Helvetica-Bold`,
+								padding: `10px`,
+								borderRight: `1px solid #000000`
+							}}
+						></Text>
+						<Text
+							style={{
+								width: `200px`,
+								fontSize: `9px`,
+								textAlign: `left`,
+								fontFamily: `Helvetica-Bold`,
+								padding: `5px`,
+								borderTop: `1px solid #000000`,
+								borderBottom: `1px solid #000000`,
+								borderRight: `1px solid #000000`
+							}}
+						>
+							TOTAL
+						</Text>
+						<Text
+							style={{
+								width: `200px`,
+								fontSize: `9px`,
+								textAlign: `right`,
+								fontFamily: `Helvetica-Bold`,
+								borderTop: `1px solid #000000`,
+								borderRight: `1px solid #000000`,
+								borderBottom: `1px solid #000000`,
+								padding: `5px`
+							}}
+						>
+							{`RP. ` + totalTagihan}
+						</Text>
 					</View>
 				</View>
 				<View
@@ -634,7 +886,7 @@ export default function Home() {
 					>
 						<Text
 							style={{
-								marginTop: `15px`,
+								marginTop: `5px`,
 								fontSize: `10px`,
 								fontFamily: `Helvetica-Bold`,
 								marginRight: `116px`
@@ -642,27 +894,120 @@ export default function Home() {
 						>
 							CATATAN
 						</Text>
-						<Text style={{ marginTop: `2%`, fontSize: `10px`, flex: 1 }}>
-							{daftar_surat_jalan_id?.[0]?.keterangan}
+						{/* <Text style={{ marginTop: `2%`, fontSize: `10px`, flex: 1 }}>
+							TERLAMPIR
+						</Text>
+						<Text style={{ marginTop: `5%`, fontSize: `10px`, flex: 1 }}>
+							Total : {sumKoli}
+						</Text>
+						<Text style={{ marginTop: `5%`, fontSize: `10px`, flex: 1 }}>
+							{dataTTB?.[0]?.tanggal_diterima +
+								` / ` +
+								dataTTB?.[0]?.ttb_number}
+						</Text> */}
+					</View>
+				</View>
+				<View
+					style={{
+						flexDirection: `row`,
+						marginTop: `15px`,
+						paddingBottom: `40px`
+					}}
+				>
+					<View
+						style={{
+							marginLeft: `40px`,
+							marginBottom: `-41px`,
+							fontSize: `12px`,
+							width: `400px`
+						}}
+					>
+						<Text
+							style={{
+								marginTop: `75px`,
+								fontSize: `10px`,
+								fontFamily: `Helvetica`,
+								marginRight: `116px`
+							}}
+						>
+							We declare that this invoice shows the actual price of the goods
+							described and that all particulars are true and correct.
 						</Text>
 					</View>
 					<View style={{ flexDirection: `row` }}>
 						<View
 							style={{
 								marginTop: `15px`,
-								marginLeft: `130px`
+								width: `200px`,
+								marginLeft: `-95px`
 							}}
 						>
-							<Text style={{ fontSize: `9px` }}>Diterima oleh</Text>
+							<Text style={{ fontSize: `9px` }}>Company Bank Detail</Text>
+							<Text style={{ fontSize: `9px` }}>
+								Bank Name : {dataSalesOrderFilter?.[0]?.rekening}
+								{` `}dataPengaturanFilter
+							</Text>
+							<Text style={{ fontSize: `9px` }}>
+								ACC : {dataPengaturanFilter?.[0]?.no_rekening}
+							</Text>
+							<Text style={{ fontSize: `9px` }}>
+								Name : PT. TUNAS KREASI PERKASA LOGISTIK
+							</Text>
+							<Text style={{ fontSize: `9px`, marginTop: `5px` }}>
+								Transfer harus mencantumkan berita berupa nomor invoice
+							</Text>
+							<Text style={{ fontSize: `9px` }}>
+								Bukti transfer dikirim ke WA 0811-1259-162 / Email ke
+								tunaskreasi.ar@gmail.com
+							</Text>
+						</View>
+					</View>
+				</View>
+				<View
+					style={{
+						flexDirection: `row`,
+						marginTop: `15px`,
+						paddingBottom: `40px`
+					}}
+				>
+					<View
+						style={{
+							marginLeft: `40px`,
+							marginBottom: `-41px`,
+							fontSize: `12px`,
+							width: `300px`
+						}}
+					>
+						<Text style={{ fontSize: `9px` }}>Customer Seal and Signature</Text>
+						<Text
+							style={{
+								marginLeft: `-10px`,
+								marginTop: `65px`,
+								fontSize: `10px`,
+								flex: 1
+							}}
+						>
+							(_______________________)
+						</Text>
+					</View>
+					<View style={{ flexDirection: `row` }}>
+						<View
+							style={{
+								marginLeft: `30px`
+							}}
+						>
+							<Text style={{ fontSize: `9px` }}>
+								PT. TUNAS KREASI PERKASA LOGISTIK
+							</Text>
 							<Text
 								style={{
 									marginLeft: `-10px`,
-									marginTop: `45px`,
+									marginTop: `65px`,
 									fontSize: `10px`,
 									flex: 1
 								}}
 							>
-								(______________)
+								(________________________________)
 							</Text>
 						</View>
 					</View>

@@ -57,7 +57,7 @@ export default function SettingRoleEdit() {
 		handleSubmit,
 		setValue,
 		reset,
-		formState: { errors, isDirty }
+		formState: { isDirty }
 	} = setForm
 
 	const { data, loading, error } = useQuery(GET_USER_ROLE, {
@@ -219,7 +219,7 @@ export default function SettingRoleEdit() {
 										<FormInput
 											setForm={setForm}
 											name="name"
-											error={errors.name?.message}
+											required
 											label="Role name"
 										/>
 									</div>
