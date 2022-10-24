@@ -259,6 +259,11 @@ export default function Home() {
 		}
 	})
 
+	//sum koli
+	const sumKoli = dataTTB?.reduce((acc, item) => {
+		return acc + item.koli
+	}, 0)
+
 	//sum datattb total harga
 	const total_harga = dataTTB?.reduce((acc, item) => {
 		return parseInt(acc) + parseInt(item.total_harga)
@@ -911,24 +916,24 @@ export default function Home() {
 						<Text
 							style={{
 								marginTop: `5px`,
-								fontSize: `10px`,
+								fontSize: `8px`,
 								fontFamily: `Helvetica-Bold`,
 								marginRight: `116px`
 							}}
 						>
 							CATATAN
 						</Text>
-						{/* <Text style={{ marginTop: `2%`, fontSize: `10px`, flex: 1 }}>
+						<Text style={{ marginTop: `2%`, fontSize: `8px`, flex: 1 }}>
 							TERLAMPIR
 						</Text>
-						<Text style={{ marginTop: `5%`, fontSize: `10px`, flex: 1 }}>
+						<Text style={{ marginTop: `5%`, fontSize: `8px`, flex: 1 }}>
 							Total: {sumKoli}
 						</Text>
-						<Text style={{ marginTop: `5%`, fontSize: `10px`, flex: 1 }}>
-							{dataTTB?.[0]?.tanggal_diterima +
+						<Text style={{ marginTop: `5%`, fontSize: `8px`, flex: 1 }}>
+							{moment(dataTTB?.[0]?.tanggal_diterima).format(`DD-MM-YYYY`) +
 								` / ` +
 								dataTTB?.[0]?.ttb_number}
-						</Text> */}
+						</Text>
 					</View>
 				</View>
 				<View

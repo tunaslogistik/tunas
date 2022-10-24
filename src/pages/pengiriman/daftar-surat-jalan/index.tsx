@@ -7,10 +7,8 @@ import { ColumnsType } from "antd/lib/table"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 //import icon icon-car.svg
-import Access from "@components/util/Access.component"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
-import Link from "next/link"
 import router from "next/router"
 
 //get DATA
@@ -196,24 +194,6 @@ export default function Home() {
 			authId="daftar-surat-jalan"
 			title="Daftar Surat Jalan"
 			setForm={setForm}
-			action={
-				<Access
-					auth="write:settings-users"
-					yes={
-						<ul className="actions">
-							<li className="action">
-								<div className="form-group">
-									<button className="button is-primary">
-										<Link href="/pengiriman/daftar-surat-jalan/add">
-											<a style={{ color: `white`, width: `170px` }}>Tambah</a>
-										</Link>
-									</button>
-								</div>
-							</li>
-						</ul>
-					}
-				/>
-			}
 		>
 			<section className="section">
 				<div className="admin-section">
