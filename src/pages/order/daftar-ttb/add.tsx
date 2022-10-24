@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons"
 import { gql, useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
@@ -92,12 +93,19 @@ export default function Home() {
 			const data = values.daftar_ttb.map((item: any) => {
 				return {
 					ttb_number:
-						`TTB/` +
-						values.kota_tujuan +
-						`/` +
-						String(moment.unix(values.tanggal_ttb / 1000).format(`DD-MM`)) +
-						`/` +
-						addLeadingZeros(dataLength, 4),
+						values.full_container === true
+							? `TTB-FL/` +
+							  values.kota_tujuan +
+							  `/` +
+							  String(moment.unix(values.tanggal_ttb / 1000).format(`YY-MM`)) +
+							  `/` +
+							  addLeadingZeros(dataLength, 4)
+							: `TTB/` +
+							  values.kota_tujuan +
+							  `/` +
+							  String(moment.unix(values.tanggal_ttb / 1000).format(`YY-MM`)) +
+							  `/` +
+							  addLeadingZeros(dataLength, 4),
 					pengirim: values.pengirim,
 					kota_tujuan: values.kota_tujuan,
 					tanggal_diterima: String(values.tanggal_diterima),

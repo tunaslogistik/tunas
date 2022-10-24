@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 /* eslint-disable array-callback-return */
 import { gql, useMutation, useQuery } from "@apollo/client"
 import IconPlus from "@assets/icons/icon-plus-fill.svg"
@@ -81,8 +82,13 @@ export default function Home() {
 	}
 	const panjangSalesOrder = data?.daftar_surat_jalan.length + 1
 
+	const selectedTTB = dataDaftarTTB?.daftar_ttb.find(
+		(item) => item.ttb_number === selectednoTTBatas
+	)
+	const isFullContainer = selectedTTB?.full_container
+
+	console.log(`isFullContainer`, isFullContainer)
 	async function onSubmit(formData) {
-		console.log(formData)
 		setLoading(true)
 		try {
 			const objArray = Object.keys(formData).map((i) => formData[i])
@@ -92,14 +98,29 @@ export default function Home() {
 					koli: String(formData.koli),
 					volume: String(formData.total_volume_ttb),
 					nomor_surat_jalan:
-						`SJ/` +
-						formData.kota_tujuan +
-						`/` +
-						String(
-							moment.unix(formData.tanggal_surat_jalan / 1000).format(`DD-MM`)
-						) +
-						`/` +
-						addLeadingZeros(panjangSalesOrder, 4),
+						isFullContainer === `Full Container`
+							? `SJ/` +
+							  `FL` +
+							  `/` +
+							  formData.kota_tujuan +
+							  `/` +
+							  String(
+									moment
+										.unix(formData.tanggal_surat_jalan / 1000)
+										.format(`YY-MM`)
+							  ) +
+							  `/` +
+							  addLeadingZeros(panjangSalesOrder, 4)
+							: `SJ/` +
+							  formData.kota_tujuan +
+							  `/` +
+							  String(
+									moment
+										.unix(formData.tanggal_surat_jalan / 1000)
+										.format(`YY-MM`)
+							  ) +
+							  `/` +
+							  addLeadingZeros(panjangSalesOrder, 4),
 					vendor_pelayanan: formData.vendor_pelayaran,
 					tanggal_surat_jalan: formData.tanggal_surat_jalan,
 					nomor_container: formData.nomor_container,
@@ -144,7 +165,7 @@ export default function Home() {
 								String(
 									moment
 										.unix(formData.tanggal_surat_jalan / 1000)
-										.format(`DD-MM`)
+										.format(`YY-MM`)
 								) +
 								`/` +
 								addLeadingZeros(panjangSalesOrder, 4),
@@ -273,8 +294,6 @@ export default function Home() {
 		// setValue(`total_tagihan`, total)
 		console.log(`watch`, watch(`harga`))
 	}, [watch])
-
-	console.log(`ttb`, filterTTB)
 
 	const filterDaftarMuatBarang =
 		dataDaftarMuatBarang?.daftar_muat_barang.filter((item) => {

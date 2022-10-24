@@ -219,8 +219,9 @@ export default function Home() {
 	function addLeadingZeros(num, totalLength) {
 		return String(num).padStart(totalLength, `0`)
 	}
-	console.log(`watch`, watch(`nomor_ttbtengah`))
+
 	const increment = data?.daftar_muat_barang.length + 1
+
 	async function onSubmit(formData) {
 		setLoading(true)
 		try {
@@ -236,9 +237,11 @@ export default function Home() {
 					item.nomor_ttb === formData.nomor_ttbB
 				)
 			})
-			//new date but only date mont and year
-			const date = new Date()
-			const newDate = date.toISOString().slice(0, 10)
+			//date = today date but only year and month
+			const newDate = String(
+				moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)
+			)
+
 			for (let i = 0; i < 1; i++) {
 				temp1.push({
 					nomor_muat_barang:
@@ -552,7 +555,7 @@ export default function Home() {
 					`MB/` +
 					dataFilterTTB?.[0]?.kota_tujuan +
 					`/` +
-					String(moment.unix(formData.tanggal_mb / 1000).format(`DD-MM`)) +
+					String(moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)) +
 					`/` +
 					addLeadingZeros(increment, 4)
 			})
@@ -594,7 +597,7 @@ export default function Home() {
 						`SP/` +
 						dataFilterTTB?.[0]?.kota_tujuan +
 						`/` +
-						String(moment.unix(formData.tanggal_mb / 1000).format(`DD-MM`)) +
+						String(moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)) +
 						`/` +
 						addLeadingZeros(
 							parseInt(

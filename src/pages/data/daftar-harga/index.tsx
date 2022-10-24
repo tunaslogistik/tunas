@@ -51,7 +51,10 @@ export default function Home() {
 			kode_asal: item.kode_asal,
 			kode_tujuan: item.kode_tujuan,
 			jenis_pengiriman: item.jenis_pengiriman,
-			harga: item.harga,
+			harga: item.harga?.toLocaleString(`id-ID`, {
+				style: `currency`,
+				currency: `IDR`
+			}),
 			minimal_kubik: item.minimal_kubik,
 			creator: item.creator,
 			updated_by: item.updated_by

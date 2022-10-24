@@ -77,7 +77,7 @@ export default function Home() {
 						formData.kota_tujuan +
 						`/` +
 						String(
-							moment.unix(formData.tanggal_sales_order / 1000).format(`DD-MM`)
+							moment.unix(formData.tanggal_sales_order / 1000).format(`YY-MM`)
 						) +
 						`/` +
 						addLeadingZeros(panjangSalesOrder, 4),

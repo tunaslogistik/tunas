@@ -152,7 +152,10 @@ export default function Home() {
 			)?.nama_tujuan,
 			total_volume: item.total_volume,
 			nama_kapal: item.nama_kapal,
-			harga: item.harga,
+			harga: item.harga?.toLocaleString(`id-ID`, {
+				style: `currency`,
+				currency: `IDR`
+			}),
 			total_ttb: item.total_ttb,
 			tanggal_sales_order: item.tanggal_sales_order,
 			tanggal_keberangkatan: item.tanggal_keberangkatan,
