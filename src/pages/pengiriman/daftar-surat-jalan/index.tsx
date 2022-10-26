@@ -190,7 +190,6 @@ export default function Home() {
 	}, [])
 	const dataMap = mergeData
 	const dataSource = dataMap
-	console.log(`data`, dataTable)
 	return (
 		<AdminPage
 			authId="daftar-surat-jalan"
