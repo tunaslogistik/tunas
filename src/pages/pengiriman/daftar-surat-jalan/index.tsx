@@ -1,17 +1,16 @@
 import { gql, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
+import Access from "@components/util/Access.component"
 import { Table } from "antd"
 import "antd/dist/antd.css"
 import { ColumnsType } from "antd/lib/table"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-//import icon icon-car.svg
-import Access from "@components/util/Access.component"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import Link from "next/link"
 import router from "next/router"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
 
 //get DATA
 

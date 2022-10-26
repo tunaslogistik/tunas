@@ -58,7 +58,7 @@ export default function Home() {
 
 	const router = useRouter()
 	const setForm = useForm()
-	const { control, register, handleSubmit, watch, setValue } = setForm
+	const { control, register, handleSubmit, setValue } = setForm
 
 	useEffect(() => {
 		formRef.current?.setFieldsValue({
