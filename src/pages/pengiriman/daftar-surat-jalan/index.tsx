@@ -132,26 +132,6 @@ export default function Home() {
 			sorter: (a, b) => a.total_volume.localeCompare(b.total_volume),
 			sortDirections: [`descend`, `ascend`]
 		}
-		// {
-		// 	title: `Action`,
-		// 	key: `action`,
-		// 	render: (text, record) => (
-		// 		<span>
-		// 			<a
-		// 				href={`/order/daftar-sales-order/${record.id}`}
-		// 				style={{ marginRight: `10px` }}
-		// 			>
-		// 				Edit
-		// 			</a>
-		// 			<Popconfirm
-		// 				title="Are you sure delete this task?"
-		// 				onConfirm={() => deleteData(record.id)}
-		// 			>
-		// 				<a>Delete</a>
-		// 			</Popconfirm>
-		// 		</span>
-		// 	)
-		// }
 	]
 
 	//DATA FOr table with date moment
