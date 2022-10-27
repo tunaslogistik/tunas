@@ -263,7 +263,8 @@ export default function Home() {
 						<Text
 							style={{
 								fontFamily: `Helvetica-Bold`,
-								marginLeft: `33px`,
+								width: `125px`,
+								textAlign: `right`,
 								paddingTop: `4px`,
 								fontSize: `10px`
 							}}

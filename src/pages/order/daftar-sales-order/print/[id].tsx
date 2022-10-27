@@ -212,7 +212,7 @@ export default function Home() {
 						</Text>
 						<Text
 							style={{
-								marginLeft: `60%`,
+								marginLeft: `58%`,
 								fontFamily: `Helvetica-Bold`,
 								fontSize: `10px`,
 								width: `500px`

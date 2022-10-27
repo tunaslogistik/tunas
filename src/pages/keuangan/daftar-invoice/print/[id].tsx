@@ -319,9 +319,10 @@ export default function Home() {
 						</Text>
 						<Text
 							style={{
-								fontFamily: `Helvetica-Bold`,
 								paddingTop: `4px`,
-								fontSize: `10px`
+								fontSize: `10px`,
+								width: `105px`,
+								textAlign: `right`
 							}}
 						>
 							{daftar_invoice?.[0]?.nomor_invoice}
@@ -930,9 +931,9 @@ export default function Home() {
 							Total: {sumKoli}
 						</Text>
 						<Text style={{ marginTop: `5%`, fontSize: `8px`, flex: 1 }}>
-							{moment(dataTTB?.[0]?.tanggal_diterima).format(`DD-MM-YYYY`) +
+							{/* {moment(dataTTB?.[0]?.tanggal_diterima).format(`DD-MM-YYYY`) +
 								` / ` +
-								dataTTB?.[0]?.ttb_number}
+								dataTTB?.[0]?.ttb_number} */}
 						</Text>
 					</View>
 				</View>

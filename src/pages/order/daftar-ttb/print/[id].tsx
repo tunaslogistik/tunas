@@ -198,14 +198,13 @@ export default function Home() {
 					</View>
 					<View
 						style={{
-							marginTop: `40px`,
-							marginLeft: `24%`
+							marginTop: `40px`
 						}}
 					>
 						<Text
 							style={{
-								marginLeft: `4%`,
 								fontWeight: `bold`,
+								marginLeft: `40%`,
 								fontFamily: `Helvetica-Bold`
 							}}
 						>
@@ -215,7 +214,8 @@ export default function Home() {
 							style={{
 								fontFamily: `Helvetica-Bold`,
 								paddingTop: `2px`,
-								marginLeft: `40%`,
+								width: `320px`,
+								textAlign: `right`,
 								fontSize: `10px`
 							}}
 						>
