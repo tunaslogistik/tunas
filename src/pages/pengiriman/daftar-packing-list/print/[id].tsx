@@ -237,10 +237,11 @@ export default function Home() {
 	const MyDocument = () => (
 		<Document>
 			<Page style={styles.body}>
-				<View style={{ flexDirection: `row` }}>
+				<View style={{ flexDirection: `row` }} fixed>
 					<View
 						style={{
 							marginTop: `40px`,
+							marginBottom: `40px`,
 							marginLeft: `40px`,
 							fontWeight: `bold`,
 							fontSize: `12px`
@@ -285,7 +286,7 @@ export default function Home() {
 					style={{
 						flexDirection: `row`,
 						border: `1px solid #000000`,
-						marginTop: `40px`,
+						marginTop: `20px`,
 						marginLeft: `40px`,
 						marginRight: `40px`
 					}}

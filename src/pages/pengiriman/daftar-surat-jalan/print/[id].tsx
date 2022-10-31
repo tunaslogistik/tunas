@@ -229,12 +229,13 @@ export default function Home() {
 	const MyDocument = () => (
 		<Document>
 			<Page style={styles.body}>
-				<View style={{ flexDirection: `row` }}>
+				<View style={{ flexDirection: `row` }} fixed>
 					<View
 						style={{
 							marginTop: `40px`,
 							marginLeft: `40px`,
-							fontSize: `12px`
+							fontSize: `12px`,
+							marginBottom: `50px`
 						}}
 					>
 						<Text style={{ fontFamily: `Helvetica-Bold` }}>
@@ -278,7 +279,7 @@ export default function Home() {
 						flexDirection: `row`,
 						marginLeft: `40px`,
 						marginRight: `40px`,
-						marginTop: `40px`,
+						marginTop: `20px`,
 						paddingBottom: `40px`,
 						borderTop: `1px solid black`,
 						borderBottom: `1px solid black`
@@ -453,6 +454,7 @@ export default function Home() {
 						<Text
 							style={{
 								width: `215px`,
+								maxWidth: `215px`,
 								fontSize: `10px`,
 								textAlign: `left`,
 								padding: `10px`,

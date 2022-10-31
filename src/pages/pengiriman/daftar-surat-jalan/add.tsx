@@ -221,6 +221,7 @@ export default function Home() {
 			for (let i = 0; i < myChildrenArrayMerge2.length; i++) {
 				createDataInvoice(invoice[i])
 			}
+
 			message.success(`Data Berhasil Disimpan`)
 			// router.push(`/pengiriman/daftar-surat-jalan`)
 		} catch (error) {

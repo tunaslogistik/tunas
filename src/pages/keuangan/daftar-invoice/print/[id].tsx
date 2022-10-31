@@ -425,7 +425,7 @@ export default function Home() {
 					>
 						<Text
 							style={{
-								width: `215px`,
+								width: `315px`,
 								fontSize: `8px`,
 								padding: `3px`
 							}}
@@ -440,7 +440,7 @@ export default function Home() {
 								width: `215px`,
 								fontSize: `8px`,
 								padding: `3px`,
-								marginLeft: `210px`
+								marginLeft: `140px`
 							}}
 						>
 							No. Kontainer: {``}

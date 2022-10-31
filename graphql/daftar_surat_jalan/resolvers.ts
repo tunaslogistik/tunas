@@ -47,6 +47,24 @@ const mutations = {
 				}
 			)
 
+			//post to api inside header authorization and session axios
+			// const token = `Bearer 3107bce2-6641-4abf-a2c7-75fd20ce8e16`
+			// const session = `f1ebe222-43a9-4191-a47b-00abda4247f7`
+
+			// const url = `https://zeus.accurate.id/accurate/api/shipment/save.do?scope=shipment_save`
+			// const data = {
+			// 	name: nomor_surat_jalan
+			// }
+			// // make POST FUNCTION  axios
+			// const axios = require(`axios`)
+			// const response = await axios.post(url, data, {
+			// 	headers: {
+			// 		Authorization: `Bearer 3107bce2-6641-4abf-a2c7-75fd20ce8e16`,
+			// 		"X-Session-ID": `f1ebe222-43a9-4191-a47b-00abda4247f7`
+			// 	}
+			// })
+			// console.log(response.data)
+
 			return {
 				code: `200`,
 				success: true,

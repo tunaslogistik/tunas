@@ -757,7 +757,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item?.nomor_ttb}
+									{item.nomor_ttb}
 								</Text>
 								<Text
 									style={{
