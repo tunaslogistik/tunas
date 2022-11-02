@@ -454,7 +454,7 @@ export default function Home() {
 						</Text>
 						<Text
 							style={{
-								width: `215px`,
+								width: `255px`,
 								fontSize: `10px`,
 								fontFamily: `Helvetica-Bold`,
 								textAlign: `center`,
@@ -517,7 +517,7 @@ export default function Home() {
 								</Text>
 								<Text
 									style={{
-										width: `215px`,
+										width: `255px`,
 										fontSize: `10px`,
 										textAlign: `center`,
 										padding: `10px`,
