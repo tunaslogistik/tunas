@@ -589,7 +589,7 @@ export default function Home() {
 						</Text>
 						<Text
 							style={{
-								width: `450px`,
+								width: `550px`,
 								fontSize: `8px`,
 								textAlign: `left`,
 								fontFamily: `Helvetica-Bold`,
@@ -746,14 +746,12 @@ export default function Home() {
 								</Text>
 								<Text
 									style={{
-										width: `450px`,
+										width: `550px`,
 										fontSize: `8px`,
 										textAlign: `left`,
 										paddingTop: `10px`,
 										paddingRight: `10px`,
-										paddingBottom: `10px`,
-										paddingLeft: `3px`,
-										flexWrap: `wrap`,
+										paddingLeft: `10px`,
 										borderRight: `1px solid #000000`
 									}}
 								>
@@ -905,7 +903,7 @@ export default function Home() {
 								</Text>
 								<Text
 									style={{
-										width: `450px`,
+										width: `550px`,
 										fontSize: `8px`,
 										textAlign: `left`,
 										paddingTop: `10px`,
@@ -1063,7 +1061,7 @@ export default function Home() {
 								</Text>
 								<Text
 									style={{
-										width: `450px`,
+										width: `550px`,
 										fontSize: `8px`,
 										textAlign: `left`,
 										paddingTop: `10px`,

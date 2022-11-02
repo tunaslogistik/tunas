@@ -186,9 +186,9 @@ export default function Home() {
 			alamat_tujuan: item.alamat_tujuan,
 			kode_tujuan: item.kota_tujuan,
 			//get nama tujuan from customer
-			nama_tujuan: dataDaftarTujuan?.daftar_tujuan?.filter((item2) => {
-				return item2.kota_customer === item.kode_tujuan
-			})?.[0]?.nama_tujuan,
+			nama_tujuan: dataDaftarTujuan?.daftar_tujuan?.find(
+				(item2) => item2.kota_tujuan === item.kode_tujuan
+			)?.nama_tujuan,
 			volume_m3: item.panjang * item.lebar * item.tinggi * item.koli,
 			jenis_pengiriman: item.jenis_pengiriman,
 			penerima: item.nama_penerima,
@@ -206,7 +206,7 @@ export default function Home() {
 			status: item.status
 		}
 	})
-
+	console.log(`dataTTB`, dataTTB)
 	const MuatBarang = dataDaftarMuatBarang?.daftar_muat_barang.filter(
 		(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number
 	)
@@ -442,7 +442,7 @@ export default function Home() {
 					<View style={styles.tblHeader}>
 						<Text
 							style={{
-								width: `215px`,
+								width: `255px`,
 								fontSize: `10px`,
 								fontFamily: `Helvetica-Bold`,
 								textAlign: `left`,
@@ -505,10 +505,10 @@ export default function Home() {
 							<View style={styles.tblRow} key={index}>
 								<Text
 									style={{
-										width: `215px`,
-										fontSize: `11px`,
+										width: `255px`,
+										fontSize: `10px`,
 										textAlign: `left`,
-										overflow: `hidden`,
+										display: `flex`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
 									}}
@@ -518,7 +518,7 @@ export default function Home() {
 								<Text
 									style={{
 										width: `215px`,
-										fontSize: `11px`,
+										fontSize: `10px`,
 										textAlign: `center`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
@@ -529,7 +529,7 @@ export default function Home() {
 								<Text
 									style={{
 										width: `215px`,
-										fontSize: `11px`,
+										fontSize: `10px`,
 										textAlign: `center`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
@@ -540,7 +540,7 @@ export default function Home() {
 								<Text
 									style={{
 										width: `150px`,
-										fontSize: `11px`,
+										fontSize: `10px`,
 										textAlign: `right`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
@@ -551,7 +551,7 @@ export default function Home() {
 								<Text
 									style={{
 										width: `150px`,
-										fontSize: `11px`,
+										fontSize: `10px`,
 										textAlign: `right`,
 										padding: `10px`
 									}}

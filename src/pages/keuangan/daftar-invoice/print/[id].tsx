@@ -978,7 +978,7 @@ export default function Home() {
 							</Text>
 							<Text style={{ fontSize: `8px` }}>
 								Bank Name: {dataSalesOrderFilter?.[0]?.rekening}
-								{` `}dataPengaturanFilter
+								{` `}
 							</Text>
 							<Text style={{ fontSize: `8px` }}>
 								Acc: {dataPengaturanFilter?.[0]?.no_rekening}

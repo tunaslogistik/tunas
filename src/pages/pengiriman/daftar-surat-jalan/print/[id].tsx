@@ -453,8 +453,7 @@ export default function Home() {
 					<View style={styles.tblHeader}>
 						<Text
 							style={{
-								width: `215px`,
-								maxWidth: `215px`,
+								width: `255px`,
 								fontSize: `10px`,
 								textAlign: `left`,
 								padding: `10px`,
@@ -517,8 +516,8 @@ export default function Home() {
 							<View style={styles.tblRow} key={index}>
 								<Text
 									style={{
-										width: `215px`,
-										fontSize: `11px`,
+										width: `255px`,
+										fontSize: `10px`,
 										textAlign: `left`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
@@ -529,7 +528,7 @@ export default function Home() {
 								<Text
 									style={{
 										width: `215px`,
-										fontSize: `11px`,
+										fontSize: `10px`,
 										textAlign: `center`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
@@ -540,7 +539,7 @@ export default function Home() {
 								<Text
 									style={{
 										width: `215px`,
-										fontSize: `11px`,
+										fontSize: `10px`,
 										textAlign: `center`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
@@ -551,7 +550,7 @@ export default function Home() {
 								<Text
 									style={{
 										width: `100px`,
-										fontSize: `11px`,
+										fontSize: `10px`,
 										textAlign: `right`,
 										padding: `10px`,
 										borderRight: `1px solid #000000`
@@ -562,7 +561,7 @@ export default function Home() {
 								<Text
 									style={{
 										width: `100px`,
-										fontSize: `11px`,
+										fontSize: `10px`,
 										textAlign: `right`,
 										padding: `10px`
 									}}
@@ -574,7 +573,7 @@ export default function Home() {
 						<View style={styles.tblRow2} key="">
 							<Text
 								style={{
-									width: `365px`,
+									width: `400px`,
 									fontSize: `11px`,
 									textAlign: `center`,
 									borderRight: `1px solid #000000`
