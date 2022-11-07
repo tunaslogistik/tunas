@@ -623,7 +623,12 @@ export default function Home() {
 							4
 						)
 				})
-				createDataSuratJalan(data_packing_list[i])
+				const check = data?.daftar_muat_barang.find(
+					(item) => item.nomor_ttb === dataFilter2[i].nomor_ttb
+				)
+				if (check === undefined) {
+					createDataSuratJalan(data_packing_list[i])
+				}
 			}
 			const check = data?.daftar_muat_barang.find(
 				(item) => item.nomor_ttb === dataFilter2[0].nomor_ttb
