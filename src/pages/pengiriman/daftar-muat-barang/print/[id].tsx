@@ -498,6 +498,7 @@ export default function Home() {
 							borderRight: `1px solid #000000`,
 							borderTop: `1px solid #000000`
 						}}
+						fixed
 					>
 						<Text
 							style={{
