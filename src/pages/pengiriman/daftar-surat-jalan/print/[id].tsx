@@ -539,7 +539,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.nomor_so.split(``)}
+									{item.nomor_so}
 								</Text>
 								<Text
 									style={{
