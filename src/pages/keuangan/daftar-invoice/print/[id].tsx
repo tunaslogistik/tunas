@@ -40,7 +40,10 @@ const GET_DATA = gql`
 		}
 	}
 `
-
+Font.registerHyphenationCallback((word) => {
+	// Return entire word as unique part
+	return [word]
+})
 Font.register({
 	family: `Helvetica-Bold`,
 	src: `https://fonts.gstatic.com/s/helveticaneue/v70/1Ptsg8zYS_SKggPNyC0IT0kLW-43aMEzIO6XUTLjad8.woff2`
@@ -320,6 +323,7 @@ export default function Home() {
 						<Text
 							style={{
 								paddingTop: `4px`,
+								fontFamily: `Helvetica-Bold`,
 								fontSize: `10px`,
 								width: `105px`,
 								textAlign: `right`
@@ -621,7 +625,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.nama_barang}
+									{item.nama_barang.split(``)}
 								</Text>
 								<Text
 									style={{
@@ -1010,6 +1014,7 @@ export default function Home() {
 							fontSize: `12px`,
 							width: `300px`
 						}}
+						break
 					>
 						<Text
 							style={{ fontSize: `9px`, width: `130px`, textAlign: `center` }}

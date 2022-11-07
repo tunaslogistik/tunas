@@ -3,7 +3,7 @@ import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import { Table } from "antd"
-import "antd/dist/antd.css"
+
 import { ColumnsType } from "antd/lib/table"
 import Link from "next/link"
 import router from "next/router"

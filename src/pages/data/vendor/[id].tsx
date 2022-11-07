@@ -4,7 +4,7 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import { DashboardContext } from "@contexts/DashboardContext.context"
 import { Button, message, Popconfirm } from "antd"
-import "antd/dist/antd.css"
+
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"

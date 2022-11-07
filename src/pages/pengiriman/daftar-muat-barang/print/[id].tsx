@@ -42,6 +42,11 @@ Font.register({
 	family: `Helvetica-Bold`,
 	src: `https://fonts.gstatic.com/s/helveticaneue/v70/1Ptsg8zYS_SKggPNyC0IT0kLW-43aMEzIO6XUTLjad8.woff2`
 })
+
+Font.registerHyphenationCallback((word) => {
+	// Return entire word as unique part
+	return [word]
+})
 const styles = StyleSheet.create({
 	pageNumber: {
 		position: `absolute`,
@@ -202,6 +207,7 @@ export default function Home() {
 							fontWeight: `bold`,
 							fontSize: `12px`
 						}}
+						fixed
 					>
 						<Text style={{ fontFamily: `Helvetica-Bold` }}>
 							PT TUNAS KREASI PERKASA LOGISTIK
@@ -246,6 +252,7 @@ export default function Home() {
 						marginRight: `40px`,
 						paddingBottom: `40px`
 					}}
+					fixed
 				>
 					<View
 						style={{
@@ -742,7 +749,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.penerima}
+									{item.penerima.split(``)}
 								</Text>
 								<Text
 									style={{
@@ -755,7 +762,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.nomor_ttb}
+									{item.nomor_ttb.split(``)}
 								</Text>
 								<Text
 									style={{
@@ -784,10 +791,11 @@ export default function Home() {
 										width: `415px`,
 										fontSize: `8px`,
 										textAlign: `left`,
+										overflow: `hidden`,
 										padding: `10px`
 									}}
 								>
-									{item.nama_barang}
+									{item.nama_barang.split(``)}
 								</Text>
 							</View>
 						))}
@@ -899,7 +907,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.penerima}
+									{item.penerima.split(``)}
 								</Text>
 								<Text
 									style={{
@@ -913,7 +921,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.nomor_ttb}
+									{item.nomor_ttb.split(``)}
 								</Text>
 								<Text
 									style={{
@@ -1057,7 +1065,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.penerima}
+									{item.penerima.split(``)}
 								</Text>
 								<Text
 									style={{
@@ -1071,7 +1079,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.nomor_ttb}
+									{item.nomor_ttb.split(``)}
 								</Text>
 								<Text
 									style={{

@@ -5,7 +5,7 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import useLoading from "@hooks/useLoading.hook"
 import { message, Table } from "antd"
-import "antd/dist/antd.css"
+
 import { ColumnsType } from "antd/lib/table"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"

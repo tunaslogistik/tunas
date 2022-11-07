@@ -2,7 +2,7 @@ import { gql, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import { Table } from "antd"
-import "antd/dist/antd.css"
+
 import { ColumnsType } from "antd/lib/table"
 import { useState } from "react"
 import { useForm } from "react-hook-form"

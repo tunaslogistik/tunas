@@ -177,7 +177,7 @@ export default function Home() {
 	const MyDocument = () => (
 		<Document>
 			<Page style={styles.body}>
-				<View style={{ flexDirection: `row` }}>
+				<View style={{ flexDirection: `row`, marginBottom: `20px` }} fixed>
 					<View
 						style={{
 							marginTop: `40px`,
@@ -228,7 +228,7 @@ export default function Home() {
 						flexDirection: `row`,
 						marginLeft: `40px`,
 						marginRight: `40px`,
-						marginTop: `40px`,
+						marginTop: `20px`,
 						paddingBottom: `40px`,
 						borderTop: `1px solid black`,
 						borderBottom: `1px solid black`
@@ -378,7 +378,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.nama_barang}
+									{item.nama_barang.split()}
 								</Text>
 								<Text style={styles.tableText}>{item.panjang}</Text>
 								<Text style={styles.tableText}>{item.lebar}</Text>

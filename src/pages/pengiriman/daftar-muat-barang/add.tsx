@@ -6,7 +6,7 @@ import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, DatePicker, message } from "antd"
-import "antd/dist/antd.css"
+
 import { CREATE_DAFTAR_PACKING_LIST } from "graphql/daftar_packing_list/mutations"
 import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"
 import { CREATE_DAFTAR_SURAT_PENGANTAR } from "graphql/daftar_surat_pengantar/mutations"

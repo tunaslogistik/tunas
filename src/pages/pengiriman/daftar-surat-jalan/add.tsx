@@ -7,7 +7,7 @@ import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, DatePicker, message } from "antd"
-import "antd/dist/antd.css"
+
 import { CREATE_DAFTAR_INVOICE } from "graphql/daftar_invoice/mutations"
 import { GET_DAFTAR_MUAT_BARANG } from "graphql/daftar_muat_barang/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
@@ -124,6 +124,7 @@ export default function Home() {
 					vendor_pelayanan: formData.vendor_pelayaran,
 					tanggal_surat_jalan: formData.tanggal_surat_jalan,
 					nomor_container: formData.nomor_container,
+					nama_kapal: formData.nama_kapal,
 					nomor_seal: formData.nomor_seal,
 					tanggal_keberangkatan: formData.tanggal_keberangkatan,
 					keterangan: formData.keterangan
@@ -173,6 +174,7 @@ export default function Home() {
 							tanggal_surat_jalan: formData.tanggal_surat_jalan,
 							nomor_container: formData.nomor_container,
 							nomor_seal: formData.nomor_seal,
+							nama_kapal: formData.nama_kapal,
 							tanggal_keberangkatan: formData.tanggal_keberangkatan,
 							keterangan: formData.keterangan
 						})
@@ -199,7 +201,6 @@ export default function Home() {
 			myChildrenArrayMerge2.map((item) => {
 				item.total_koli = String(sumKoli)
 				item.total_volume = String(sumVolume)
-				item.nama_kapal = formData.nama_kapal
 			})
 			console.log(`myChildrenArrayMerge2`, myChildrenArrayMerge2)
 			//create new data

@@ -3,7 +3,7 @@ import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import { DashboardContext } from "@contexts/DashboardContext.context"
 import { message } from "antd"
-import "antd/dist/antd.css"
+
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useContext } from "react"

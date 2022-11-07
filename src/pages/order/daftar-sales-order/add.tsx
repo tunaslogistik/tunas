@@ -3,7 +3,7 @@ import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, DatePicker, message } from "antd"
-import "antd/dist/antd.css"
+
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import { GET_PENGATURAN } from "graphql/pengaturan/queries"
@@ -156,15 +156,15 @@ export default function Home() {
 	//get tipe ppn
 	const tipePPN = filterCustomer?.[0]?.tipe_ppn
 
-	//convert number to percentage
-	const tipePPNPercentage = (tipePPN / 100) * 100
+	//convert tipePPN to percentage
+	const tipePPNPercentage = tipePPN / 100
 
-	//setValue based on nomor ttb
+	const PPN = getValues(`harga`) * tipePPNPercentage
 
 	const total =
-		parseFloat(getValues(`total_volume_ttb`)) *
-		parseFloat(getValues(`harga`)) *
-		tipePPNPercentage
+		getValues(`total_volume_ttb`) !== 0
+			? getValues(`total_volume_ttb`) * Number(getValues(`harga`)) + PPN
+			: Number(getValues(`harga`)) + PPN
 
 	setValue(`total_tagihan`, total)
 	const handleChangeTTB = (value) => {

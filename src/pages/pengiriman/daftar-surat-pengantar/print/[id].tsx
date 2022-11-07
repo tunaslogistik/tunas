@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
 	},
 	tblHeader: {
 		display: `flex`,
-		borderTop: `1px solid #000000`,
 		flexDirection: `row`,
 		justifyContent: `space-between`
 	},
@@ -186,8 +185,8 @@ export default function Home() {
 			alamat_tujuan: item.alamat_tujuan,
 			kode_tujuan: item.kota_tujuan,
 			//get nama tujuan from customer
-			nama_tujuan: dataDaftarTujuan?.daftar_tujuan?.find(
-				(item2) => item2.kota_tujuan === item.kode_tujuan
+			nama_tujuan: dataDaftarTujuan?.daftar_tujuan.find(
+				(tujuan) => tujuan.kota_tujuan === item.kode_tujuan
 			)?.nama_tujuan,
 			volume_m3: item.panjang * item.lebar * item.tinggi * item.koli,
 			jenis_pengiriman: item.jenis_pengiriman,
@@ -226,14 +225,15 @@ export default function Home() {
 	const nama_supir = dataVechicle?.vechnicle?.find(
 		(item) => item.nomor_kendaraan === daftar_surat_jalan?.[0]?.nomor_kendaraan
 	)?.nama_supir
+
 	const MyDocument = () => (
 		<Document>
 			<Page style={styles.body}>
 				<View style={{ flexDirection: `row` }} fixed>
 					<View
 						style={{
-							marginTop: `40px`,
-							marginBottom: `40px`,
+							marginTop: `20px`,
+							marginBottom: `20px`,
 							marginLeft: `40px`,
 							fontWeight: `bold`,
 							fontSize: `12px`
@@ -267,7 +267,6 @@ export default function Home() {
 								fontFamily: `Helvetica-Bold`,
 								textAlign: `right`,
 								width: `179px`,
-
 								fontSize: `10px`
 							}}
 						>
@@ -281,17 +280,17 @@ export default function Home() {
 						marginLeft: `40px`,
 						marginRight: `40px`,
 						marginTop: `20px`,
-						paddingBottom: `40px`,
+						paddingBottom: `20px`,
 						borderTop: `1px solid black`,
 						borderBottom: `1px solid black`
 					}}
+					fixed
 				>
 					<View
 						style={{
 							paddingRight: `40px`,
-							marginBottom: `-41px`,
+							marginBottom: `-20px`,
 							fontSize: `12px`,
-							borderBottom: `1px solid black`,
 							borderRight: `1px solid black`,
 							width: `515px`
 						}}
@@ -347,98 +346,94 @@ export default function Home() {
 						</Text>
 					</View>
 				</View>
-				<View style={styles.table}>
-					<Text style={styles.tblHeading}>
+				<View
+					style={{
+						marginLeft: `40px`,
+						marginRight: `40px`,
+						borderBottom: `1px solid black`,
+						flexDirection: `row`
+					}}
+					fixed
+				>
+					<View>
 						<Text
 							style={{
 								width: `215px`,
 								fontSize: `10px`,
-								padding: `10px`,
-								borderRight: `1px solid #000000`
+								paddingTop: `10px`
 							}}
 						>
-							No.Kendaraan : {`            `}
+							No.Kendaraan: {` `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
 								{daftar_surat_jalan?.[0]?.nomor_kendaraan}
 							</Text>
 						</Text>
-						<Text>{`\n`}</Text>
-						<Text>{`\n`}</Text>
 						<Text
 							style={{
 								width: `215px`,
 								fontSize: `10px`,
-								padding: `10px`,
-								borderRight: `1px solid #000000`
+								paddingTop: `5px`
 							}}
 						>
-							Nama Supir : {`               `}
-							{` `}
+							Nama Supir: {` `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>{nama_supir}</Text>
 						</Text>
-						<Text>{`\n`}</Text>
-						<Text>{`\n`}</Text>
 						<Text
 							style={{
 								width: `215px`,
 								fontSize: `10px`,
-								padding: `10px`,
-								borderRight: `1px solid #000000`
+								paddingTop: `5px`
 							}}
 						>
-							No.Kontainer : {`              `}
+							No.Kontainer: {` `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
 								{MuatBarang?.[0]?.nomor_container}
 							</Text>
 						</Text>
-						<Text>{`\n`}</Text>
-						<Text>{`\n`}</Text>
 						<Text
 							style={{
 								width: `215px`,
 								fontSize: `10px`,
-								padding: `10px`,
-								borderRight: `1px solid #000000`
+								paddingTop: `5px`
 							}}
 						>
-							No.Seal : {`                      `}
+							No.Seal: {` `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
 								{MuatBarang?.[0]?.nomor_seal}
 							</Text>
 						</Text>
-						<Text>{`\n`}</Text>
-						<Text>{`\n`}</Text>
 						<Text
 							style={{
 								width: `215px`,
 								fontSize: `10px`,
-								padding: `10px`,
-								borderRight: `1px solid #000000`
+								padding: `1px`,
+								paddingTop: `5px`
 							}}
 						>
-							Nama Kapal : {`               `}
+							Nama Kapal: {` `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
 								{MuatBarang?.[0]?.nama_kapal}
 							</Text>
 						</Text>
-						<Text>{`\n`}</Text>
-						<Text>{`\n`}</Text>
 						<Text
 							style={{
 								width: `215px`,
 								fontSize: `10px`,
-								padding: `10px`,
-								borderRight: `1px solid #000000`
+								padding: `1px`,
+								paddingTop: `5px`,
+								paddingBottom: `10px`
 							}}
 						>
-							Tgl Pengiriman : {`           `}
+							Tgl Pengiriman: {` `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
 								{moment(SuratJalan?.[0]?.tanggal_keberangkatan).format(
 									`DD/MM/YYYY`
 								)}
 							</Text>
 						</Text>
-					</Text>
+					</View>
+				</View>
+				<View style={styles.table}>
 					<View style={styles.tblHeader}>
 						<Text
 							style={{
@@ -513,7 +508,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.nama_barang}
+									{item.nama_barang.split(``)}
 								</Text>
 								<Text
 									style={{
@@ -524,7 +519,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.ttb_number}
+									{item.ttb_number.split(``)}
 								</Text>
 								<Text
 									style={{

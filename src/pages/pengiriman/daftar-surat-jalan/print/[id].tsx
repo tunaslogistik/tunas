@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
 	},
 	tblHeader: {
 		display: `flex`,
-		borderTop: `1px solid #000000`,
 		flexDirection: `row`,
 		justifyContent: `space-between`
 	},
@@ -147,6 +146,8 @@ export default function Home() {
 		)
 	})
 
+	console.log(`daftar_surat_jalan`, daftar_surat_jalan)
+
 	//get ttb number
 	const { data: dataTtb } = useQuery(GET_DAFTAR_TTB)
 
@@ -180,11 +181,10 @@ export default function Home() {
 			pengirim: item.pengirim,
 			nomor_telepon: item.nomor_telepon,
 			alamat_tujuan: item.alamat_tujuan,
-			kode_tujuan: item.kota_tujuan,
-			//find from data tujuan
-			kota_tujuan: dataTujuan?.daftar_tujuan?.find((item2) => {
-				return item2.kota_tujuan === item.kode_tujuan
-			})?.nama_tujuan,
+			kota_tujuan: item.kota_tujuan,
+			kode_tujuan: dataTujuan?.daftar_tujuan.find(
+				(tujuan) => tujuan.kode_tujuan === item.kota_tujuan
+			)?.nama_tujuan,
 			panjang: item.panjang,
 			lebar: item.lebar,
 			volume_m3: item.total_volume,
@@ -211,6 +211,8 @@ export default function Home() {
 			status: item.status
 		}
 	})
+
+	console.log(`dataTTB`, dataTTB)
 	//sum koli
 	const sumKoli = dataTTB?.reduce((acc, item) => {
 		return parseInt(acc) + parseInt(item.koli)
@@ -235,7 +237,7 @@ export default function Home() {
 							marginTop: `40px`,
 							marginLeft: `40px`,
 							fontSize: `12px`,
-							marginBottom: `50px`
+							marginBottom: `10px`
 						}}
 					>
 						<Text style={{ fontFamily: `Helvetica-Bold` }}>
@@ -280,15 +282,16 @@ export default function Home() {
 						marginLeft: `40px`,
 						marginRight: `40px`,
 						marginTop: `20px`,
-						paddingBottom: `40px`,
+						paddingBottom: `20px`,
 						borderTop: `1px solid black`,
 						borderBottom: `1px solid black`
 					}}
+					fixed
 				>
 					<View
 						style={{
 							paddingRight: `40px`,
-							marginBottom: `-41px`,
+							marginBottom: `-21px`,
 							fontSize: `12px`,
 							borderBottom: `1px solid black`,
 							borderRight: `1px solid black`,
@@ -353,103 +356,94 @@ export default function Home() {
 						</Text>
 					</View>
 				</View>
-				<View style={styles.table}>
-					<Text style={styles.tblHeading}>
+				<View
+					style={{
+						marginLeft: `40px`,
+						marginRight: `40px`,
+						borderBottom: `1px solid black`,
+						flexDirection: `row`
+					}}
+					fixed
+				>
+					<View>
 						<Text
 							style={{
 								width: `215px`,
-								fontSize: `11px`,
-								paddingTop: `3px`,
-								borderRight: `1px solid #000000`
+								fontSize: `10px`,
+								paddingTop: `10px`
 							}}
 						>
-							No.Kontainer : {`             `}
+							No.Kontainer:{` `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
 								{daftar_surat_jalan?.[0]?.nomor_container}
 							</Text>
 						</Text>
-						<Text>{`\n`}</Text>
-						<Text>{`\n`}</Text>
 						<Text
 							style={{
 								width: `215px`,
-								fontSize: `11px`,
-								paddingTop: `40px`,
-								borderRight: `1px solid #000000`
+								fontSize: `10px`,
+								paddingTop: `5px`
 							}}
 						>
-							No.Seal : {`                     `}
+							No.Seal:{` `}
 							<Text style={{ paddingTop: `4px`, fontFamily: `Helvetica-Bold` }}>
 								{daftar_surat_jalan?.[0]?.nomor_seal}
 							</Text>
 						</Text>
-						<Text>{`\n`}</Text>
-						<Text>{`\n`}</Text>
 						<Text
 							style={{
 								width: `215px`,
-								fontSize: `11px`,
-								padding: `100px`,
-								paddingTop: `4px`,
-								borderRight: `1px solid #000000`
+								fontSize: `10px`,
+								paddingTop: `5px`
 							}}
 						>
-							Nama Kapal : {`              `}
+							Nama Kapal:{` `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
 								{daftar_surat_jalan?.[0]?.nama_kapal}
 							</Text>
 						</Text>
-						<Text>{`\n`}</Text>
-						<Text>{`\n`}</Text>
 						<Text
 							style={{
 								width: `215px`,
-								fontSize: `11px`,
-								padding: `10px`,
-								paddingTop: `4px`,
-								borderRight: `1px solid #000000`
+								fontSize: `10px`,
+								paddingTop: `5px`
 							}}
 						>
-							Tgl Pengiriman : {`         `}
+							Tgl Pengiriman:{` `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
 								{moment(daftar_surat_jalan?.[0]?.tanggal_keberangkatan).format(
 									`DD-MM-YYYY`
 								)}
 							</Text>
 						</Text>
-						<Text>{`\n`}</Text>
-						<Text>{`\n`}</Text>
 						<Text
 							style={{
 								width: `215px`,
-								fontSize: `11px`,
-								padding: `10px`,
-								paddingTop: `4px`,
-								borderRight: `1px solid #000000`
+								fontSize: `10px`,
+								paddingTop: `5px`
 							}}
 						>
-							Tgl Keberangkatan : {`   `}
+							Tgl Keberangkatan:{` `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
 								{moment(dataTTB?.[0]?.tanggal_diterima).format(`DD-MM-YYYY`)}
 							</Text>
 						</Text>
-						<Text>{`\n`}</Text>
-						<Text>{`\n`}</Text>
 						<Text
 							style={{
 								width: `215px`,
-								fontSize: `11px`,
-								padding: `10px`,
-								paddingTop: `4px`,
-								borderRight: `1px solid #000000`
+								fontSize: `10px`,
+								paddingTop: `5px`,
+								paddingBottom: `10px`
 							}}
 						>
-							Tujuan : {`                       `}
+							Tujuan:{` `}
 							<Text style={{ fontFamily: `Helvetica-Bold` }}>
-								{dataTTB?.[0]?.kota_tujuan}
+								{dataTTB?.[0]?.kode_tujuan}
 							</Text>
 						</Text>
-					</Text>
+					</View>
+				</View>
+				<View style={styles.table}>
 					<View style={styles.tblHeader}>
 						<Text
 							style={{
@@ -523,7 +517,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.nama_barang}
+									{item.nama_barang.split(``)}
 								</Text>
 								<Text
 									style={{
@@ -534,7 +528,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.ttb_number}
+									{item.ttb_number.split(``)}
 								</Text>
 								<Text
 									style={{
@@ -545,7 +539,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.nomor_so}
+									{item.nomor_so.split(``)}
 								</Text>
 								<Text
 									style={{
@@ -625,6 +619,7 @@ export default function Home() {
 						marginTop: `15px`,
 						paddingBottom: `40px`
 					}}
+					break
 				>
 					<View
 						style={{
