@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
 		fontSize: `10.2325px`
 	},
 	table: {
-		marginTop: `24px`,
+		marginTop: `14px`,
 		marginLeft: `40px`,
 		border: `1px solid #000000`,
 		marginRight: `40px`
@@ -203,7 +203,7 @@ export default function Home() {
 						style={{
 							marginTop: `40px`,
 							marginLeft: `40px`,
-							marginBottom: `50px`,
+							marginBottom: `20px`,
 							fontWeight: `bold`,
 							fontSize: `12px`
 						}}
@@ -250,7 +250,7 @@ export default function Home() {
 						flexDirection: `row`,
 						marginLeft: `40px`,
 						marginRight: `40px`,
-						paddingBottom: `40px`
+						paddingBottom: `10px`
 					}}
 					fixed
 				>
