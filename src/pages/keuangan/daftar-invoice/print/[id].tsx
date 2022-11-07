@@ -934,11 +934,34 @@ export default function Home() {
 						<Text style={{ marginTop: `5%`, fontSize: `8px`, flex: 1 }}>
 							Total: {sumKoli}
 						</Text>
-						<Text style={{ marginTop: `5%`, fontSize: `8px`, flex: 1 }}>
-							{/* {moment(dataTTB?.[0]?.tanggal_diterima).format(`DD-MM-YYYY`) +
-								` / ` +
-								dataTTB?.[0]?.ttb_number} */}
-						</Text>
+						<View
+							style={{
+								marginTop: `5%`,
+								fontSize: `8px`,
+								flexDirection: `column`
+							}}
+						>
+							{
+								//view all ttb_number from dataTTB for loop
+								dataTTB?.map((item, index) => {
+									return (
+										<Text
+											key={index}
+											style={{
+												fontSize: `8px`,
+												fontFamily: `Helvetica-Bold`,
+												marginRight: `5px`
+											}}
+										>
+											{moment(dataTTB?.tanggal_diterima).format(`DD-MM-YYYY`)} /
+											{` `}
+											{` `}
+											{item.ttb_number}
+										</Text>
+									)
+								})
+							}
+						</View>
 					</View>
 				</View>
 				<View
