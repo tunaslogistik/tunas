@@ -949,7 +949,6 @@ export default function Home() {
 											key={index}
 											style={{
 												fontSize: `8px`,
-												fontFamily: `Helvetica-Bold`,
 												marginRight: `5px`
 											}}
 										>
