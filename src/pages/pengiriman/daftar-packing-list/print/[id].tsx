@@ -287,6 +287,7 @@ export default function Home() {
 						flexDirection: `row`,
 						border: `1px solid #000000`,
 						marginTop: `20px`,
+						marginBottom: `20px`,
 						marginLeft: `40px`,
 						marginRight: `40px`
 					}}

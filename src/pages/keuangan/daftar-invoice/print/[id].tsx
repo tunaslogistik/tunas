@@ -342,12 +342,13 @@ export default function Home() {
 						borderTop: `1px solid black`,
 						borderBottom: `1px solid black`
 					}}
+					fixed
 				>
 					<View
 						style={{
 							paddingRight: `40px`,
 							marginBottom: `-21px`,
-							fontSize: `12px`,
+							fontSize: `10px`,
 							borderRight: `1px solid black`,
 							width: `515px`
 						}}
@@ -414,12 +415,11 @@ export default function Home() {
 					style={{
 						marginLeft: `40px`,
 						marginRight: `40px`,
-						marginTop: `20px`,
 						fontSize: `12px`,
-						borderTop: `1px solid #000000`,
-						borderRight: `1px solid #000000`,
-						borderLeft: `1px solid #000000`
+						borderBottom: `1px solid #000000`,
+						marginBottom: `20px`
 					}}
+					fixed
 				>
 					<View
 						style={{

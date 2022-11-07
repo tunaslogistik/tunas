@@ -6,7 +6,7 @@ import IconTrash from "@assets/icons/icon-trash.svg"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import useLoading from "@hooks/useLoading.hook"
-import { Button, DatePicker, message } from "antd"
+import { Button, DatePicker, notification } from "antd"
 
 import { CREATE_DAFTAR_INVOICE } from "graphql/daftar_invoice/mutations"
 import { GET_DAFTAR_MUAT_BARANG } from "graphql/daftar_muat_barang/queries"
@@ -205,7 +205,17 @@ export default function Home() {
 			console.log(`myChildrenArrayMerge2`, myChildrenArrayMerge2)
 			//create new data
 			for (let i = 0; i < myChildrenArrayMerge2.length; i++) {
-				createData(myChildrenArrayMerge2[i])
+				const check = data?.daftar_surat_jalan.find(
+					(item) => item.nomor_ttb === myChildrenArrayMerge2[i].nomor_ttb
+				)
+				if (check !== undefined) {
+					notification.error({
+						message: `Nomor Surat Jalan sudah ada`
+					})
+				}
+				if (check === undefined) {
+					createData(myChildrenArrayMerge2[i])
+				}
 			}
 
 			const invoice = myChildrenArrayMerge2
@@ -220,10 +230,22 @@ export default function Home() {
 			})
 
 			for (let i = 0; i < myChildrenArrayMerge2.length; i++) {
-				createDataInvoice(invoice[i])
+				const check = data?.daftar_surat_jalan.find(
+					(item) => item.nomor_ttb === myChildrenArrayMerge2[i].nomor_ttb
+				)
+				if (check === undefined) {
+					createDataInvoice(invoice[i])
+				}
 			}
 
-			message.success(`Data Berhasil Disimpan`)
+			const check = data?.daftar_surat_jalan.find(
+				(item) => item.nomor_ttb === formData.nomor_ttb
+			)
+			if (check === undefined) {
+				notification.success({
+					message: `Data berhasil dibuat`
+				})
+			}
 			// router.push(`/pengiriman/daftar-surat-jalan`)
 		} catch (error) {
 			console.log(error)
