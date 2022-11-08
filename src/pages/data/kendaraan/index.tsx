@@ -19,6 +19,8 @@ const GET_DATA = gql`
 			tipe_kendaraan
 			nama_supir
 			nama_kenek
+			nomor_supir
+			nomor_kenek
 			status
 			last_update
 			creator
@@ -35,6 +37,8 @@ interface DataType {
 	tipe_kendaraan: any
 	nama_supir: any
 	nama_kenek: any
+	nomor_supir: any
+	nomor_kenek: any
 	status: any
 	last_update: any
 }
@@ -79,6 +83,15 @@ export default function Home() {
 			key: `nama_supir`,
 			width: `20%`,
 			sorter: (a, b) => a.nama_supir.length - b.nama_supir.length,
+			render: (text, record) => (
+				<>
+					{text}
+					<br />
+					<span style={{ color: `#999`, fontSize: `10px` }}>
+						{record.nomor_supir}
+					</span>
+				</>
+			),
 			sortDirections: [`descend`, `ascend`]
 		},
 		{
@@ -87,6 +100,15 @@ export default function Home() {
 			key: `nama_kenek`,
 			width: `20%`,
 			sorter: (a, b) => a.nama_kenek.length - b.nama_kenek.length,
+			render: (text, record) => (
+				<>
+					{text}
+					<br />
+					<span style={{ color: `#999`, fontSize: `10px` }}>
+						{record.nomor_kenek}
+					</span>
+				</>
+			),
 			sortDirections: [`descend`, `ascend`]
 		},
 		{
@@ -145,6 +167,8 @@ export default function Home() {
 			tipe_kendaraan: item.tipe_kendaraan,
 			nama_supir: item.nama_supir,
 			nama_kenek: item.nama_kenek,
+			nomor_supir: item.nomor_supir,
+			nomor_kenek: item.nomor_kenek,
 			status: item.status,
 			last_update: moment.unix(item.last_update / 1000).format(`YYYY-MM-DD`),
 			creator: item.creator,

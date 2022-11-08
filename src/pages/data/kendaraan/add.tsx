@@ -18,6 +18,8 @@ const GET_DATA = gql`
 			tipe_kendaraan
 			nama_supir
 			nama_kenek
+			nomor_supir
+			nomor_kenek
 			status
 			last_update
 			creator
@@ -61,6 +63,8 @@ export default function SettingUserEdit() {
 			tipe_kendaraan: e.target.tipe_kendaraan.value,
 			nama_supir: e.target.nama_supir.value,
 			nama_kenek: e.target.nama_kenek.value,
+			nomor_supir: e.target.nomor_supir.value,
+			nomor_kenek: e.target.nomor_kenek.value,
 			status: e.target.status.value,
 			last_update: new Date(),
 			creator: String(dashboardState.auth.id),
@@ -144,6 +148,30 @@ export default function SettingUserEdit() {
 													className="form-control"
 													style={inputStyle}
 													id="nama_kenek"
+													required
+												/>
+											</div>
+											<div className="form-group">
+												<label htmlFor="nomor_supir" style={inputStyles}>
+													Nomor Supir
+												</label>
+												<input
+													type="text"
+													className="form-control"
+													style={inputStyle}
+													id="nomor_supir"
+													required
+												/>
+											</div>
+											<div className="form-group">
+												<label htmlFor="nomor_kenek" style={inputStyles}>
+													Nomor Kenek
+												</label>
+												<input
+													type="text"
+													className="form-control"
+													style={inputStyle}
+													id="nomor_kenek"
 													required
 												/>
 											</div>

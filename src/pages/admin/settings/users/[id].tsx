@@ -113,6 +113,18 @@ export default function SettingUserEdit() {
 		variables: { id }
 	})
 
+	const username = dashboardState.auth.username
+
+	//get all data
+	const { data: dataUsers } = useQuery(GET_USERS)
+
+	//find role by username
+	const role = dataUsers?.users.user?.find(
+		(user) => user.username === username
+	)?.role
+
+	console.log(role)
+
 	const [updateUser] = useMutation(UPDATE_USER, {
 		refetchQueries: [{ query: GET_USERS }]
 	})
@@ -136,27 +148,36 @@ export default function SettingUserEdit() {
 
 	async function onSubmit(formData) {
 		setLoading(true)
-
-		try {
-			const { data } = await updateUser({
-				variables: {
-					input: {
-						id,
-						username: formData.username,
-						email: formData.email,
-						cabang: formData.cabang,
-						creator: String(dashboardState.auth.id),
-						name: formData.name,
-						role: formData.role,
-						password: formData.password ? formData.password : ``
+		if (
+			(role === `admin` && formData.role === `user`) ||
+			role === `superadmin`
+		) {
+			try {
+				const { data } = await updateUser({
+					variables: {
+						input: {
+							id,
+							username: formData.username,
+							email: formData.email,
+							cabang: formData.cabang,
+							creator: String(dashboardState.auth.id),
+							name: formData.name,
+							role: formData.role,
+							password: formData.password ? formData.password : ``
+						}
 					}
-				}
-			})
+				})
 
-			reset()
-			setToast(data.updateUser)
-		} catch (error) {
-			setToast(error)
+				reset()
+				setToast(data.updateUser)
+			} catch (error) {
+				setToast(error)
+			}
+		} else {
+			setToast({
+				type: `error`,
+				message: `You don't have permission to update this user`
+			})
 		}
 
 		setLoading(false)
@@ -164,19 +185,24 @@ export default function SettingUserEdit() {
 
 	async function handleDelete() {
 		setLoading(true)
+		if (role === `superadmin` || (role === `admin` && watchRole === `user`)) {
+			try {
+				const { data } = await deleteUser({
+					variables: { id }
+				})
 
-		try {
-			const { data } = await deleteUser({
-				variables: { id }
+				dispatch({ type: `set_deletePopup_isShown`, payload: false })
+				setToast(data.deleteUser)
+				router.push(`/admin/settings/users`)
+			} catch (error) {
+				setToast(error)
+			}
+		} else {
+			setToast({
+				type: `error`,
+				message: `You don't have permission to delete this user`
 			})
-
-			dispatch({ type: `set_deletePopup_isShown`, payload: false })
-			setToast(data.deleteUser)
-			router.push(`/admin/settings/users`)
-		} catch (error) {
-			setToast(error)
 		}
-
 		setLoading(false)
 	}
 
@@ -351,6 +377,7 @@ export default function SettingUserEdit() {
 											name="password"
 											required
 											label="New Password"
+											error="Password must be at least 8 characters"
 											placeholder="••••••••••••••"
 										/>
 									</div>
@@ -361,6 +388,7 @@ export default function SettingUserEdit() {
 											name="password_confirmation"
 											required
 											label="Repeat New Password"
+											error="Password must be at least 8 characters"
 											placeholder="••••••••••••••"
 										/>
 									</div>

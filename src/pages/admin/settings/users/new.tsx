@@ -75,6 +75,15 @@ export default function SettingUserNew() {
 
 	const { data, loading, error } = useQuery(GET_USER_ROLES)
 
+	const username = dashboardState.auth.username
+
+	//GET ALL USER DATA
+	const { data: userData } = useQuery(GET_USERS)
+
+	const role = userData?.users.user?.find(
+		(user) => user.username === username
+	)?.role
+
 	const [createUser] = useMutation(CREATE_USER, {
 		refetchQueries: [
 			{
@@ -95,26 +104,35 @@ export default function SettingUserNew() {
 
 	async function onSubmit(formData) {
 		setLoading(true)
-
-		try {
-			const { data } = await createUser({
-				variables: {
-					input: {
-						username: formData.username,
-						email: formData.email,
-						cabang: formData.cabang,
-						creator: formData.name,
-						name: formData.name,
-						password: formData.password,
-						role: formData.role
+		if (
+			role === `superadmin` ||
+			(role === `admin` && formData.role === `user`)
+		) {
+			try {
+				const { data } = await createUser({
+					variables: {
+						input: {
+							username: formData.username,
+							email: formData.email,
+							cabang: formData.cabang,
+							creator: formData.name,
+							name: formData.name,
+							password: formData.password,
+							role: formData.role
+						}
 					}
-				}
-			})
+				})
 
-			reset()
-			setToast(data.createUser)
-		} catch (error) {
-			setToast(error)
+				reset()
+				setToast(data.createUser)
+			} catch (error) {
+				setToast(error)
+			}
+		} else {
+			setToast({
+				type: `error`,
+				message: `You don't have permission to create this user`
+			})
 		}
 
 		setLoading(false)
@@ -239,6 +257,7 @@ export default function SettingUserNew() {
 											name="password"
 											required
 											label="Password"
+											error="Password must be at least 8 characters"
 											placeholder="••••••••••••••"
 										/>
 									</div>
@@ -249,6 +268,7 @@ export default function SettingUserNew() {
 											name="password_confirmation"
 											required
 											label="Repeat Password"
+											error="Password must be at least 8 characters"
 											placeholder="••••••••••••••"
 										/>
 									</div>

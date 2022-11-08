@@ -23,6 +23,8 @@ const GET_DATA = gql`
 			tipe_kendaraan
 			nama_supir
 			nama_kenek
+			nomor_supir
+			nomor_kenek
 			status
 			last_update
 			creator
@@ -81,6 +83,8 @@ export default function SettingUserEdit() {
 				tipe_kendaraan: item.tipe_kendaraan,
 				nama_supir: item.nama_supir,
 				nama_kenek: item.nama_kenek,
+				nomor_supir: item.nomor_supir,
+				nomor_kenek: item.nomor_kenek,
 				status: item.status,
 				last_update: moment
 					.unix(item.last_update / 1000)
@@ -99,6 +103,8 @@ export default function SettingUserEdit() {
 			tipe_kendaraan: e.target.tipe_kendaraan.value,
 			nama_supir: e.target.nama_supir.value,
 			nama_kenek: e.target.nama_kenek.value,
+			nomor_supir: e.target.nomor_supir.value,
+			nomor_kenek: e.target.nomor_kenek.value,
 			status: e.target.status.value,
 			last_update: new Date(),
 			creator: String(dashboardState.auth.id),
@@ -221,6 +227,30 @@ export default function SettingUserEdit() {
 													type="text"
 													name="nama_kenek"
 													defaultValue={mappedData?.nama_kenek}
+													style={inputStyle}
+												/>
+											</div>
+											<div className="form-group">
+												<label className="label" style={inputStyles}>
+													Nomor Supir
+												</label>
+												<input
+													className="input"
+													type="text"
+													name="nomor_supir"
+													defaultValue={mappedData?.nomor_supir}
+													style={inputStyle}
+												/>
+											</div>
+											<div className="form-group">
+												<label className="label" style={inputStyles}>
+													Nomor Kenek
+												</label>
+												<input
+													className="input"
+													type="text"
+													name="nomor_kenek"
+													defaultValue={mappedData?.nomor_kenek}
 													style={inputStyle}
 												/>
 											</div>
