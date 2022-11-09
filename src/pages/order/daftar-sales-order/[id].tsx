@@ -155,7 +155,6 @@ export default function Home() {
 					total_tagihan: parseInt(formData.total_tagihan),
 					kota_tujuan: formData.kota_tujuan,
 					rekening: formData.rekening,
-					nama_kapal: formData.nama_kapal,
 					dp: formData.dp,
 					tanggal_sales_order: generateDateSalesOrder(),
 					term_payment: filterSalesOrdered?.[0]?.term_payment
@@ -177,6 +176,7 @@ export default function Home() {
 			for (let i = 0; i < myChildrenArrayMerge.length; i++) {
 				createData(myChildrenArrayMerge[i])
 			}
+			console.log(`myChildrenArrayMerge`, myChildrenArrayMerge)
 			deleteData(parseInt(id as string))
 			router.push(`/order/daftar-sales-order`)
 			message.success(`Data Berhasil Disimpan`)
