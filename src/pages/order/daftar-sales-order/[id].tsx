@@ -155,7 +155,7 @@ export default function Home() {
 					total_tagihan: parseInt(formData.total_tagihan),
 					kota_tujuan: formData.kota_tujuan,
 					rekening: formData.rekening,
-					dp: formData.dp,
+					dp: parseInt(formData.dp),
 					tanggal_sales_order: generateDateSalesOrder(),
 					term_payment: filterSalesOrdered?.[0]?.term_payment
 				}
