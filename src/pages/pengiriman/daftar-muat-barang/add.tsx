@@ -5,8 +5,8 @@ import IconTrash from "@assets/icons/icon-trash.svg"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import useLoading from "@hooks/useLoading.hook"
-import { Button, DatePicker, message } from "antd"
-import "antd/dist/antd.css"
+import { Button, DatePicker, message, notification } from "antd"
+
 import { CREATE_DAFTAR_PACKING_LIST } from "graphql/daftar_packing_list/mutations"
 import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"
 import { CREATE_DAFTAR_SURAT_PENGANTAR } from "graphql/daftar_surat_pengantar/mutations"
@@ -500,10 +500,10 @@ export default function Home() {
 			}
 
 			//merge dataA, dataT, dataB , data1, data2, data3
-			const data = dataA.concat(dataT, dataB, data1, data2, data3)
+			const datas = dataA.concat(dataT, dataB, data1, data2, data3)
 
 			//remove if nomor_ttb is undefined
-			const dataFilter = data.filter((item) => item.nomor_ttb !== ``)
+			const dataFilter = datas.filter((item) => item.nomor_ttb !== ``)
 
 			//assign total koli to data filter
 			dataFilter.map((item) => {
@@ -569,7 +569,17 @@ export default function Home() {
 			})
 			// create new data
 			for (let i = 0; i < dataFilter2.length; i++) {
-				createData(dataFilter2[i])
+				const check = data?.daftar_muat_barang.find(
+					(item) => item.nomor_ttb === dataFilter2[i].nomor_ttb
+				)
+				if (check !== undefined) {
+					notification.error({
+						message: `Nomor Muat Barang sudah ada`
+					})
+				}
+				if (check === undefined) {
+					createData(dataFilter2[i])
+				}
 			}
 			dataFilter2.map((item) => {
 				delete item.tanggal_muat_barang
@@ -577,7 +587,12 @@ export default function Home() {
 			})
 			//create packing list
 			for (let i = 0; i < dataFilter2.length; i++) {
-				createDataPackingList(dataFilter2[i])
+				const check = data?.daftar_muat_barang.find(
+					(item) => item.nomor_ttb === dataFilter2[i].nomor_ttb
+				)
+				if (check === undefined) {
+					createDataPackingList(dataFilter2[i])
+				}
 			}
 			const data_packing_list = dataFilter2
 
@@ -608,10 +623,20 @@ export default function Home() {
 							4
 						)
 				})
-				createDataSuratJalan(data_packing_list[i])
+				const check = data?.daftar_muat_barang.find(
+					(item) => item.nomor_ttb === dataFilter2[i].nomor_ttb
+				)
+				if (check === undefined) {
+					createDataSuratJalan(data_packing_list[i])
+				}
 			}
-			message.success(`Data Berhasil Disimpan`)
-			router.push(`/pengiriman/daftar-muat-barang`)
+			const check = data?.daftar_muat_barang.find(
+				(item) => item.nomor_ttb === dataFilter2[0].nomor_ttb
+			)
+			if (check === undefined) {
+				message.success(`Data Berhasil Disimpan`)
+			}
+			// router.push(`/pengiriman/daftar-muat-barang`)
 		} catch (error) {
 			console.log(error)
 		}

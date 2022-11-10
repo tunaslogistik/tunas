@@ -4,7 +4,7 @@ import { gql, useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import { Button, DatePicker, Form, Input, message, Select, Space } from "antd"
-import "antd/dist/antd.css"
+
 import Checkbox from "antd/lib/checkbox/Checkbox"
 import TextArea from "antd/lib/input/TextArea"
 import { GET_CUSTOMER } from "graphql/customer/queries"

@@ -8,7 +8,7 @@ import { DashboardContext } from "@contexts/DashboardContext.context"
 import { yupResolver } from "@hookform/resolvers/yup"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, message, Popconfirm } from "antd"
-import "antd/dist/antd.css"
+
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import { GET_JENIS_PENGIRIMAN } from "graphql/jenis_pengiriman/queries"
@@ -495,7 +495,7 @@ export default function Home() {
 								required
 							/>
 						</div>
-						<div className="form-group">
+						<div className="form-group" style={{ paddingTop: `1%` }}>
 							<label style={{ fontWeight: `bold` }} className="label">
 								Container Size
 							</label>

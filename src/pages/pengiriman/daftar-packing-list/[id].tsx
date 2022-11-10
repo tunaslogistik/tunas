@@ -3,7 +3,7 @@ import IconPrint from "@assets/icons/icon-print.svg"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
-import "antd/dist/antd.css"
+
 import Table, { ColumnsType } from "antd/lib/table"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import Link from "next/link"

@@ -6,8 +6,8 @@ import IconTrash from "@assets/icons/icon-trash.svg"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import useLoading from "@hooks/useLoading.hook"
-import { Button, DatePicker, message } from "antd"
-import "antd/dist/antd.css"
+import { Button, DatePicker, notification } from "antd"
+
 import { CREATE_DAFTAR_INVOICE } from "graphql/daftar_invoice/mutations"
 import { GET_DAFTAR_MUAT_BARANG } from "graphql/daftar_muat_barang/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
@@ -124,6 +124,7 @@ export default function Home() {
 					vendor_pelayanan: formData.vendor_pelayaran,
 					tanggal_surat_jalan: formData.tanggal_surat_jalan,
 					nomor_container: formData.nomor_container,
+					nama_kapal: formData.nama_kapal,
 					nomor_seal: formData.nomor_seal,
 					tanggal_keberangkatan: formData.tanggal_keberangkatan,
 					keterangan: formData.keterangan
@@ -173,6 +174,7 @@ export default function Home() {
 							tanggal_surat_jalan: formData.tanggal_surat_jalan,
 							nomor_container: formData.nomor_container,
 							nomor_seal: formData.nomor_seal,
+							nama_kapal: formData.nama_kapal,
 							tanggal_keberangkatan: formData.tanggal_keberangkatan,
 							keterangan: formData.keterangan
 						})
@@ -199,12 +201,21 @@ export default function Home() {
 			myChildrenArrayMerge2.map((item) => {
 				item.total_koli = String(sumKoli)
 				item.total_volume = String(sumVolume)
-				item.nama_kapal = formData.nama_kapal
 			})
 			console.log(`myChildrenArrayMerge2`, myChildrenArrayMerge2)
 			//create new data
 			for (let i = 0; i < myChildrenArrayMerge2.length; i++) {
-				createData(myChildrenArrayMerge2[i])
+				const check = data?.daftar_surat_jalan.find(
+					(item) => item.nomor_ttb === myChildrenArrayMerge2[i].nomor_ttb
+				)
+				if (check !== undefined) {
+					notification.error({
+						message: `Nomor Surat Jalan sudah ada`
+					})
+				}
+				if (check === undefined) {
+					createData(myChildrenArrayMerge2[i])
+				}
 			}
 
 			const invoice = myChildrenArrayMerge2
@@ -219,10 +230,22 @@ export default function Home() {
 			})
 
 			for (let i = 0; i < myChildrenArrayMerge2.length; i++) {
-				createDataInvoice(invoice[i])
+				const check = data?.daftar_surat_jalan.find(
+					(item) => item.nomor_ttb === myChildrenArrayMerge2[i].nomor_ttb
+				)
+				if (check === undefined) {
+					createDataInvoice(invoice[i])
+				}
 			}
 
-			message.success(`Data Berhasil Disimpan`)
+			const check = data?.daftar_surat_jalan.find(
+				(item) => item.nomor_ttb === formData.nomor_ttb
+			)
+			if (check === undefined) {
+				notification.success({
+					message: `Data berhasil dibuat`
+				})
+			}
 			// router.push(`/pengiriman/daftar-surat-jalan`)
 		} catch (error) {
 			console.log(error)

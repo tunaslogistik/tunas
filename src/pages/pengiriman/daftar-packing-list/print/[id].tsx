@@ -241,7 +241,7 @@ export default function Home() {
 					<View
 						style={{
 							marginTop: `40px`,
-							marginBottom: `40px`,
+							marginBottom: `10px`,
 							marginLeft: `40px`,
 							fontWeight: `bold`,
 							fontSize: `12px`
@@ -287,9 +287,11 @@ export default function Home() {
 						flexDirection: `row`,
 						border: `1px solid #000000`,
 						marginTop: `20px`,
+						marginBottom: `20px`,
 						marginLeft: `40px`,
 						marginRight: `40px`
 					}}
+					fixed
 				>
 					<View style={{ padding: `10px` }}>
 						<Text
@@ -562,7 +564,7 @@ export default function Home() {
 										borderBottom: `1px solid #000000`
 									}}
 								>
-									{item.nama_barang}
+									{item.nama_barang.split(``)}
 									{`/`}
 									{`\n`}
 									<Text

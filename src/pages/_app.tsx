@@ -11,6 +11,8 @@ import { ReactNode } from "react"
 import "@styles/admin.scss"
 import "@styles/app.scss"
 import "@styles/global.scss"
+import "antd/dist/antd.css"
+
 import { Session } from "next-auth"
 
 type Page<P = {}> = NextPage<P> & {

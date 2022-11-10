@@ -2,7 +2,7 @@ import { gql, useMutation, useQuery } from "@apollo/client"
 import IconPrint from "@assets/icons/icon-print.svg"
 import AdminPage from "@components/admin/AdminPage.component"
 import { Button, message, Popconfirm, Table } from "antd"
-import "antd/dist/antd.css"
+
 import { ColumnsType } from "antd/lib/table"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -146,6 +146,16 @@ export default function Home() {
 			dataIndex: `penerima`,
 			key: `penerima`,
 			width: `10%`,
+			render: (text) => (
+				<div
+					style={{
+						width: 100,
+						overflow: `hidden`
+					}}
+				>
+					{text}
+				</div>
+			),
 			align: `center`,
 			sorter: (a, b) => a.penerima.localeCompare(b.penerima),
 			sortDirections: [`descend`, `ascend`]
@@ -169,20 +179,22 @@ export default function Home() {
 			sortDirections: [`descend`, `ascend`]
 		},
 		{
-			title: `TTB`,
-			dataIndex: `total_ttb`,
-			key: `total_ttb`,
-			width: `10%`,
-			align: `center`,
-			sorter: (a, b) => a.total_ttb.localeCompare(b.total_ttb),
-			sortDirections: [`descend`, `ascend`]
-		},
-		{
 			title: `Nama barang`,
 			dataIndex: `nama_barang`,
 			key: `nama_barang`,
 			width: `10%`,
 			align: `center`,
+			//wrap text
+			render: (text) => (
+				<div
+					style={{
+						width: 100,
+						overflow: `hidden`
+					}}
+				>
+					{text}
+				</div>
+			),
 			sorter: (a, b) => a.nama_barang.localeCompare(b.nama_barang),
 			sortDirections: [`descend`, `ascend`]
 		}

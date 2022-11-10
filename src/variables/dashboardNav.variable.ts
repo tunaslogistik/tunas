@@ -80,7 +80,8 @@ export const dashboardPagesNav: Nav[] = [
 	},
 	{
 		key: `keuangan`,
-		href: `#`,
+		href: `/keuangan`,
+		redirectHref: `/keuangan/daftar-invoice`,
 		label: `Keuangan`,
 		icon: IconFinance,
 		subnav: [

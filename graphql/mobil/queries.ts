@@ -8,6 +8,8 @@ export const GET_VECHNICLE = gql`
 			tipe_kendaraan
 			nama_supir
 			nama_kenek
+			nomor_supir
+			nomor_kenek
 			status
 			last_update
 			creator

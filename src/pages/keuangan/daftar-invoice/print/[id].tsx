@@ -40,7 +40,10 @@ const GET_DATA = gql`
 		}
 	}
 `
-
+Font.registerHyphenationCallback((word) => {
+	// Return entire word as unique part
+	return [word]
+})
 Font.register({
 	family: `Helvetica-Bold`,
 	src: `https://fonts.gstatic.com/s/helveticaneue/v70/1Ptsg8zYS_SKggPNyC0IT0kLW-43aMEzIO6XUTLjad8.woff2`
@@ -320,6 +323,7 @@ export default function Home() {
 						<Text
 							style={{
 								paddingTop: `4px`,
+								fontFamily: `Helvetica-Bold`,
 								fontSize: `10px`,
 								width: `105px`,
 								textAlign: `right`
@@ -338,12 +342,13 @@ export default function Home() {
 						borderTop: `1px solid black`,
 						borderBottom: `1px solid black`
 					}}
+					fixed
 				>
 					<View
 						style={{
 							paddingRight: `40px`,
 							marginBottom: `-21px`,
-							fontSize: `12px`,
+							fontSize: `10px`,
 							borderRight: `1px solid black`,
 							width: `515px`
 						}}
@@ -410,12 +415,11 @@ export default function Home() {
 					style={{
 						marginLeft: `40px`,
 						marginRight: `40px`,
-						marginTop: `20px`,
 						fontSize: `12px`,
-						borderTop: `1px solid #000000`,
-						borderRight: `1px solid #000000`,
-						borderLeft: `1px solid #000000`
+						borderBottom: `1px solid #000000`,
+						marginBottom: `20px`
 					}}
+					fixed
 				>
 					<View
 						style={{
@@ -621,7 +625,7 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.nama_barang}
+									{item.nama_barang.split(``)}
 								</Text>
 								<Text
 									style={{
@@ -930,11 +934,33 @@ export default function Home() {
 						<Text style={{ marginTop: `5%`, fontSize: `8px`, flex: 1 }}>
 							Total: {sumKoli}
 						</Text>
-						<Text style={{ marginTop: `5%`, fontSize: `8px`, flex: 1 }}>
-							{/* {moment(dataTTB?.[0]?.tanggal_diterima).format(`DD-MM-YYYY`) +
-								` / ` +
-								dataTTB?.[0]?.ttb_number} */}
-						</Text>
+						<View
+							style={{
+								marginTop: `5%`,
+								fontSize: `8px`,
+								flexDirection: `column`
+							}}
+						>
+							{
+								//view all ttb_number from dataTTB for loop
+								dataTTB?.map((item, index) => {
+									return (
+										<Text
+											key={index}
+											style={{
+												fontSize: `8px`,
+												marginRight: `5px`
+											}}
+										>
+											{moment(dataTTB?.tanggal_diterima).format(`DD-MM-YYYY`)} /
+											{` `}
+											{` `}
+											{item.ttb_number}
+										</Text>
+									)
+								})
+							}
+						</View>
 					</View>
 				</View>
 				<View
@@ -1010,6 +1036,7 @@ export default function Home() {
 							fontSize: `12px`,
 							width: `300px`
 						}}
+						break
 					>
 						<Text
 							style={{ fontSize: `9px`, width: `130px`, textAlign: `center` }}

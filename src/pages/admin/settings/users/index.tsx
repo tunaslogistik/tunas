@@ -6,11 +6,12 @@ import EiPagination from "@components/ei/EiPagination.component"
 import Access from "@components/util/Access.component"
 import OutsideClick from "@components/util/OutsideClick.component"
 import QueryResult from "@components/util/QueryResult.component"
+import { DashboardContext } from "@contexts/DashboardContext.context"
 import { slideDownMotion } from "@variables/motion.variable"
 import { AnimatePresence, motion } from "framer-motion"
 import { GET_USERS } from "graphql/user/queries"
 import Link from "next/link"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { useForm } from "react-hook-form"
 
 export default function SettingUsers() {
@@ -18,12 +19,20 @@ export default function SettingUsers() {
 	const [currentPage, setCurrentPage] = useState(1)
 
 	const setForm = useForm()
+	const { state: dashboardState } = useContext(DashboardContext)
+
+	const username = dashboardState.auth.username
 
 	const { data, loading, error } = useQuery(GET_USERS, {
 		variables: {
 			page: currentPage
 		}
 	})
+
+	//get role by username
+	const role = data?.users.user?.find(
+		(user) => user.username === username
+	)?.role
 
 	return (
 		<div>
@@ -59,9 +68,18 @@ export default function SettingUsers() {
 												>
 													<ul className="items">
 														<li className="item">
-															<Link href="/admin/settings/users/roles">
-																<a className="link">Manage user roles</a>
-															</Link>
+															{
+																//redirect to href="/admin/settings/users/roles" if role = superadmin else anda tidak memiliki akses
+																role === `superadmin` ? (
+																	<Link href="/admin/settings/users/roles">
+																		<a className="link">Manage user roles</a>
+																	</Link>
+																) : (
+																	<p className="link">
+																		Anda tidak memiliki akses
+																	</p>
+																)
+															}
 														</li>
 													</ul>
 												</motion.div>

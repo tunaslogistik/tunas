@@ -292,6 +292,8 @@ model vechnicle {
   tipe_kendaraan  String
   nama_supir      String
   nama_kenek      String
+  nomor_supir     String
+  nomor_kenek     String
   status          String
   last_update     DateTime
   creator         String

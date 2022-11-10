@@ -5,7 +5,7 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, message, Table } from "antd"
-import "antd/dist/antd.css"
+
 import { ColumnsType } from "antd/lib/table"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { UPDATE_DAFTAR_SURAT_JALAN } from "graphql/daftar_surat_jalan/mutations"

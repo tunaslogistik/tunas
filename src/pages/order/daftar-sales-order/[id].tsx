@@ -5,7 +5,7 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, message, Popconfirm } from "antd"
-import "antd/dist/antd.css"
+
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import { GET_PENGATURAN } from "graphql/pengaturan/queries"
@@ -54,8 +54,11 @@ export default function Home() {
 
 	//GET DATA CUSTOMER
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
+
 	const setForm = useForm()
+
 	const { register, handleSubmit, watch, setValue, reset } = setForm
+
 	const { data } = useQuery(GET_DATA, {
 		onCompleted({ daftar_sales_order }) {
 			const data = daftar_sales_order
@@ -69,17 +72,8 @@ export default function Home() {
 				return el.nomor_ttb === ttb_number && el.pengirim === pengirim
 			})
 			//set form with reset
-			console.log(`sales[0]?.nomor_ttb`, sales[0]?.nomor_ttb)
 			reset({
-				nomor_ttb: sales[0]?.nomor_ttb,
-				harga: sales[0]?.harga,
-				total_tagihan: sales[0]?.total_tagihan,
-				kota_tujuan: sales[0]?.kota_tujuan,
-				dp: sales[0]?.dp,
-				tanggal_sales_order: moment
-					.unix(sales?.[0]?.tanggal_sales_order / 1000)
-					.format(`YYYY-MM-DD`),
-				term_payment: sales[0]?.term_payment
+				nomor_ttb: filteredData[0]?.nomor_ttb
 			})
 		}
 	})
@@ -161,8 +155,7 @@ export default function Home() {
 					total_tagihan: parseInt(formData.total_tagihan),
 					kota_tujuan: formData.kota_tujuan,
 					rekening: formData.rekening,
-					nama_kapal: formData.nama_kapal,
-					dp: formData.dp,
+					dp: parseInt(formData.dp),
 					tanggal_sales_order: generateDateSalesOrder(),
 					term_payment: filterSalesOrdered?.[0]?.term_payment
 				}
@@ -183,6 +176,7 @@ export default function Home() {
 			for (let i = 0; i < myChildrenArrayMerge.length; i++) {
 				createData(myChildrenArrayMerge[i])
 			}
+			console.log(`myChildrenArrayMerge`, myChildrenArrayMerge)
 			deleteData(parseInt(id as string))
 			router.push(`/order/daftar-sales-order`)
 			message.success(`Data Berhasil Disimpan`)
@@ -230,16 +224,6 @@ export default function Home() {
 
 	//if tipe_ppn is 1% then return 1.01 if 10% then return 1.1
 	const tipePPNPercentage = tipePPN === 1 ? 1.01 : 1.1
-
-	// const pengirim = getValues(`pengirim`)
-
-	// if (pengirim === undefined || pengirim == ``) {
-	// 	setValue(`nomor_ttb`, filterSalesOrdered?.[0]?.nomor_ttb)
-	// 	setValue(`pengirim`, filterTTB?.[0]?.pengirim)
-	// 	setValue(`kota_tujuan`, filterTTB?.[0]?.kota_tujuan)
-	// 	setValue(`total_volume_ttb`, filterTTB?.[0]?.total_volume)
-	// 	setValue(`jenis_pengiriman`, filterTTB?.[0]?.jenis_pengiriman)
-	// }
 
 	useEffect(() => {
 		console.log(`watch`, watch(`harga`))

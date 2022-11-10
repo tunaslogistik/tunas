@@ -5,7 +5,7 @@ import Access from "@components/util/Access.component"
 import { DashboardContext } from "@contexts/DashboardContext.context"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, message, Popconfirm } from "antd"
-import "antd/dist/antd.css"
+
 import {
 	CREATE_DAFTAR_HARGA,
 	DELETE_DAFTAR_HARGA
