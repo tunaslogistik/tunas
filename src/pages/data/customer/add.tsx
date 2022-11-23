@@ -27,6 +27,7 @@ const GET_DATA = gql`
 			last_update
 			creator
 			updated_by
+			idPelanggan
 		}
 	}
 `
