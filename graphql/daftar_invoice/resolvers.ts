@@ -1,3 +1,4 @@
+import moment from "moment"
 import { Context } from "../context"
 
 const queries = {
@@ -86,7 +87,7 @@ const mutations = {
 				reverseInvoice: `false`,
 				taxDate: `31/03/2016`,
 				taxNumber: `0`,
-				transDate: tanggal_invoice,
+				transDate: moment(tanggal_invoice).format(`DD/MM/YYYY`),
 				branchName: `jakarta`
 			}
 			// make POST FUNCTION  axios
