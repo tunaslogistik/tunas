@@ -214,8 +214,6 @@ export default function Home() {
 		}
 	})
 
-	console.log(`dataTTB`, dataTTB)
-	//sum koli
 	const sumKoli = dataTTB?.reduce((acc, item) => {
 		return parseInt(acc) + parseInt(item.koli)
 	}, 0)
