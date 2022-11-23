@@ -11,6 +11,7 @@ export const types = gql`
 		kota_tujuan: String
 		rekening: String
 		total_tagihan: Int
+		harga_sebelum_ppn: Int
 		dp: Int
 		tanggal_sales_order: String
 		term_payment: String
@@ -30,6 +31,7 @@ export const types = gql`
 		harga: Int
 		dp: Int
 		total_tagihan: Int
+		harga_sebelum_ppn: Int
 		kota_tujuan: String
 		tanggal_sales_order: String
 		term_payment: String
@@ -44,6 +46,7 @@ export const types = gql`
 		pengirim: String
 		rekening: String
 		harga: Int
+		harga_sebelum_ppn: Int
 		dp: Int
 		total_tagihan: Int
 		tanggal_sales_order: String

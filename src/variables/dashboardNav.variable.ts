@@ -56,6 +56,11 @@ export const dashboardPagesNav: Nav[] = [
 		icon: IconSend,
 		subnav: [
 			{
+				key: `pengiriman-workorder`,
+				href: `/pengiriman/workorder`,
+				label: `Work Order`
+			},
+			{
 				key: `pengiriman-muatbarang`,
 				href: `/pengiriman/daftar-muat-barang`,
 				label: `Daftar Muat Barang`
@@ -144,5 +149,10 @@ export const dashboardSettingsNav = [
 		key: `Pengaturan`,
 		href: `/admin/settings/rekening`,
 		label: `Pengaturan`
+	},
+	{
+		key: `Pengaturan`,
+		href: `/admin/settings/accurate`,
+		label: `Accurate`
 	}
 ]

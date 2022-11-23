@@ -11,6 +11,7 @@ export const GET_DAFTAR_SALES_ORDER = gql`
 			pengirim
 			rekening
 			kota_tujuan
+			harga_sebelum_ppn
 			total_tagihan
 			dp
 			tanggal_sales_order

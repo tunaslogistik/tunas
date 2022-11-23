@@ -11,6 +11,7 @@ import Access from "@components/util/Access.component"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import Link from "next/link"
+import router from "next/router"
 
 //get DATA
 
@@ -119,25 +120,25 @@ export default function Home() {
 			width: `20%`,
 			sorter: (a, b) => a.total_volume.localeCompare(b.total_volume),
 			sortDirections: [`descend`, `ascend`]
-		},
-		{
-			title: `Action`,
-			key: `action`,
-			render: (text, record) => (
-				<span>
-					<a
-						onClick={() => {
-							window.open(
-								`/keuangan/daftar-invoice/print/${record.id}`,
-								`_blank`
-							)
-						}}
-					>
-						Print
-					</a>
-				</span>
-			)
 		}
+		// {
+		// 	title: `Action`,
+		// 	key: `action`,
+		// 	render: (text, record) => (
+		// 		<span>
+		// 			<a
+		// 				onClick={() => {
+		// 					window.open(
+		// 						`/keuangan/daftar-invoice/print/${record.id}`,
+		// 						`_blank`
+		// 					)
+		// 				}}
+		// 			>
+		// 				Print
+		// 			</a>
+		// 		</span>
+		// 	)
+		// }
 	]
 
 	//DATA FOr table with date moment
@@ -165,9 +166,7 @@ export default function Home() {
 	})
 	//merge duplicate data nomor ttb
 	const mergeData = dataTable?.reduce((acc, current) => {
-		const x = acc.find(
-			(item) => item.nomor_surat_jalan === current.nomor_surat_jalan
-		)
+		const x = acc.find((item) => item.nomor_invoice === current.nomor_invoice)
 		if (!x) {
 			return acc.concat([current])
 		} else {
@@ -190,7 +189,7 @@ export default function Home() {
 							<li className="action">
 								<div className="form-group">
 									<button className="button is-primary">
-										<Link href="/pengiriman/daftar-surat-jalan/add">
+										<Link href="/keuangan/daftar-invoice/add">
 											<a style={{ color: `white`, width: `170px` }}>Tambah</a>
 										</Link>
 									</button>
@@ -227,6 +226,13 @@ export default function Home() {
 							pagination={{ pageSize: 10 }}
 							loading={loading}
 							scroll={{ x: `max-content` }}
+							onRow={(record) => {
+								return {
+									onClick: () => {
+										router.push(`/keuangan/daftar-invoice/${record.id}`)
+									}
+								}
+							}}
 						/>
 					</div>
 				</div>

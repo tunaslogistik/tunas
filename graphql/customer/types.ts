@@ -3,6 +3,7 @@ import { gql } from "apollo-server-micro"
 export const types = gql`
 	type customer {
 		id: Int
+		idPelanggan: String
 		kode_customer: String
 		nama_customer: String
 		alamat: String
@@ -23,6 +24,7 @@ export const types = gql`
 
 	input CreateCustomerInput {
 		id: Int
+		idPelanggan: String
 		kode_customer: String
 		nama_customer: String
 		alamat: String
@@ -39,6 +41,7 @@ export const types = gql`
 
 	input UpdateCustomerInput {
 		id: Int
+		idPelanggan: String
 		kode_customer: String
 		nama_customer: String
 		alamat: String

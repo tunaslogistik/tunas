@@ -1,4 +1,5 @@
 import { gql } from "apollo-server-micro"
+import { accurate } from "./accurate"
 import { customer } from "./customer"
 import { daftar_harga } from "./daftar_harga"
 import { daftar_invoice } from "./daftar_invoice"
@@ -9,6 +10,7 @@ import { daftar_surat_jalan } from "./daftar_surat_jalan"
 import { daftar_surat_pengantar } from "./daftar_surat_pengantar"
 import { daftar_ttb } from "./daftar_ttb"
 import { daftar_tujuan } from "./daftar_tujuan"
+import { daftar_workorder } from "./daftar_workorder"
 import { jenis_pengiriman } from "./jenis_pengiriman"
 import { vechnicle } from "./mobil"
 import { navigation } from "./navigation"
@@ -35,6 +37,8 @@ export const typeDefs = gql`
 	${pengaturan.types}
 	${daftar_surat_jalan.types}
 	${daftar_invoice.types}
+	${daftar_workorder.types}
+	${accurate.types}
 
 	type Query {
 		settings: [Setting!]
@@ -64,6 +68,9 @@ export const typeDefs = gql`
 		daftar_surat_jalan: [daftar_surat_jalan!]
 
 		daftar_invoice: [daftar_invoice!]
+		daftar_workorder: [daftar_workorder!]
+
+		accurate: [accurate!]
 	}
 
 	type Mutation {
@@ -154,6 +161,10 @@ export const typeDefs = gql`
 		updatePengaturan(input: UpdatePengaturanInput!): MutatePengaturanResponse!
 		deletePengaturan(id: Int): MutatePengaturanResponse!
 
+		createAccurate(input: CreateAccurateInput!): MutateAccurateResponse!
+		updateAccurate(input: UpdateAccurateInput!): MutateAccurateResponse!
+		deleteAccurate(id: Int): MutateAccurateResponse!
+
 		createDaftar_surat_jalan(
 			input: CreateDaftar_surat_jalanInput!
 		): MutateDaftar_surat_jalanResponse!
@@ -169,6 +180,14 @@ export const typeDefs = gql`
 			input: UpdateDaftar_invoiceInput!
 		): MutateDaftar_invoiceResponse!
 		deleteDaftar_invoice(id: Int): MutateDaftar_invoiceResponse!
+
+		createDaftar_workorder(
+			input: CreateDaftar_workorderInput!
+		): MutateDaftar_workorderResponse!
+		updateDaftar_workorder(
+			input: UpdateDaftar_workorderInput!
+		): MutateDaftar_workorderResponse!
+		deleteDaftar_workorder(id: Int): MutateDaftar_workorderResponse!
 	}
 `
 
@@ -190,7 +209,9 @@ export const resolvers = {
 		...daftar_packing_list.resolvers.queries,
 		...pengaturan.resolvers.queries,
 		...daftar_surat_jalan.resolvers.queries,
-		...daftar_invoice.resolvers.queries
+		...daftar_invoice.resolvers.queries,
+		...daftar_workorder.resolvers.queries,
+		...accurate.resolvers.queries
 	},
 	Mutation: {
 		...setting.resolvers.mutations,
@@ -209,6 +230,8 @@ export const resolvers = {
 		...daftar_packing_list.resolvers.mutations,
 		...pengaturan.resolvers.mutations,
 		...daftar_surat_jalan.resolvers.mutations,
-		...daftar_invoice.resolvers.mutations
+		...daftar_invoice.resolvers.mutations,
+		...daftar_workorder.resolvers.mutations,
+		...accurate.resolvers.mutations
 	}
 }

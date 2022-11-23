@@ -60,6 +60,24 @@ export default function Home() {
 		createCustomer({ variables: { input: data } })
 	}
 
+	//get last update idPelanggan start from 0
+	const lastUpdate = data?.customer[data?.customer.length - 1]?.idPelanggan
+
+	//if last update is null, set idPelanggan to C.00188 else last update
+	const idp = lastUpdate == null ? `C.00188` : lastUpdate
+	//seperate number and string and + 1
+	const idpNumber = idp.match(/\d+/g).map(Number)
+	const idpString = idp.match(/[a-zA-Z]+/g)
+	const idpNumberPlus = idpNumber[0] + 1
+
+	//back to normal
+	const idpNumberPlusString = idpNumberPlus.toString()
+	const idpNumberPlusStringPad = idpNumberPlusString.padStart(5, `0`)
+	const idpNumberPlusStringPadFinal =
+		idpString[0] + `.` + idpNumberPlusStringPad
+
+	console.log(`idpNumberPlusStringPadFinal`, idpNumberPlusStringPadFinal)
+
 	const handleSubmit = (e) => {
 		e.preventDefault()
 		const dataSubmit = {
@@ -74,7 +92,8 @@ export default function Home() {
 			status: e.target.status.value,
 			last_update: new Date(),
 			creator: String(dashboardState.auth.id),
-			updated_by: String(dashboardState.auth.id)
+			updated_by: String(dashboardState.auth.id),
+			idPelanggan: String(idpNumberPlusStringPadFinal)
 		}
 		//check duplicate
 		const duplicate = data?.customer.find(

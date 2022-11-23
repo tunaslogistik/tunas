@@ -8,11 +8,11 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, DatePicker, notification } from "antd"
 
-import { CREATE_DAFTAR_INVOICE } from "graphql/daftar_invoice/mutations"
 import { GET_DAFTAR_MUAT_BARANG } from "graphql/daftar_muat_barang/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import moment from "moment"
 import Link from "next/link"
+import router from "next/router"
 import { useEffect, useRef, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { CREATE_DAFTAR_SURAT_JALAN } from "../../../../graphql/daftar_surat_jalan/mutations"
@@ -62,15 +62,6 @@ export default function Home() {
 	//create mutation function
 	const createData = (data) => {
 		createDaftar_sales_jalan({ variables: { input: data } })
-	}
-	//create invoice
-	const [createDaftar_invoice] = useMutation(CREATE_DAFTAR_INVOICE, {
-		refetchQueries: [{ query: GET_DATA }]
-	})
-
-	//create mutation function
-	const createDataInvoice = (data) => {
-		createDaftar_invoice({ variables: { input: data } })
 	}
 
 	const { fields, append, remove } = useFieldArray({
@@ -218,26 +209,6 @@ export default function Home() {
 				}
 			}
 
-			const invoice = myChildrenArrayMerge2
-
-			invoice.map((item) => {
-				item.nomor_invoice = `INV` + item.nomor_surat_jalan.slice(2)
-			})
-
-			invoice.map((item) => {
-				item.tanggal_invoice = formData.tanggal_surat_jalan
-				delete item.tanggal_surat_jalan
-			})
-
-			for (let i = 0; i < myChildrenArrayMerge2.length; i++) {
-				const check = data?.daftar_surat_jalan.find(
-					(item) => item.nomor_ttb === myChildrenArrayMerge2[i].nomor_ttb
-				)
-				if (check === undefined) {
-					createDataInvoice(invoice[i])
-				}
-			}
-
 			const check = data?.daftar_surat_jalan.find(
 				(item) => item.nomor_ttb === formData.nomor_ttb
 			)
@@ -246,7 +217,7 @@ export default function Home() {
 					message: `Data berhasil dibuat`
 				})
 			}
-			// router.push(`/pengiriman/daftar-surat-jalan`)
+			router.push(`/pengiriman/daftar-surat-jalan`)
 		} catch (error) {
 			console.log(error)
 		}
@@ -723,7 +694,7 @@ export default function Home() {
 									className="input"
 									type="text"
 									placeholder="nama kapal"
-									defaultValue={filterDaftarMuatBarang?.[0]?.nama_kapal}
+									value={filterDaftarMuatBarang?.[0]?.nama_kapal}
 									{...register(`nama_kapal`)}
 									required
 								/>

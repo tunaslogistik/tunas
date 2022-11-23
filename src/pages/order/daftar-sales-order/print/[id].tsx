@@ -1,9 +1,11 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { gql, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component_print"
 import {
 	Document,
 	Font,
+	Image,
 	Page,
 	PDFViewer,
 	StyleSheet,
@@ -182,6 +184,19 @@ export default function Home() {
 							fontSize: `12px`
 						}}
 					>
+						<Image
+							style={{ width: `40px`, height: `40px` }}
+							src="/assets/icons/Tunas.png"
+						/>
+					</View>
+					<View
+						style={{
+							marginTop: `40px`,
+							marginLeft: `40px`,
+							fontWeight: `bold`,
+							fontSize: `12px`
+						}}
+					>
 						<Text
 							style={{
 								fontFamily: `Helvetica-Bold`
@@ -199,7 +214,7 @@ export default function Home() {
 					<View
 						style={{
 							marginTop: `40px`,
-							marginLeft: `116px`
+							marginLeft: `50px`
 						}}
 					>
 						<Text
@@ -227,7 +242,7 @@ export default function Home() {
 						flexDirection: `row`,
 						marginLeft: `40px`,
 						marginRight: `40px`,
-						marginTop: `40px`,
+						marginTop: `20px`,
 						paddingBottom: `40px`,
 						borderTop: `1px solid black`,
 						borderBottom: `1px solid black`
@@ -318,14 +333,20 @@ export default function Home() {
 						<Text style={{ paddingTop: `5px`, fontSize: `10px`, flex: 1 }}>
 							Jenis Muatan:
 						</Text>
-						<Text style={{ paddingTop: `5px`, fontSize: `10px`, flex: 1 }}>
+						<Text
+							style={{
+								paddingTop: `5px`,
+								fontSize: `10px`,
+								flex: 1
+							}}
+						>
 							Jumlah Koli:
 						</Text>
 						<Text style={{ paddingTop: `5px`, fontSize: `10px`, flex: 1 }}>
 							Volume (m3):
 						</Text>
 						<Text style={{ paddingTop: `5px`, fontSize: `10px`, flex: 1 }}>
-							Tujuan
+							Tujuan:
 						</Text>
 						<Text style={{ paddingTop: `3px`, fontSize: `10px`, flex: 1 }}>
 							Harga:
@@ -366,7 +387,7 @@ export default function Home() {
 								fontSize: `10px`
 							}}
 						>
-							{namaBarang}
+							{namaBarang?.length > 40 ? namaBarang?.split(``) : namaBarang}
 						</Text>
 						<Text
 							style={{

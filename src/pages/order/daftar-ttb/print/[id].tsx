@@ -1,9 +1,11 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { gql, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component_print"
 import {
 	Document,
 	Font,
+	Image,
 	Page,
 	PDFViewer,
 	StyleSheet,
@@ -153,6 +155,7 @@ const styles = StyleSheet.create({
 		padding: `10px`
 	}
 })
+
 export default function Home() {
 	const { data } = useQuery(GET_DATA)
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
@@ -177,11 +180,24 @@ export default function Home() {
 	const MyDocument = () => (
 		<Document>
 			<Page style={styles.body}>
-				<View style={{ flexDirection: `row`, marginBottom: `20px` }} fixed>
+				<View style={{ flexDirection: `row`, marginBottom: `10px` }} fixed>
 					<View
 						style={{
 							marginTop: `40px`,
 							marginLeft: `40px`,
+							fontWeight: `bold`,
+							fontSize: `12px`
+						}}
+					>
+						<Image
+							style={{ width: `40px`, height: `40px` }}
+							src="/assets/icons/Tunas.png"
+						/>
+					</View>
+					<View
+						style={{
+							marginTop: `40px`,
+							marginLeft: `20px`,
 							fontWeight: `bold`,
 							fontSize: `12px`
 						}}
@@ -204,7 +220,7 @@ export default function Home() {
 						<Text
 							style={{
 								fontWeight: `bold`,
-								marginLeft: `40%`,
+								marginLeft: `25%`,
 								fontFamily: `Helvetica-Bold`
 							}}
 						>
@@ -214,7 +230,7 @@ export default function Home() {
 							style={{
 								fontFamily: `Helvetica-Bold`,
 								paddingTop: `2px`,
-								width: `320px`,
+								width: `253px`,
 								textAlign: `right`,
 								fontSize: `10px`
 							}}
@@ -228,7 +244,7 @@ export default function Home() {
 						flexDirection: `row`,
 						marginLeft: `40px`,
 						marginRight: `40px`,
-						marginTop: `20px`,
+						marginTop: `10px`,
 						paddingBottom: `40px`,
 						borderTop: `1px solid black`,
 						borderBottom: `1px solid black`

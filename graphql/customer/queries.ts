@@ -4,6 +4,7 @@ export const GET_CUSTOMER = gql`
 	query customer {
 		customer {
 			kode_customer
+			idPelanggan
 			nama_customer
 			alamat
 			telepon

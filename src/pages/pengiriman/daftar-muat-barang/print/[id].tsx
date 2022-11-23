@@ -4,6 +4,7 @@ import Dashboard from "@components/dashboard/Dashboard.component_print"
 import {
 	Document,
 	Font,
+	Image,
 	Page,
 	PDFViewer,
 	StyleSheet,
@@ -202,7 +203,21 @@ export default function Home() {
 					<View
 						style={{
 							marginTop: `40px`,
+							marginBottom: `20px`,
 							marginLeft: `40px`,
+							fontWeight: `bold`,
+							fontSize: `12px`
+						}}
+					>
+						<Image
+							style={{ width: `40px`, height: `40px` }}
+							src="/assets/icons/Tunas.png"
+						/>
+					</View>
+					<View
+						style={{
+							marginTop: `40px`,
+							marginLeft: `10px`,
 							marginBottom: `20px`,
 							fontWeight: `bold`,
 							fontSize: `12px`
@@ -222,13 +237,13 @@ export default function Home() {
 					<View
 						style={{
 							marginTop: `40px`,
-							marginLeft: `63px`
+							marginLeft: `23px`
 						}}
 					>
 						<Text
 							style={{
 								fontFamily: `Helvetica-Bold`,
-								fontSize: `17px`
+								fontSize: `16px`
 							}}
 						>
 							MUAT BARANG (STOWAGE)
@@ -236,7 +251,7 @@ export default function Home() {
 						<Text
 							style={{
 								fontFamily: `Helvetica-Bold`,
-								marginLeft: `113px`,
+								marginLeft: `103px`,
 								paddingTop: `2px`,
 								fontSize: `12px`
 							}}

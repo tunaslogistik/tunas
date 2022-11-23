@@ -20,9 +20,9 @@ export const UPDATE_DAFTAR_INVOICE = gql`
 	}
 `
 
-export const DELETE_DAFTAR_SURAT_JALAN = gql`
-	mutation DeleteDaftar_surat_jalan($deleteDaftar_surat_jalanId: Int) {
-		deleteDaftar_surat_jalan(id: $deleteDaftar_surat_jalanId) {
+export const DELETE_DAFTAR_INVOICE = gql`
+	mutation DeleteDaftar_invoice($deleteDaftar_invoiceId: Int) {
+		deleteDaftar_invoice(id: $deleteDaftar_invoiceId) {
 			code
 			success
 			message

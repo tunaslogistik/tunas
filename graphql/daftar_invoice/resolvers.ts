@@ -24,7 +24,14 @@ const mutations = {
 				nama_kapal,
 				nomor_container,
 				nomor_seal,
-				keterangan
+				nama_barang,
+				harga,
+				harga_biaya_tambahan,
+				ppn_biaya_tambahan,
+				keterangan,
+				accurate,
+				pengirim,
+				total_tagihan
 			} = args.input
 
 			const daftar_invoice = await context.prisma.daftar_invoice.create({
@@ -43,9 +50,56 @@ const mutations = {
 					nama_kapal,
 					tanggal_keberangkatan,
 					nomor_seal,
-					keterangan
+					nama_barang,
+					harga,
+					harga_biaya_tambahan,
+					ppn_biaya_tambahan,
+					keterangan,
+					accurate,
+					pengirim,
+					total_tagihan
 				}
 			})
+
+			//post to api inside header authorization and session axios
+			// const token = `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`
+			// const session = `22f7af2e-1016-4c26-911f-91dd48b69c3b`
+
+			const url = `https://public.accurate.id/accurate/api/sales-invoice/save.do?Scope: sales_invoice_save`
+			const data = {
+				Scope: `sales_invoice_save`,
+				customerNo: pengirim,
+				Number: nomor_invoice,
+				detailItem: [
+					{
+						itemNo: accurate,
+						unitPrice: total_tagihan
+					}
+				],
+				salesQuotation: {
+					number: nomor_ttb
+				},
+				deliveryOrder: {
+					number: nomor_surat_jalan
+				},
+				orderDownPaymentNumber: `Test_orderDownPaymentNumber_01`,
+				reverseInvoice: `false`,
+				taxDate: `31/03/2016`,
+				taxNumber: `0`,
+				transDate: tanggal_invoice,
+				branchName: `jakarta`
+			}
+			// make POST FUNCTION  axios
+			const axios = require(`axios`)
+			const response = await axios.post(url, data, {
+				headers: {
+					Authorization: `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`,
+					"X-Session-ID": `22f7af2e-1016-4c26-911f-91dd48b69c3b`
+				}
+			})
+			console.log(response.data)
+			console.log(accurate)
+			console.log(nomor_surat_jalan)
 
 			return {
 				code: `200`,
@@ -75,7 +129,14 @@ const mutations = {
 				nama_kapal,
 				nomor_container,
 				nomor_seal,
-				keterangan
+				nama_barang,
+				harga,
+				harga_biaya_tambahan,
+				ppn_biaya_tambahan,
+				keterangan,
+				accurate,
+				pengirim,
+				total_tagihan
 			} = args.input
 			let daftar_invoice
 
@@ -96,7 +157,14 @@ const mutations = {
 					nama_kapal,
 					tanggal_keberangkatan,
 					nomor_seal,
-					keterangan
+					nama_barang,
+					harga,
+					harga_biaya_tambahan,
+					ppn_biaya_tambahan,
+					keterangan,
+					accurate,
+					pengirim,
+					total_tagihan
 				}
 			})
 

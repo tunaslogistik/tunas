@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { gql, useMutation, useQuery } from "@apollo/client"
 import IconPrint from "@assets/icons/icon-print.svg"
 import AdminPage from "@components/admin/AdminPage.component"
@@ -57,7 +58,7 @@ export default function Home() {
 
 	const setForm = useForm()
 
-	const { register, handleSubmit, watch, setValue, reset } = setForm
+	const { register, handleSubmit, watch, setValue, reset, getValues } = setForm
 
 	const { data } = useQuery(GET_DATA, {
 		onCompleted({ daftar_sales_order }) {
@@ -113,6 +114,93 @@ export default function Home() {
 		message.success(`Data berhasil dihapus`)
 	}
 
+	//MAP DATA DAFTAR TTB
+	const mapDaftarTTB = dataDaftarTTB?.daftar_ttb?.map((ttb) => {
+		return {
+			nomor_ttb: ttb.ttb_number,
+			pengirim: ttb.pengirim,
+			kota_tujuan: ttb.kota_tujuan,
+			total_volume: ttb.total_volume,
+			jenis_pengiriman: ttb.jenis_pengiriman
+		}
+	})
+	//make a loop to merge duplicate ttb number
+	const mergeTTB = mapDaftarTTB?.reduce((acc, curr) => {
+		if (!acc.some((item) => item.nomor_ttb === curr.nomor_ttb)) {
+			acc.push(curr)
+		}
+		return acc
+	}, [])
+
+	//exclude ttb number where in daftar_sales_order
+	const excludeTTB = mergeTTB?.filter(
+		(item) => !daftar_sales_order?.includes(item.nomor_ttb)
+	)
+
+	//filter ttb
+	const filterTTB = mergeTTB?.filter((ttb) => {
+		return ttb.nomor_ttb === filterSalesOrdered?.[0]?.nomor_ttb
+	})
+
+	//turn dataCustomer.tipe_ppn to percentage where nama_customer === filterTTB2.pengirim
+	const filterCustomer = dataCustomer?.daftar_customer?.filter((item) => {
+		return item.nama_customer === filterTTB[0]?.pengirim
+	})
+
+	//get tipe ppn
+	const tipePPN = filterCustomer?.[0]?.tipe_ppn
+
+	//if tipe_ppn is 1% then return 1.01 if 10% then return 1.1
+	const tipePPNPercentage = tipePPN / 100
+
+	const PPN =
+		getValues(`total_volume_ttb`) !== 0
+			? getValues(`total_volume_ttb`) *
+			  Number(getValues(`harga`)) *
+			  tipePPNPercentage
+			: Number(getValues(`harga`)) * tipePPNPercentage
+
+	useEffect(() => {
+		console.log(`watch`, watch(`harga`))
+	}, [watch])
+
+	useEffect(() => {
+		console.log(`watch volume`, watch(`total_volume_ttb`))
+	}, [watch])
+
+	const volume = watch(`total_volume_ttb`)
+	const harga = watch(`harga`)
+
+	//if total = 0 or NaN then return default value total_tagihan use effect else return total
+	const totalTagihan =
+		volume !== 0 ? Number(volume) * Number(harga) + PPN : Number(harga) + PPN
+
+	const harga_sebelum_ppn =
+		volume !== 0 ? Number(volume) * Number(harga) : Number(harga)
+
+	useEffect(() => {
+		setValue(`total_tagihan`, totalTagihan)
+	}, [setValue, totalTagihan])
+
+	const handleChangeTTB = (value) => {
+		const data = mergeTTB?.find((item) => item.nomor_ttb === value)
+		setValue(`pengirim`, data.pengirim)
+		setValue(`kota_tujuan`, data.kota_tujuan)
+		setValue(`total_volume_ttb`, data.total_volume)
+		setValue(`jenis_pengiriman`, data.jenis_pengiriman)
+	}
+
+	//change millideimal filterSalesOrdered?.[0]?.tanggal_sales_order to yyyy-mm-dd with mommnet
+	const tanggal_sales_order_date = moment
+		.unix(filterSalesOrdered?.[0]?.tanggal_sales_order / 1000)
+		.format(`YYYY-MM-DD`)
+
+	const dataBank = dataPengaturan?.pengaturan?.map((item) => {
+		return {
+			nama_bank: item.bank
+		}
+	})
+
 	async function onSubmit(formData) {
 		setLoading(true)
 		try {
@@ -152,6 +240,7 @@ export default function Home() {
 					total_volume: parseInt(formData.total_volume_ttb),
 					harga: parseInt(formData.harga),
 					pengirim: formData.pengirim,
+					harga_sebelum_ppn: harga_sebelum_ppn,
 					total_tagihan: parseInt(formData.total_tagihan),
 					kota_tujuan: formData.kota_tujuan,
 					rekening: formData.rekening,
@@ -185,83 +274,6 @@ export default function Home() {
 		}
 		setLoading(false)
 	}
-
-	//MAP DATA DAFTAR TTB
-	const mapDaftarTTB = dataDaftarTTB?.daftar_ttb?.map((ttb) => {
-		return {
-			nomor_ttb: ttb.ttb_number,
-			pengirim: ttb.pengirim,
-			kota_tujuan: ttb.kota_tujuan,
-			total_volume: ttb.total_volume,
-			jenis_pengiriman: ttb.jenis_pengiriman
-		}
-	})
-	//make a loop to merge duplicate ttb number
-	const mergeTTB = mapDaftarTTB?.reduce((acc, curr) => {
-		if (!acc.some((item) => item.nomor_ttb === curr.nomor_ttb)) {
-			acc.push(curr)
-		}
-		return acc
-	}, [])
-
-	//exclude ttb number where in daftar_sales_order
-	const excludeTTB = mergeTTB?.filter(
-		(item) => !daftar_sales_order?.includes(item.nomor_ttb)
-	)
-
-	//filter ttb
-	const filterTTB = mergeTTB?.filter((ttb) => {
-		return ttb.nomor_ttb === filterSalesOrdered?.[0]?.nomor_ttb
-	})
-
-	//turn dataCustomer.tipe_ppn to percentage where nama_customer === filterTTB2.pengirim
-	const filterCustomer = dataCustomer?.daftar_customer?.filter((item) => {
-		return item.nama_customer === filterTTB[0]?.pengirim
-	})
-
-	//get tipe ppn
-	const tipePPN = filterCustomer?.[0]?.tipe_ppn
-
-	//if tipe_ppn is 1% then return 1.01 if 10% then return 1.1
-	const tipePPNPercentage = tipePPN === 1 ? 1.01 : 1.1
-
-	useEffect(() => {
-		console.log(`watch`, watch(`harga`))
-	}, [watch])
-
-	useEffect(() => {
-		console.log(`watch volume`, watch(`total_volume_ttb`))
-	}, [watch])
-
-	const volume = watch(`total_volume_ttb`)
-	const harga = watch(`harga`)
-	const total = volume * harga * tipePPNPercentage
-
-	//if total = 0 or NaN then return default value total_tagihan use effect else return total
-	const totalTagihan = total === 0 || isNaN(total) ? 0 : total
-
-	useEffect(() => {
-		setValue(`total_tagihan`, totalTagihan)
-	}, [setValue, totalTagihan])
-
-	const handleChangeTTB = (value) => {
-		const data = mergeTTB?.find((item) => item.nomor_ttb === value)
-		setValue(`pengirim`, data.pengirim)
-		setValue(`kota_tujuan`, data.kota_tujuan)
-		setValue(`total_volume_ttb`, data.total_volume)
-		setValue(`jenis_pengiriman`, data.jenis_pengiriman)
-	}
-
-	//change millideimal filterSalesOrdered?.[0]?.tanggal_sales_order to yyyy-mm-dd with mommnet
-	const tanggal_sales_order_date = moment
-		.unix(filterSalesOrdered?.[0]?.tanggal_sales_order / 1000)
-		.format(`YYYY-MM-DD`)
-
-	const dataBank = dataPengaturan?.pengaturan?.map((item) => {
-		return {
-			nama_bank: item.bank
-		}
-	})
 
 	return (
 		<AdminPage

@@ -83,6 +83,7 @@ export default function Home() {
 			return {
 				id: item.id,
 				kode_customer: item.kode_customer,
+				idPelanggan: item.idPelanggan,
 				nama_customer: item.nama_customer,
 				alamat: item.alamat,
 				telepon: item.telepon,
@@ -112,7 +113,8 @@ export default function Home() {
 			status: e.target.status.value,
 			last_update: new Date(),
 			creator: String(dashboardState.auth.id),
-			updated_by: String(dashboardState.auth.id)
+			updated_by: String(dashboardState.auth.id),
+			idPelanggan: mappedData?.idPelanggan
 		}
 		updateData(data)
 		message.success(`Data has been updated`)

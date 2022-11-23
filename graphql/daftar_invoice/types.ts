@@ -17,6 +17,13 @@ export const types = gql`
 		keterangan: String
 		nomor_container: String
 		nomor_seal: String
+		nama_barang: String
+		harga: String
+		harga_biaya_tambahan: String
+		ppn_biaya_tambahan: String
+		accurate: String
+		pengirim: String
+		total_tagihan: String
 	}
 
 	type daftar_invoice {
@@ -39,6 +46,13 @@ export const types = gql`
 		keterangan: String
 		nomor_container: String
 		nomor_seal: String
+		nama_barang: String
+		harga: String
+		harga_biaya_tambahan: String
+		ppn_biaya_tambahan: String
+		accurate: String
+		pengirim: String
+		total_tagihan: String
 	}
 
 	input UpdateDaftar_invoiceInput {
@@ -57,6 +71,13 @@ export const types = gql`
 		keterangan: String
 		nomor_container: String
 		nomor_seal: String
+		nama_barang: String
+		harga: String
+		harga_biaya_tambahan: String
+		ppn_biaya_tambahan: String
+		acurrate: String
+		pengirim: String
+		total_tagihan: String
 	}
 
 	type MutateDaftar_invoiceResponse {

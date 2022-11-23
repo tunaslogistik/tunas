@@ -19,6 +19,7 @@ const mutations = {
 				kota_tujuan,
 				rekening,
 				total_tagihan,
+				harga_sebelum_ppn,
 				dp,
 				tanggal_sales_order,
 				term_payment
@@ -34,6 +35,7 @@ const mutations = {
 						pengirim,
 						kota_tujuan,
 						rekening,
+						harga_sebelum_ppn,
 						dp,
 						harga,
 						total_tagihan,
@@ -67,6 +69,7 @@ const mutations = {
 				kota_tujuan,
 				rekening,
 				dp,
+				harga_sebelum_ppn,
 				pengirim,
 				tanggal_sales_order,
 				term_payment
@@ -85,6 +88,7 @@ const mutations = {
 					harga,
 					total_tagihan,
 					dp,
+					harga_sebelum_ppn,
 					pengirim,
 					tanggal_sales_order,
 					term_payment

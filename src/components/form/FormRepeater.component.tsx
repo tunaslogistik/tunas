@@ -35,6 +35,7 @@ interface Props {
 	inputProps?: object[]
 	inputWidths?: string[]
 	inputShown?: number
+	index?: number
 	max?: number
 	sortable?: boolean
 	disabled?: boolean
@@ -51,6 +52,7 @@ export default function FormRepeater({
 	inputTypes,
 	inputHeading,
 	inputLabels,
+	index,
 	inputProps = [],
 	inputWidths = [],
 	inputShown = 99,
@@ -278,12 +280,14 @@ function FormRepeaterField({
 									{...inputProps[j]}
 								/>
 							)}
-							{(!inputTypes || inputTypes[j] === `select`) && (
+							{inputTypes && inputTypes[j] === `select` && (
 								<FormSelect
-									setForm={setForm}
+									control={control}
 									name={`${name}.${i}.${inputName}`}
 									placeholder={inputLabels ? inputLabels[j] : inputName}
 									index={j}
+									options={inputProps[j].options}
+									value={inputProps[j].value}
 									{...inputProps[j]}
 								/>
 							)}
@@ -292,6 +296,7 @@ function FormRepeaterField({
 									register={register}
 									name={`${name}.${i}.${inputName}`}
 									placeholder={inputLabels ? inputLabels[j] : inputName}
+									index={j}
 									{...inputProps[j]}
 								/>
 							)}

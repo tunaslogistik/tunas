@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { gql, useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
@@ -60,63 +61,6 @@ export default function Home() {
 		return String(num).padStart(totalLength, `0`)
 	}
 	const panjangSalesOrder = data?.daftar_sales_order.length + 1
-	async function onSubmit(formData) {
-		setLoading(true)
-		try {
-			const objArray = Object.keys(formData).map((i) => formData[i])
-
-			//get term payment from customer where nama customer = formdata.pengirim
-			const termPayment = dataCustomer?.customer.find(
-				(item) => item.nama_customer === formData.pengirim
-			).term_payment
-			const myChildrenArray = objArray.map((item) => {
-				return {
-					nomor_ttb: formData.nomor_ttb,
-					nomor_sales_order:
-						`SO/` +
-						formData.kota_tujuan +
-						`/` +
-						String(
-							moment.unix(formData.tanggal_sales_order / 1000).format(`YY-MM`)
-						) +
-						`/` +
-						addLeadingZeros(panjangSalesOrder, 4),
-					total_volume: parseInt(formData.total_volume_ttb),
-					harga: parseInt(formData.harga),
-					pengirim: formData.pengirim,
-					total_tagihan: parseInt(formData.total_tagihan),
-					rekening: formData.rekening,
-					kota_tujuan: formData.kota_tujuan,
-					dp: parseInt(formData.dp),
-					tanggal_sales_order: formData.tanggal_sales_order,
-					term_payment: termPayment
-				}
-			})
-
-			//merge duplicate
-			const myChildrenArrayMerge = myChildrenArray.reduce((acc, cur) => {
-				const x = acc.find(
-					(item) => item.nomor_sales_order === cur.nomor_sales_order
-				)
-				if (!x) {
-					return acc.concat([cur])
-				} else {
-					return acc
-				}
-			}, [])
-
-			//create new data
-			for (let i = 0; i < myChildrenArrayMerge.length; i++) {
-				createData(myChildrenArrayMerge[i])
-				console.log(`My`, myChildrenArrayMerge)
-			}
-			message.success(`Data Berhasil Disimpan`)
-			router.push(`/order/daftar-sales-order`)
-		} catch (error) {
-			console.log(error)
-		}
-		setLoading(false)
-	}
 
 	//MAP DATA DAFTAR TTB
 	const mapDaftarTTB = dataDaftarTTB?.daftar_ttb?.map((ttb) => {
@@ -159,14 +103,31 @@ export default function Home() {
 	//convert tipePPN to percentage
 	const tipePPNPercentage = tipePPN / 100
 
-	const PPN = getValues(`harga`) * tipePPNPercentage
+	const PPN =
+		getValues(`total_volume_ttb`) !== 0
+			? getValues(`total_volume_ttb`) *
+			  Number(getValues(`harga`)) *
+			  tipePPNPercentage
+			: Number(getValues(`harga`)) * tipePPNPercentage
+
+	console.log(`Percentages`, PPN)
 
 	const total =
 		getValues(`total_volume_ttb`) !== 0
 			? getValues(`total_volume_ttb`) * Number(getValues(`harga`)) + PPN
 			: Number(getValues(`harga`)) + PPN
 
+	const harga_sebelum_ppn =
+		getValues(`total_volume_ttb`) !== 0
+			? getValues(`total_volume_ttb`) * Number(getValues(`harga`))
+			: Number(getValues(`harga`))
+
 	setValue(`total_tagihan`, total)
+
+	console.log(
+		`harga_sebelum_ppn`,
+		getValues(`total_volume_ttb`) * Number(getValues(`harga`))
+	)
 	const handleChangeTTB = (value) => {
 		const data = mergeTTB?.find((item) => item.nomor_ttb === value)
 		setValue(`pengirim`, data.pengirim)
@@ -189,6 +150,65 @@ export default function Home() {
 			nama_bank: item.bank
 		}
 	})
+
+	async function onSubmit(formData) {
+		setLoading(true)
+		try {
+			const objArray = Object.keys(formData).map((i) => formData[i])
+
+			//get term payment from customer where nama customer = formdata.pengirim
+			const termPayment = dataCustomer?.customer.find(
+				(item) => item.nama_customer === formData.pengirim
+			).term_payment
+			const myChildrenArray = objArray.map((item) => {
+				return {
+					nomor_ttb: formData.nomor_ttb,
+					nomor_sales_order:
+						`SO/` +
+						formData.kota_tujuan +
+						`/` +
+						String(
+							moment.unix(formData.tanggal_sales_order / 1000).format(`YY-MM`)
+						) +
+						`/` +
+						addLeadingZeros(panjangSalesOrder, 4),
+					total_volume: parseInt(formData.total_volume_ttb),
+					harga: parseInt(formData.harga),
+					harga_sebelum_ppn: harga_sebelum_ppn,
+					pengirim: formData.pengirim,
+					total_tagihan: parseInt(formData.total_tagihan),
+					rekening: formData.rekening,
+					kota_tujuan: formData.kota_tujuan,
+					dp: parseInt(formData.dp),
+					tanggal_sales_order: formData.tanggal_sales_order,
+					term_payment: termPayment
+				}
+			})
+
+			//merge duplicate
+			const myChildrenArrayMerge = myChildrenArray.reduce((acc, cur) => {
+				const x = acc.find(
+					(item) => item.nomor_sales_order === cur.nomor_sales_order
+				)
+				if (!x) {
+					return acc.concat([cur])
+				} else {
+					return acc
+				}
+			}, [])
+
+			//create new data
+			for (let i = 0; i < myChildrenArrayMerge.length; i++) {
+				createData(myChildrenArrayMerge[i])
+				console.log(`My`, myChildrenArrayMerge)
+			}
+			message.success(`Data Berhasil Disimpan`)
+			router.push(`/order/daftar-sales-order`)
+		} catch (error) {
+			console.log(error)
+		}
+		setLoading(false)
+	}
 
 	console.log(`dataBank`, dataPengaturan)
 	return (

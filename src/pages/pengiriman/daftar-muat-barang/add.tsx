@@ -607,6 +607,9 @@ export default function Home() {
 			})
 
 			for (let i = 0; i < data_packing_list.length; i++) {
+				//make increment
+				const increment =
+					dataDaftarSuratJalan?.daftar_surat_pengantar.length + 1 + i
 				data_packing_list.map((item) => {
 					item.nomor_surat_jalan =
 						`SP/` +
@@ -614,14 +617,7 @@ export default function Home() {
 						`/` +
 						String(moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)) +
 						`/` +
-						addLeadingZeros(
-							parseInt(
-								dataDaftarSuratJalan?.daftar_surat_pengantar.length as string
-							) +
-								i +
-								1,
-							4
-						)
+						addLeadingZeros(increment, 4)
 				})
 				const check = data?.daftar_muat_barang.find(
 					(item) => item.nomor_ttb === dataFilter2[i].nomor_ttb

@@ -1,9 +1,11 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { gql, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component_print"
 import {
 	Document,
 	Font,
+	Image,
 	Page,
 	PDFViewer,
 	StyleSheet,
@@ -236,6 +238,19 @@ export default function Home() {
 						style={{
 							marginTop: `40px`,
 							marginLeft: `40px`,
+							fontWeight: `bold`,
+							fontSize: `12px`
+						}}
+					>
+						<Image
+							style={{ width: `40px`, height: `40px` }}
+							src="/assets/icons/Tunas.png"
+						/>
+					</View>
+					<View
+						style={{
+							marginTop: `40px`,
+							marginLeft: `20px`,
 							fontSize: `12px`,
 							marginBottom: `10px`
 						}}
@@ -253,7 +268,7 @@ export default function Home() {
 					<View
 						style={{
 							marginTop: `40px`,
-							marginLeft: `27%`
+							marginLeft: `17%`
 						}}
 					>
 						<Text
