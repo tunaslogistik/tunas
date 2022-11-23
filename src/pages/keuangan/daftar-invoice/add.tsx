@@ -158,6 +158,17 @@ export default function Home() {
 		}
 	})
 
+	//filter filtered surat jalan where nomor surat jalan isnot in datadaftarinvoice
+	const filteredSuratJalan2 = filteredSuratJalan?.filter((item) => {
+		if (dataDaftarInvoice?.daftar_invoice) {
+			return !dataDaftarInvoice?.daftar_invoice
+				.map((item) => item.nomor_surat_jalan)
+				.includes(item.nomor_surat_jalan)
+		} else {
+			return item
+		}
+	})
+
 	//handleChangeSJ
 	const handleChangeSJ = (value) => {
 		setselectednoSJatas(value)
@@ -340,6 +351,8 @@ export default function Home() {
 
 	//count dataDaftarInvoice length
 	const count = dataDaftarInvoice?.daftar_invoice.length + 1
+
+	console.log(`count`, count)
 
 	const onSubmit = (formData) => {
 		console.log(`formData`, formData)
@@ -530,7 +543,7 @@ export default function Home() {
 											? `Pilih Nomor Surat Jalan`
 											: selectednoSJatas}
 									</option>
-									{filteredSuratJalan
+									{filteredSuratJalan2
 										?.map((ttb) => {
 											return (
 												<option
@@ -678,7 +691,7 @@ export default function Home() {
 														? `Pilih Nomor Surat Jalan`
 														: selectednoSJA[index]}
 												</option>
-												{filteredSuratJalan
+												{filteredSuratJalan2
 													?.map((ttb) => {
 														return (
 															<option

@@ -206,6 +206,16 @@ export default function Home() {
 		}
 	})
 
+	const filteredSuratJalan2 = filteredSuratJalan?.filter((item) => {
+		if (dataDaftarInvoice?.daftar_invoice) {
+			return !dataDaftarInvoice?.daftar_invoice
+				.map((item) => item.nomor_surat_jalan)
+				.includes(item.nomor_surat_jalan)
+		} else {
+			return item
+		}
+	})
+
 	//handleChangeSJA
 	const handleChangeSJA = (value, index) => {
 		selectednoSJA[index] = value
@@ -621,7 +631,7 @@ export default function Home() {
 														? `Pilih Nomor Surat Jalan`
 														: selectednoSJA[index]}
 												</option>
-												{filteredSuratJalan
+												{filteredSuratJalan2
 													?.map((ttb) => {
 														return (
 															<option
