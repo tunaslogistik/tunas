@@ -35,7 +35,7 @@ export default function SettingUsers() {
 	)?.role
 
 	return (
-		<div className="admin-page">
+		<div>
 			<AdminPage
 				setForm={setForm}
 				authId="settings-users"
