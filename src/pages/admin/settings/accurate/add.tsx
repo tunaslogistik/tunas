@@ -93,7 +93,7 @@ export default function Home() {
 	const [dataApi, setDataApi] = useState([])
 	useEffect(() => {
 		fetchApi().then((data) => setDataApi(data))
-	}, []).catch((err) => console.log(err))
+	}, [])
 
 	console.log(`data api`, dataApi)
 
