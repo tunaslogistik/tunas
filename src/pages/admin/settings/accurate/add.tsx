@@ -4,10 +4,10 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import { Button, message } from "antd"
 import Link from "next/link"
-
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { CREATE_ACCURATE } from "../../../../../graphql/accurate/mutations"
-//get data
+
 const GET_DATA = gql`
 	query accurate {
 		accurate {
@@ -21,8 +21,6 @@ const GET_DATA = gql`
 		}
 	}
 `
-//button on the right style
-
 //text input style
 const inputStyle = {
 	width: `100%`,
@@ -65,6 +63,7 @@ export default function Home() {
 			nama_barang: e.target.nama_barang.value,
 			jenis: e.target.service.value,
 			kode_barang: String(kodeBarang),
+			akun_penjualan: e.target.akun.value,
 			salesDiscountGlAccountId: `null`,
 			salesGlAccountId: `null`,
 			inventoryGlAccountId: `null`
@@ -81,6 +80,22 @@ export default function Home() {
 			console.log(`data nya ialah`, dataSubmit)
 		}
 	}
+
+	//fetch api from /Users/jayasitumorang/Documents/office_project/tunas_progress_jaya-main/src/pages/api/tax.ts
+	const fetchApi = async () => {
+		const res = await fetch(`/api/tax`)
+		const data = await res.json()
+		//return data
+		return data
+	}
+
+	//seperate data and promise using setState and useEffect
+	const [dataApi, setDataApi] = useState([])
+	useEffect(() => {
+		fetchApi().then((data) => setDataApi(data))
+	}, [])
+
+	console.log(`data api`, dataApi)
 
 	return (
 		<AdminPage
@@ -168,66 +183,41 @@ export default function Home() {
 													disabled
 												/>
 											</div>
-											{/* <div className="form-group">
-												<h6 style={{ fontWeight: `bold` }}>Akun</h6>
+											<div style={{ width: `100%` }}>
+												<div className="col">
+													<label style={inputStyles}>Akun Penjualan</label>
+													<select
+														className="form-control"
+														style={{
+															width: `100%`
+														}}
+														id="akun"
+													>
+														<option value="229">Pendapatan FCL / LCL</option>
+														<option value="384">Pendapatan Lain Lain</option>
+													</select>
+												</div>
 											</div>
-											<div
-												className="form-group"
-												style={{
-													display: `inline-block`,
-													width: `calc(33% - 8px)`,
-													marginTop: `1%`
-												}}
-											>
-												<label htmlFor="bank" style={inputStyles}>
-													Beban
-												</label>
-												<input
-													type="text"
-													className="form-control"
-													style={inputStyle}
-													id="bank"
-													required
-												/>
+											<div style={{ width: `100%` }}>
+												<div className="col">
+													<label style={inputStyles}>Tax</label>
+													<select
+														className="form-control"
+														style={{
+															width: `100%`
+														}}
+														id="tax"
+													>
+														{dataApi.map((item, index) => {
+															return (
+																<option key={index} value={item.id}>
+																	{item.taxInfo}
+																</option>
+															)
+														})}
+													</select>
+												</div>
 											</div>
-											<div
-												className="form-group"
-												style={{
-													display: `inline-block`,
-													width: `calc(33% - 8px)`,
-													margin: `0 8px`
-												}}
-											>
-												<label htmlFor="nama_rekening" style={inputStyles}>
-													Nama rekening
-												</label>
-												<input
-													type="text"
-													className="form-control"
-													style={inputStyle}
-													id="nama_rekening"
-													required
-												/>
-											</div>
-											<div
-												className="form-group"
-												style={{
-													display: `inline-block`,
-													width: `calc(34% - 8px)`,
-													margin: `0 1px`
-												}}
-											>
-												<label htmlFor="nomor_rekening" style={inputStyles}>
-													Nomor Rekening
-												</label>
-												<input
-													type="text"
-													className="form-control"
-													style={inputStyle}
-													id="nomor_rekening"
-													required
-												/>
-											</div> */}
 										</form>
 									</div>
 								</div>

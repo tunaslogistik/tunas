@@ -450,7 +450,10 @@ export default function Home() {
 				keterangan: formData.keterangan,
 				accurate: formData.accurate,
 				pengirim: String(idPelanggan),
-				total_tagihan: String(subAfterPPN)
+				total_tagihan: String(subAfterPPN),
+				tax: String(subPPN),
+				subtotal: String(subTotal1),
+				subtotal_tambahan: String(subTotal4)
 			}
 		})
 

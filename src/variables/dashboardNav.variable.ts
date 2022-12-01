@@ -151,7 +151,7 @@ export const dashboardSettingsNav = [
 		label: `Pengaturan`
 	},
 	{
-		key: `Pengaturan`,
+		key: `Accurate`,
 		href: `/admin/settings/accurate`,
 		label: `Accurate`
 	}

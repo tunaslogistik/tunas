@@ -632,7 +632,6 @@ export default function Home() {
 						marginTop: `15px`,
 						paddingBottom: `40px`
 					}}
-					break
 				>
 					<View
 						style={{
@@ -649,6 +648,7 @@ export default function Home() {
 								fontFamily: `Helvetica-Bold`,
 								marginRight: `116px`
 							}}
+							break
 						>
 							CATATAN
 						</Text>

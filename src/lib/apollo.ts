@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { ApolloClient, InMemoryCache } from "@apollo/client"
 
 const hostname = process.env.NEXT_PUBLIC_BASE_URL
 

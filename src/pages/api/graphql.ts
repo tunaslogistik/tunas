@@ -4,7 +4,11 @@ import { resolvers, typeDefs } from "graphql/schema"
 import microCors from "micro-cors"
 
 const cors = microCors()
-const apolloServer = new ApolloServer({ typeDefs, resolvers, context: createContext })
+const apolloServer = new ApolloServer({
+	typeDefs,
+	resolvers,
+	context: createContext
+})
 const startServer = apolloServer.start()
 
 export default cors(async function handler(req, res) {

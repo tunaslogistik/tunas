@@ -6,6 +6,7 @@ export const types = gql`
 		nama_barang: String
 		kode_barang: String
 		jenis: String
+		akun_penjualan: String
 		salesDiscountGlAccountId: String
 		salesGlAccountId: String
 		inventoryGlAccountId: String
@@ -20,6 +21,7 @@ export const types = gql`
 		nama_barang: String
 		kode_barang: String
 		jenis: String
+		akun_penjualan: String
 		salesDiscountGlAccountId: String
 		salesGlAccountId: String
 		inventoryGlAccountId: String
@@ -30,6 +32,7 @@ export const types = gql`
 		nama_barang: String
 		kode_barang: String
 		jenis: String
+		akun_penjualan: String
 		salesDiscountGlAccountId: String
 		salesGlAccountId: String
 		inventoryGlAccountId: String

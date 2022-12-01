@@ -25,6 +25,9 @@ export const GET_DAFTAR_INVOICE = gql`
 			vendor_pelayanan
 			volume
 			total_tagihan
+			tax
+			subtotal
+			subtotal_tambahan
 		}
 	}
 `

@@ -24,6 +24,9 @@ export const types = gql`
 		accurate: String
 		pengirim: String
 		total_tagihan: String
+		tax: String
+		subtotal: String
+		subtotal_tambahan: String
 	}
 
 	type daftar_invoice {
@@ -53,6 +56,9 @@ export const types = gql`
 		accurate: String
 		pengirim: String
 		total_tagihan: String
+		tax: String
+		subtotal: String
+		subtotal_tambahan: String
 	}
 
 	input UpdateDaftar_invoiceInput {
@@ -78,6 +84,9 @@ export const types = gql`
 		acurrate: String
 		pengirim: String
 		total_tagihan: String
+		tax: String
+		subtotal: String
+		subtotal_tambahan: String
 	}
 
 	type MutateDaftar_invoiceResponse {

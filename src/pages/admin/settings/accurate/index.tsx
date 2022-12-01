@@ -1,8 +1,9 @@
-import { gql, useQuery } from "@apollo/client"
+import { gql, useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
-import { Table } from "antd"
+import { Popconfirm, Table } from "antd"
 import { ColumnsType } from "antd/lib/table"
+import { DELETE_ACCURATE } from "graphql/accurate/mutations"
 import Link from "next/link"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -10,8 +11,11 @@ import { useForm } from "react-hook-form"
 const GET_DATA = gql`
 	query accurate {
 		accurate {
+			id
 			nama_barang
 			jenis
+			kode_barang
+			akun_penjualan
 			salesDiscountGlAccountId
 			salesGlAccountId
 			inventoryGlAccountId
@@ -30,6 +34,14 @@ export default function Home() {
 	const { data, loading } = useQuery(GET_DATA)
 
 	const setForm = useForm()
+
+	const [deleteAccurate] = useMutation(DELETE_ACCURATE, {
+		refetchQueries: [{ query: GET_DATA }]
+	})
+
+	const deleteData = async (id) => {
+		deleteAccurate({ variables: { deleteAccurateId: id } })
+	}
 
 	//search
 	const [search, setSearch] = useState(``)
@@ -51,19 +63,21 @@ export default function Home() {
 			width: `1000%`,
 			sorter: (a, b) => a.nama_barang.length - b.nama_barang.length,
 			sortDirections: [`descend`, `ascend`]
+		},
+		{
+			title: `Action`,
+			key: `action`,
+			render: (text, record) => (
+				<span>
+					<Popconfirm
+						title="Are you sure delete this task?"
+						onConfirm={() => deleteData(record.id)}
+					>
+						<a>Delete</a>
+					</Popconfirm>
+				</span>
+			)
 		}
-		// {
-		//     title: 'Action',
-		//     key: 'action',
-		//     render: (text, record) => (
-		//         <span>
-		//            <a href={`/data/jenis-pengiriman/${record.id}`} style={{ marginRight:"10px", }}>Edit</a>
-		//             <Popconfirm title="Are you sure delete this task?" onConfirm={() => deleteData(record.id)}>
-		//                 <a>Delete</a>
-		//             </Popconfirm>
-		//         </span>
-		//     ),
-		// },
 	]
 
 	//DATA FOR TABLE

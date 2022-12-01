@@ -25,28 +25,9 @@ const mutations = {
 				updated_by
 			} = args.input
 
-			const customer = await context.prisma.customer.create({
-				data: {
-					kode_customer,
-					idPelanggan,
-					nama_customer,
-					alamat,
-					telepon,
-					npwp,
-					pic,
-					term_payment,
-					tipe_ppn,
-					status,
-					last_update,
-					creator,
-					updated_by
-				}
-			})
-
 			const url = `https://public.accurate.id/accurate/api/customer/save.do?Scope: customer_save`
 			const data = {
 				name: nama_customer,
-				customerNo: idPelanggan,
 				billStreet: alamat,
 				detailContact: [
 					{
@@ -66,6 +47,27 @@ const mutations = {
 				}
 			})
 			console.log(response.data)
+
+			const customerNo = response.data.r.customerNo
+			console.log(`itemNo`, customerNo)
+
+			const customer = await context.prisma.customer.create({
+				data: {
+					kode_customer,
+					idPelanggan: customerNo,
+					nama_customer,
+					alamat,
+					telepon,
+					npwp,
+					pic,
+					term_payment,
+					tipe_ppn,
+					status,
+					last_update,
+					creator,
+					updated_by
+				}
+			})
 
 			return {
 				code: `200`,

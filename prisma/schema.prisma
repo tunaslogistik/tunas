@@ -66,6 +66,7 @@ model accurate {
   id                       Int    @id @default(autoincrement())
   nama_barang              String
   kode_barang              String
+  akun_penjualan           String
   jenis                    String
   salesDiscountGlAccountId String @default("null")
   salesGlAccountId         String @default("null")
@@ -211,6 +212,9 @@ model daftar_invoice {
   keterangan            String
   pengirim              String
   total_tagihan         String
+  tax                   String
+  subtotal              String
+  subtotal_tambahan     String
 }
 
 model daftar_packing_list {

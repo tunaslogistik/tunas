@@ -32,12 +32,72 @@ const mutations = {
 				keterangan,
 				accurate,
 				pengirim,
-				total_tagihan
+				total_tagihan,
+				tax,
+				subtotal,
+				subtotal_tambahan
 			} = args.input
+
+			//post to api inside header authorization and session axios
+			// const token = `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`
+			// const session = `22f7af2e-1016-4c26-911f-91dd48b69c3b`
+
+			const url = `https://public.accurate.id/accurate/api/sales-invoice/save.do?Scope: sales_invoice_save`
+			const data = {
+				Scope: `sales_invoice_save`,
+				customerNo: pengirim,
+				Number: nomor_invoice,
+				detailItem: [
+					{
+						itemNo: accurate,
+						unitPrice: subtotal
+					}
+				],
+				tax1: {
+					pphPs4Type: null,
+					purchaseTaxGlAccountId: 75,
+					rate: 1.0,
+					pph23Type: null,
+					optLock: 0,
+					description: `PPN 1%`,
+					salesTaxGlAccountId: 154,
+					pph15Type: null,
+					id: 100,
+					taxCode: `PPN`,
+					taxType: `PPN`,
+					taxInfo: `PPN 1%`
+				},
+				salesQuotation: {
+					number: nomor_ttb
+				},
+				deliveryOrder: {
+					number: nomor_surat_jalan
+				},
+				orderDownPaymentNumber: `Test_orderDownPaymentNumber_01`,
+				reverseInvoice: `false`,
+				taxDate: `31/03/2016`,
+				taxNumber: `0`,
+				transDate: moment(tanggal_invoice).format(`DD/MM/YYYY`),
+				branchName: `jakarta`,
+				taxAmount: tax
+			}
+			// make POST FUNCTION  axios
+			const axios = require(`axios`)
+			const response = await axios.post(url, data, {
+				headers: {
+					Authorization: `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`,
+					"X-Session-ID": `22f7af2e-1016-4c26-911f-91dd48b69c3b`
+				}
+			})
+			console.log(response.data)
+			console.log(accurate)
+			console.log(nomor_surat_jalan)
+
+			const idInvoice = response.data.r.id
 
 			const daftar_invoice = await context.prisma.daftar_invoice.create({
 				data: {
-					id,
+					id: idInvoice,
 					nomor_invoice,
 					nomor_surat_jalan,
 					nomor_ttb,
@@ -58,49 +118,12 @@ const mutations = {
 					keterangan,
 					accurate,
 					pengirim,
-					total_tagihan
+					total_tagihan,
+					tax,
+					subtotal,
+					subtotal_tambahan
 				}
 			})
-
-			//post to api inside header authorization and session axios
-			// const token = `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`
-			// const session = `22f7af2e-1016-4c26-911f-91dd48b69c3b`
-
-			const url = `https://public.accurate.id/accurate/api/sales-invoice/save.do?Scope: sales_invoice_save`
-			const data = {
-				Scope: `sales_invoice_save`,
-				customerNo: pengirim,
-				Number: nomor_invoice,
-				detailItem: [
-					{
-						itemNo: accurate,
-						unitPrice: total_tagihan
-					}
-				],
-				salesQuotation: {
-					number: nomor_ttb
-				},
-				deliveryOrder: {
-					number: nomor_surat_jalan
-				},
-				orderDownPaymentNumber: `Test_orderDownPaymentNumber_01`,
-				reverseInvoice: `false`,
-				taxDate: `31/03/2016`,
-				taxNumber: `0`,
-				transDate: moment(tanggal_invoice).format(`DD/MM/YYYY`),
-				branchName: `jakarta`
-			}
-			// make POST FUNCTION  axios
-			const axios = require(`axios`)
-			const response = await axios.post(url, data, {
-				headers: {
-					Authorization: `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`,
-					"X-Session-ID": `22f7af2e-1016-4c26-911f-91dd48b69c3b`
-				}
-			})
-			console.log(response.data)
-			console.log(accurate)
-			console.log(nomor_surat_jalan)
 
 			return {
 				code: `200`,
@@ -137,7 +160,10 @@ const mutations = {
 				keterangan,
 				accurate,
 				pengirim,
-				total_tagihan
+				total_tagihan,
+				tax,
+				subtotal,
+				subtotal_tambahan
 			} = args.input
 			let daftar_invoice
 
@@ -165,7 +191,10 @@ const mutations = {
 					keterangan,
 					accurate,
 					pengirim,
-					total_tagihan
+					total_tagihan,
+					tax,
+					subtotal,
+					subtotal_tambahan
 				}
 			})
 

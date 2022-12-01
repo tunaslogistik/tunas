@@ -3,8 +3,8 @@ import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import { Table } from "antd"
-
 import { ColumnsType } from "antd/lib/table"
+import { GET_DAFTAR_INVOICE } from "graphql/daftar_invoice/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import Link from "next/link"
@@ -50,6 +50,7 @@ interface DataType {
 	posisi: string
 	nomor_container: string
 	nomor_seal: string
+	status: string
 }
 
 export default function Home() {
@@ -60,6 +61,9 @@ export default function Home() {
 
 	//GET DAFTAR TUJUAN
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
+
+	//GET DAFTAR INVOICE
+	const { data: dataInvoice } = useQuery(GET_DAFTAR_INVOICE)
 
 	const setForm = useForm()
 
@@ -127,9 +131,13 @@ export default function Home() {
 			title: `Volume M³`,
 			dataIndex: `volume`,
 			key: `total_volume`,
-			width: `20%`,
-			sorter: (a, b) => a.total_volume.localeCompare(b.total_volume),
-			sortDirections: [`descend`, `ascend`]
+			width: `20%`
+		},
+		{
+			title: `Status`,
+			dataIndex: `status`,
+			key: `status`,
+			width: `20%`
 		}
 	]
 
@@ -153,7 +161,15 @@ export default function Home() {
 				(tujuan) => tujuan.kode_tujuan === item.kode_tujuan
 			)?.nama_tujuan,
 			vendor_pelayanan: item.vendor_pelayanan,
-			total_ttb: item.total_ttb
+			total_ttb: item.total_ttb,
+			//find nomor surat jalan in invoice where nomor surat jalan same set status sudah di invoice font green else set belum ada invoice font red
+			status: dataInvoice?.daftar_invoice.find(
+				(invoice) => invoice.nomor_surat_jalan === item.nomor_surat_jalan
+			) ? (
+				<h6 style={{ color: `green` }}>Sudah di Invoice</h6>
+			) : (
+				<h6 style={{ color: `red` }}>Belum ada Invoice</h6>
+			)
 		}
 	})
 	//merge duplicate data nomor ttb
