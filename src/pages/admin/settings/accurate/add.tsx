@@ -81,7 +81,7 @@ export default function Home() {
 		}
 	}
 
-	//fetch api from /Users/jayasitumorang/Documents/office_project/tunas_progress_jaya-main/src/pages/api/tax.ts
+	//fetch api from
 	const fetchApi = async () => {
 		const res = await fetch(`/api/tax`)
 		const data = await res.json()
@@ -93,7 +93,7 @@ export default function Home() {
 	const [dataApi, setDataApi] = useState([])
 	useEffect(() => {
 		fetchApi().then((data) => setDataApi(data))
-	}, [])
+	}, []).catch((err) => console.log(err))
 
 	console.log(`data api`, dataApi)
 
