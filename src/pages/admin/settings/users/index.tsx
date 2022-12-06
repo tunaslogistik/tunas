@@ -30,7 +30,7 @@ export default function SettingUsers() {
 	})
 
 	//get role by username
-	const role = data?.users.user?.find(
+	const role = data?.users?.user?.find(
 		(user) => user.username === username
 	)?.role
 

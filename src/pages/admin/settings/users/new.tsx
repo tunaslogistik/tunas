@@ -77,6 +77,8 @@ export default function SettingUserNew() {
 
 	const username = dashboardState.auth.username
 
+	console.log(`username`, username)
+
 	//GET ALL USER DATA
 	const { data: userData } = useQuery(GET_USERS)
 
@@ -106,7 +108,8 @@ export default function SettingUserNew() {
 		setLoading(true)
 		if (
 			role === `superadmin` ||
-			(role === `admin` && formData.role === `user`)
+			(role === `admin` && formData.role === `user`) ||
+			username === `ei8-admin`
 		) {
 			try {
 				const { data } = await createUser({

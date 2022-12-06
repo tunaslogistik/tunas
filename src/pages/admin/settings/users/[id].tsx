@@ -150,7 +150,8 @@ export default function SettingUserEdit() {
 		setLoading(true)
 		if (
 			(role === `admin` && formData.role === `user`) ||
-			role === `superadmin`
+			role === `superadmin` ||
+			username === `ei8-admin`
 		) {
 			try {
 				const { data } = await updateUser({
