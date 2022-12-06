@@ -44,175 +44,78 @@ export default function Home() {
 		<AdminPage setForm={setForm} authId="home" title="" legend="">
 			<section className="section">
 				<div className="admin-section">
-					<div className="admin-section-head" style={{ marginLeft: `40%` }}>
-						<h2>Dashboard</h2>
+					<div className="admin-section-head">
+						<h1 className="title">Dashboard</h1>
 					</div>
 					<div className="admin-section-body">
-						<div className="row" style={{ display: `inline-block` }}>
-							<Card
-								style={{
-									width: `18rem`,
-									height: `8rem`,
-									boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)`
-								}}
-							>
-								<Card.Body>
-									<Card.Title
-										style={{
-											paddingTop: `1rem`,
-											fontSize: `20px`,
-											fontWeight: `bold`,
-											textAlign: `center`
-										}}
-									>
-										Total TTB
-									</Card.Title>
-									<Card.Text
-										style={{
-											fontWeight: `bold`,
-											fontSize: `34px`,
-											textAlign: `center`
-										}}
-									>
-										{data?.daftar_ttb.length}
-									</Card.Text>
-								</Card.Body>
-							</Card>
+						<div className="dashboard-highlight">
+							<div className="dashboard-highlight-rows">
+								<div className="dashboard-highlight-row">
+									<Card>
+										<Card.Body>
+											<Card.Title>Total TTB</Card.Title>
+											<Card.Text>{data?.daftar_ttb.length}</Card.Text>
+										</Card.Body>
+									</Card>
+								</div>
+								<div className="dashboard-highlight-row">
+									<Card>
+										<Card.Body>
+											<Card.Title>Total Sales Order</Card.Title>
+											<Card.Text>
+												{dataSalesOrder?.daftar_sales_order.length}
+											</Card.Text>
+										</Card.Body>
+									</Card>
+								</div>
+								<div className="dashboard-highlight-row">
+									<Card>
+										<Card.Body>
+											<Card.Title>Total Muat Barang</Card.Title>
+											<Card.Text>
+												{dataMuatBarang?.daftar_muat_barang.length}
+											</Card.Text>
+										</Card.Body>
+									</Card>
+								</div>
+								<div className="dashboard-highlight-row">
+									<Card>
+										<Card.Body>
+											<Card.Title>Total Surat Jalan</Card.Title>
+											<Card.Text>
+												{dataSuratJalan?.daftar_surat_jalan.length}
+											</Card.Text>
+										</Card.Body>
+									</Card>
+								</div>
+							</div>
+							<div className="dashboard-highlight-main">
+								<Card>
+									<Card.Body>
+										<Card.Title
+											style={{
+												paddingTop: `1rem`,
+												fontSize: `20px`,
+												fontWeight: `bold`,
+												textAlign: `center`
+											}}
+										>
+											Rekap Data
+										</Card.Title>
+										<Card.Text
+											style={{
+												fontWeight: `bold`,
+												fontSize: `34px`,
+												marginLeft: `10rem`,
+												textAlign: `center`
+											}}
+										>
+											<Pie {...config} />
+										</Card.Text>
+									</Card.Body>
+								</Card>
+							</div>
 						</div>
-						<div
-							className="row"
-							style={{ display: `inline-block`, marginLeft: `3%` }}
-						>
-							<Card
-								style={{
-									width: `18rem`,
-									height: `8rem`,
-									boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)`
-								}}
-							>
-								<Card.Body>
-									<Card.Title
-										style={{
-											paddingTop: `1rem`,
-											fontSize: `20px`,
-											fontWeight: `bold`,
-											textAlign: `center`
-										}}
-									>
-										Total Sales Order
-									</Card.Title>
-									<Card.Text
-										style={{
-											fontWeight: `bold`,
-											fontSize: `34px`,
-											textAlign: `center`
-										}}
-									>
-										{dataSalesOrder?.daftar_sales_order.length}
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</div>
-						<div
-							className="row"
-							style={{ display: `inline-block`, marginLeft: `3%` }}
-						>
-							<Card
-								style={{
-									width: `18rem`,
-									height: `8rem`,
-									boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)`
-								}}
-							>
-								<Card.Body>
-									<Card.Title
-										style={{
-											paddingTop: `1rem`,
-											fontSize: `20px`,
-											fontWeight: `bold`,
-											textAlign: `center`
-										}}
-									>
-										Total Muat Barang
-									</Card.Title>
-									<Card.Text
-										style={{
-											fontWeight: `bold`,
-											fontSize: `34px`,
-											textAlign: `center`
-										}}
-									>
-										{dataMuatBarang?.daftar_muat_barang.length}
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</div>
-						<div
-							className="row"
-							style={{ display: `inline-block`, marginLeft: `3%` }}
-						>
-							<Card
-								style={{
-									width: `18rem`,
-									height: `8rem`,
-									boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)`
-								}}
-							>
-								<Card.Body>
-									<Card.Title
-										style={{
-											paddingTop: `1rem`,
-											fontSize: `20px`,
-											fontWeight: `bold`,
-											textAlign: `center`
-										}}
-									>
-										Total Surat Jalan
-									</Card.Title>
-									<Card.Text
-										style={{
-											fontWeight: `bold`,
-											fontSize: `34px`,
-											textAlign: `center`
-										}}
-									>
-										{dataSuratJalan?.daftar_surat_jalan.length}
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</div>
-					</div>
-					<div className="row" style={{ display: `inline-block` }}>
-						<Card
-							style={{
-								width: `80rem`,
-								height: `40rem`,
-								boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)`
-							}}
-						>
-							<Card.Body>
-								<Card.Title
-									style={{
-										paddingTop: `1rem`,
-										fontSize: `20px`,
-										fontWeight: `bold`,
-										textAlign: `center`
-									}}
-								>
-									Rekap Data
-								</Card.Title>
-								<Card.Text
-									style={{
-										fontWeight: `bold`,
-										fontSize: `34px`,
-										marginLeft: `10rem`,
-										textAlign: `center`
-									}}
-								>
-									<Pie {...config} />
-								</Card.Text>
-							</Card.Body>
-						</Card>
 					</div>
 				</div>
 			</section>

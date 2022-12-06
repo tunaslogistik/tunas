@@ -376,3 +376,45 @@
 		height: 100%;
 	}
 }
+
+.dashboard-highlight {
+
+	&-rows {
+		display: flex;
+		gap: 16px;
+		margin-bottom: 32px;
+	}
+
+	&-row {
+		flex: 1 1 50%;
+
+		.card {
+			border-radius: 6px;
+			box-shadow: $box-shadow-400;
+			padding: 24px 16px;
+
+			&-title {
+				@include font-style-caption;
+				color: $color-text-light;
+				letter-spacing: 0.02em;
+				text-align: center;
+				text-transform: uppercase;
+			}
+
+			&-text {
+				margin-top: 8px;
+				text-align: center;
+				@include font-style-h1;
+			}
+		}
+	}
+
+	&-main {
+
+		.card {
+			border: 1px solid $color-100;
+			border-radius: 8px;
+			box-shadow: $box-shadow-100;
+		}
+	}
+}
