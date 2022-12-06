@@ -284,6 +284,13 @@ export default function Home() {
 		?.filter((item) => item.nama_customer === pengirim?.[0])
 		.map((item) => item.tipe_ppn)
 
+	console.log(`ppn`, ppn)
+
+	//get dataAccurate.accurate where taxName = ppn?.[0]
+	const nama_barang = dataAccurate?.accurate?.filter(
+		(item) => item.taxName === ppn?.[0]
+	)
+
 	const allHarga = watch(`tagihan`) ? watch(`tagihan`) : 0
 	const allHargaA = watch(`tagihanA`) ? watch(`tagihanA`) : [0]
 
@@ -941,11 +948,16 @@ export default function Home() {
 								required
 							>
 								<option value="0">Pilih Integrasi Accurate</option>
-								{dataAccurate?.accurate?.map((item, index) => (
-									<option key={index} value={item.kode_barang}>
-										{item.nama_barang}
-									</option>
-								))}
+								{
+									//from nama_barang
+									nama_barang?.map((item, index) => (
+										<option key={index} value={item.kode_barang}>
+											{` `}
+											{item.nama_barang}
+											{` `}
+										</option>
+									))
+								}
 							</select>
 						</div>
 						<div className="field" style={{ marginTop: `1%` }}>
