@@ -100,8 +100,11 @@ export default function Home() {
 	//get tipe ppn
 	const tipePPN = filterCustomer?.[0]?.tipe_ppn
 
+	//get only number from tipe ppn
+	const tipePPNNumber = tipePPN?.replace(/[^0-9]/g, ``)
+
 	//convert tipePPN to percentage
-	const tipePPNPercentage = tipePPN / 100
+	const tipePPNPercentage = tipePPNNumber / 100
 
 	const PPN =
 		getValues(`total_volume_ttb`) !== 0

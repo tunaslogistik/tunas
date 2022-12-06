@@ -17,7 +17,9 @@ const mutations = {
 				jenis,
 				salesDiscountGlAccountId,
 				salesGlAccountId,
-				inventoryGlAccountId
+				inventoryGlAccountId,
+				percentTaxable,
+				taxName
 			} = args.input
 
 			const url = `https://public.accurate.id/accurate/api/item/save.do?Scope: item_save`
@@ -27,7 +29,8 @@ const mutations = {
 				salesDiscountGlAccountId: `60`,
 				salesGlAccountId: akun_penjualan,
 				inventoryGlAccountId: `233`,
-				itemCategoryId: `51`
+				itemCategoryId: `51`,
+				tax1Name: taxName
 			}
 			// make POST FUNCTION  axios
 			const axios = require(`axios`)
@@ -52,7 +55,9 @@ const mutations = {
 					jenis,
 					salesDiscountGlAccountId,
 					salesGlAccountId,
-					inventoryGlAccountId
+					inventoryGlAccountId,
+					percentTaxable,
+					taxName
 				}
 			})
 
@@ -77,7 +82,9 @@ const mutations = {
 				salesDiscountGlAccountId,
 				akun_penjualan,
 				salesGlAccountId,
-				inventoryGlAccountId
+				inventoryGlAccountId,
+				percentTaxable,
+				taxName
 			} = args.input
 			const accurate = await context.prisma.accurate.upsert({
 				where: {
@@ -91,7 +98,9 @@ const mutations = {
 					akun_penjualan,
 					salesDiscountGlAccountId,
 					salesGlAccountId,
-					inventoryGlAccountId
+					inventoryGlAccountId,
+					percentTaxable,
+					taxName
 				},
 				create: {
 					id,
@@ -101,7 +110,9 @@ const mutations = {
 					akun_penjualan,
 					salesDiscountGlAccountId,
 					salesGlAccountId,
-					inventoryGlAccountId
+					inventoryGlAccountId,
+					percentTaxable,
+					taxName
 				}
 			})
 

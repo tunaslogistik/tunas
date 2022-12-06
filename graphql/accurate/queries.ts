@@ -10,6 +10,8 @@ export const GET_ACCURATE = gql`
 			salesDiscountGlAccountId
 			salesGlAccountId
 			inventoryGlAccountId
+			percentTaxable
+			taxName
 		}
 	}
 `

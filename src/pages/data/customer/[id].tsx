@@ -8,7 +8,7 @@ import { Button, message, Popconfirm } from "antd"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import {
 	DELETE_CUSTOMER,
@@ -98,6 +98,19 @@ export default function Home() {
 			}
 		})
 		.pop()
+
+	const fetchApi = async () => {
+		const res = await fetch(`/api/tax`)
+		const data = await res.json()
+		//return data
+		return data
+	}
+
+	//seperate data and promise using setState and useEffect
+	const [dataApi, setDataApi] = useState([])
+	useEffect(() => {
+		fetchApi().then((data) => setDataApi(data))
+	}, [])
 
 	const handleSubmitEdit = (e) => {
 		e.preventDefault()
@@ -308,18 +321,26 @@ export default function Home() {
 													required
 												/>
 											</div>
-											<div className="form-group">
-												<label style={inputStyles} htmlFor="tipe_ppn">
-													Tipe PPn
-												</label>
-												<input
-													type="text"
-													className="form-control"
-													style={inputStyle}
-													id="tipe_ppn"
-													defaultValue={mappedData?.tipe_ppn}
-													required
-												/>
+											<div style={{ width: `100%` }}>
+												<div className="col">
+													<label style={inputStyles}>Tax</label>
+													<select
+														className="form-control"
+														style={{
+															width: `100%`
+														}}
+														id="tipe_ppn"
+														defaultValue={mappedData?.tipe_ppn}
+													>
+														{dataApi.map((item, index) => {
+															return (
+																<option key={index} value={item.taxInfo}>
+																	{item.taxInfo}
+																</option>
+															)
+														})}
+													</select>
+												</div>
 											</div>
 											<div className="form-group">
 												<div className="form-group">

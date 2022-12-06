@@ -71,6 +71,8 @@ model accurate {
   salesDiscountGlAccountId String @default("null")
   salesGlAccountId         String @default("null")
   inventoryGlAccountId     String @default("null")
+  percentTaxable           String @default("null")
+  taxName                  String @default("null")
 }
 
 model pengaturan {

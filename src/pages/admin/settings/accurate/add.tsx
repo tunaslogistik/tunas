@@ -66,7 +66,8 @@ export default function Home() {
 			akun_penjualan: e.target.akun.value,
 			salesDiscountGlAccountId: `null`,
 			salesGlAccountId: `null`,
-			inventoryGlAccountId: `null`
+			inventoryGlAccountId: `null`,
+			taxName: e.target.tax.value
 		}
 		//check duplicate
 		const duplicate = data?.accurate.find(
@@ -210,7 +211,7 @@ export default function Home() {
 													>
 														{dataApi.map((item, index) => {
 															return (
-																<option key={index} value={item.id}>
+																<option key={index} value={item.taxInfo}>
 																	{item.taxInfo}
 																</option>
 															)

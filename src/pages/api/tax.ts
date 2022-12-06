@@ -17,7 +17,6 @@ export default async function handler({}, res) {
 			requestOptions
 		)
 		const data = await result.json()
-		console.log(data.d)
 		res.status(200).json(data.d)
 	} catch (error) {
 		console.log(error)

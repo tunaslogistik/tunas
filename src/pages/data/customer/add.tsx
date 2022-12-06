@@ -6,7 +6,7 @@ import { message } from "antd"
 
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { CREATE_CUSTOMER } from "../../../../graphql/customer/mutations"
 
@@ -79,6 +79,19 @@ export default function Home() {
 		idpString[0] + `.` + idpNumberPlusStringPad
 
 	console.log(`idpNumberPlusStringPadFinal`, idpNumberPlusStringPadFinal)
+
+	const fetchApi = async () => {
+		const res = await fetch(`/api/tax`)
+		const data = await res.json()
+		//return data
+		return data
+	}
+
+	//seperate data and promise using setState and useEffect
+	const [dataApi, setDataApi] = useState([])
+	useEffect(() => {
+		fetchApi().then((data) => setDataApi(data))
+	}, [])
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
@@ -244,17 +257,25 @@ export default function Home() {
 													required
 												/>
 											</div>
-											<div className="form-group">
-												<label htmlFor="tipe_ppn" style={inputStyles}>
-													Tipe PPN
-												</label>
-												<input
-													type="text"
-													className="form-control"
-													style={inputStyle}
-													id="tipe_ppn"
-													required
-												/>
+											<div style={{ width: `100%` }}>
+												<div className="col">
+													<label style={inputStyles}>Tax</label>
+													<select
+														className="form-control"
+														style={{
+															width: `100%`
+														}}
+														id="tipe_ppn"
+													>
+														{dataApi.map((item, index) => {
+															return (
+																<option key={index} value={item.taxInfo}>
+																	{item.taxInfo}
+																</option>
+															)
+														})}
+													</select>
+												</div>
 											</div>
 											<div className="form-group">
 												<div className="form-group">

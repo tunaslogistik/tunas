@@ -10,6 +10,8 @@ export const types = gql`
 		salesDiscountGlAccountId: String
 		salesGlAccountId: String
 		inventoryGlAccountId: String
+		percentTaxable: String
+		taxName: String
 	}
 
 	type accurate {
@@ -25,6 +27,8 @@ export const types = gql`
 		salesDiscountGlAccountId: String
 		salesGlAccountId: String
 		inventoryGlAccountId: String
+		percentTaxable: String
+		taxName: String
 	}
 
 	input UpdateAccurateInput {
@@ -36,6 +40,8 @@ export const types = gql`
 		salesDiscountGlAccountId: String
 		salesGlAccountId: String
 		inventoryGlAccountId: String
+		percentTaxable: String
+		taxName: String
 	}
 
 	type MutateAccurateResponse {
