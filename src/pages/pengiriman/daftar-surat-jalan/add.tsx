@@ -88,6 +88,7 @@ export default function Home() {
 					nomor_ttb: formData.nomor_ttb,
 					koli: String(formData.koli),
 					volume: String(formData.total_volume_ttb),
+					kota_tujuan: formData.kota_tujuan,
 					nomor_surat_jalan:
 						isFullContainer === `Full Container`
 							? `SJ/` +
@@ -161,6 +162,7 @@ export default function Home() {
 								) +
 								`/` +
 								addLeadingZeros(panjangSalesOrder, 4),
+							kota_tujuan: formData.kota_tujuan,
 							vendor_pelayanan: formData.vendor_pelayaran,
 							tanggal_surat_jalan: formData.tanggal_surat_jalan,
 							nomor_container: formData.nomor_container,

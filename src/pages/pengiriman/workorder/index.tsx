@@ -397,7 +397,7 @@ export default function Home() {
 						style={{ overflowX: `scroll`, marginTop: `20px` }}
 					>
 						<Table
-							rowKey="id"
+							rowKey={(record) => record.id}
 							columns={columns}
 							dataSource={dataSource}
 							pagination={{ pageSize: 10 }}

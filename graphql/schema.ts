@@ -174,10 +174,10 @@ export const typeDefs = gql`
 		deleteDaftar_surat_jalan(id: Int): MutateDaftar_surat_jalanResponse!
 
 		createDaftar_invoice(
-			input: CreateDaftar_invoiceInput!
+			input: [CreateDaftar_invoiceInput!]
 		): MutateDaftar_invoiceResponse!
 		updateDaftar_invoice(
-			input: UpdateDaftar_invoiceInput!
+			input: [UpdateDaftar_invoiceInput!]
 		): MutateDaftar_invoiceResponse!
 		deleteDaftar_invoice(id: Int): MutateDaftar_invoiceResponse!
 

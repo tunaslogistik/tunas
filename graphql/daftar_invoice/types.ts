@@ -81,7 +81,7 @@ export const types = gql`
 		harga: String
 		harga_biaya_tambahan: String
 		ppn_biaya_tambahan: String
-		acurrate: String
+		accurate: String
 		pengirim: String
 		total_tagihan: String
 		tax: String

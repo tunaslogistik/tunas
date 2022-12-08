@@ -122,6 +122,7 @@ export default function Home() {
 						key="table1"
 					>
 						<Table
+							rowKey={(record) => record.id}
 							columns={columns}
 							dataSource={dataSource}
 							pagination={{ pageSize: 10 }}

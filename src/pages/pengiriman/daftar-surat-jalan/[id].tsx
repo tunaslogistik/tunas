@@ -268,6 +268,7 @@ export default function Home() {
 					nomor_seal: item.nomor_seal,
 					nomor_ttb: item.nomor_ttb,
 					koli: item.koli,
+					kota_tujuan: item.kota_tujuan,
 					volume: item.volume,
 					nama_kapal: formData.nama_kapal,
 					total_volume: item.total_volume,

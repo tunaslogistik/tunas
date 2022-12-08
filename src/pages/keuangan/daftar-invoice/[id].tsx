@@ -11,7 +11,8 @@ import { Button, notification } from "antd"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import {
 	CREATE_DAFTAR_INVOICE,
-	DELETE_DAFTAR_INVOICE
+	DELETE_DAFTAR_INVOICE,
+	UPDATE_DAFTAR_INVOICE
 } from "graphql/daftar_invoice/mutations"
 import { GET_DAFTAR_INVOICE } from "graphql/daftar_invoice/queries"
 import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"
@@ -33,6 +34,7 @@ const GET_DATA = gql`
 			nama_kapal
 			vendor_pelayanan
 			tanggal_surat_jalan
+			kota_tujuan
 			tanggal_keberangkatan
 			nomor_container
 			nomor_seal
@@ -158,6 +160,15 @@ export default function Home() {
 		createDaftar_invoice({ variables: { input: data } })
 	}
 
+	const [updateDaftar_invoice] = useMutation(UPDATE_DAFTAR_INVOICE, {
+		refetchQueries: [{ query: GET_DATA }]
+	})
+
+	//update mutation function
+	const updateDataInvoice = (data) => {
+		updateDaftar_invoice({ variables: { input: data } })
+	}
+
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: `test`
@@ -216,6 +227,17 @@ export default function Home() {
 		}
 	})
 
+	//watch kota_tujuanA[0]
+	const kota_tujuan = watch(`kota_tujuanA[0]`)
+
+	const filteredSuratJalan3 = filteredSuratJalan2?.filter((item) => {
+		if (kota_tujuan) {
+			return item.kota_tujuan === kota_tujuan
+		} else {
+			return item
+		}
+	})
+
 	//handleChangeSJA
 	const handleChangeSJA = (value, index) => {
 		selectednoSJA[index] = value
@@ -247,11 +269,11 @@ export default function Home() {
 			.map((item) => item.nama_penerima)
 
 		const kotaTujuan = dataDaftarTTB?.daftar_ttb
-			?.filter((item) => allTTB.includes(item.ttb_number))
+			?.filter((item) => allTTB?.includes(item.ttb_number))
 			.map((item) => item.kota_tujuan)
 
 		const totalVolume = dataDaftarTTB?.daftar_ttb
-			?.filter((item) => allTTB.includes(item.ttb_number))
+			?.filter((item) => allTTB?.includes(item.ttb_number))
 			.map((item) => item.total_volume)
 
 		//if pengirim > 1, then pengirim = pengirim[0] else pengirim
@@ -316,6 +338,8 @@ export default function Home() {
 	const subTotal1 = allHargaMerge?.reduce((a, b) => {
 		return parseInt(a) + parseInt(b)
 	}, 0)
+
+	console.log(`subTotal1`, subTotal1)
 
 	//harga from newArray if 0 set array 0
 	const newArray1 = watch(`newArray`)
@@ -403,6 +427,8 @@ export default function Home() {
 		console.log(`tanggal`, formData.tanggal_invoice)
 		const dataInvoice = nomorSuratJalan?.map((item, index) => {
 			return {
+				//get id from dataDaftarInvoice where nomor_surat_jalan = selectednoSJA
+				id: parseInt(idInvoice),
 				nomor_surat_jalan: item,
 				nomor_invoice: filteredData?.[0]?.nomor_invoice,
 				//find first nomor ttb from nomor surat jalan where nomor surat jalan = item
@@ -467,7 +493,9 @@ export default function Home() {
 				keterangan: formData.keterangan,
 				total_tagihan: String(subAfterPPN),
 				accurate: dataDaftarInvoice?.daftar_invoice?.[0]?.accurate,
-				pengirim: dataDaftarInvoice?.daftar_invoice?.[0]?.pengirim
+				pengirim: dataDaftarInvoice?.daftar_invoice?.[0]?.pengirim,
+				subtotal: String(subTotal),
+				subtotal_tambahan: String(subTotal4)
 			}
 		})
 
@@ -503,19 +531,19 @@ export default function Home() {
 			)
 		})
 
+		//for data invoicelength  assign id
+		for (let i = 0; i < dataInvoice.length; i++) {
+			dataInvoice[i].id = idInvoice[i]
+		}
+
 		//if dataInvoicenomorsurat jalan undefined delete all data with nomor surat jalan undefined
 		const dataInvoice_final = dataInvoice.filter(
 			(item) => item.nomor_surat_jalan !== undefined
 		)
+
 		console.log(`dataInvoice`, dataInvoice_final)
 
-		for (let i = 0; i < dataInvoice_final.length; i++) {
-			createDataInvoice(dataInvoice_final[i])
-		}
-
-		idInvoice.map((item) => {
-			deleteData(item)
-		})
+		updateDataInvoice(dataInvoice_final)
 
 		const check = dataDaftarInvoice?.daftar_invoice.find(
 			(item) =>
@@ -527,7 +555,6 @@ export default function Home() {
 			})
 		}
 	}
-
 	return (
 		<AdminPage
 			parent={
@@ -631,7 +658,7 @@ export default function Home() {
 														? `Pilih Nomor Surat Jalan`
 														: selectednoSJA[index]}
 												</option>
-												{filteredSuratJalan2
+												{filteredSuratJalan3
 													?.map((ttb) => {
 														return (
 															<option

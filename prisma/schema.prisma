@@ -182,6 +182,7 @@ model daftar_surat_jalan {
   tanggal_surat_jalan   String
   tanggal_keberangkatan String
   nomor_container       String
+  kota_tujuan           String
   nama_kapal            String
   koli                  String
   volume                String

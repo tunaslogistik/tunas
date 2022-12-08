@@ -11,6 +11,7 @@ export const GET_DAFTAR_SURAT_JALAN = gql`
 			nomor_container
 			koli
 			volume
+			kota_tujuan
 			nama_kapal
 			total_koli
 			total_volume

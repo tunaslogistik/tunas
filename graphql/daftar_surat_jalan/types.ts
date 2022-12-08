@@ -9,6 +9,7 @@ export const types = gql`
 		total_koli: String
 		total_volume: String
 		nomor_ttb: String
+		kota_tujuan: String
 		vendor_pelayanan: String
 		tanggal_surat_jalan: String
 		nama_kapal: String
@@ -31,6 +32,7 @@ export const types = gql`
 		total_koli: String
 		total_volume: String
 		vendor_pelayanan: String
+		kota_tujuan: String
 		nama_kapal: String
 		tanggal_surat_jalan: String
 		tanggal_keberangkatan: String
@@ -49,6 +51,7 @@ export const types = gql`
 		total_volume: String
 		vendor_pelayanan: String
 		nama_kapal: String
+		kota_tujuan: String
 		tanggal_surat_jalan: String
 		tanggal_keberangkatan: String
 		keterangan: String

@@ -4,7 +4,6 @@ import IconTrash from "@assets/icons/icon-trash.svg"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import FormRepeater from "@components/form/FormRepeater.component"
-import useLoading from "@hooks/useLoading.hook"
 import { Button, DatePicker, notification } from "antd"
 import { GET_ACCURATE } from "graphql/accurate/queries"
 import { GET_CUSTOMER } from "graphql/customer/queries"
@@ -13,6 +12,7 @@ import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import moment from "moment"
 import Link from "next/link"
+import router from "next/router"
 import { useEffect, useRef, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 
@@ -26,6 +26,7 @@ const GET_DATA = gql`
 			nomor_ttb
 			nama_kapal
 			vendor_pelayanan
+			kota_tujuan
 			tanggal_surat_jalan
 			tanggal_keberangkatan
 			nomor_container
@@ -39,31 +40,15 @@ const GET_DATA = gql`
 const GET_INVOICE = gql`
 	query daftar_invoice {
 		daftar_invoice {
-			id
 			nomor_invoice
 			nomor_surat_jalan
-			nomor_ttb
-			vendor_pelayanan
-			koli
-			volume
-			total_koli
-			nama_barang
-			harga
-			harga_biaya_tambahan
-			nama_kapal
-			total_volume
-			tanggal_invoice
-			tanggal_keberangkatan
-			nomor_container
-			nomor_seal
-			keterangan
 		}
 	}
 `
 
 export default function Home() {
+	//set load
 	const formRef = useRef(null)
-	const { setLoading } = useLoading()
 	const { data } = useQuery(GET_DATA)
 	//GET DAFTAR TTB
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
@@ -73,6 +58,7 @@ export default function Home() {
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	//GET DAFTAR INVOICE
 	const { data: dataDaftarInvoice } = useQuery(GET_INVOICE)
+	console.log(`dataDaftarInvoice`, dataDaftarInvoice)
 
 	//GET ACCURATE
 	const { data: dataAccurate } = useQuery(GET_ACCURATE)
@@ -87,9 +73,9 @@ export default function Home() {
 		})
 	}, [data])
 
-	//CREATE DAFTAR INVOICE
+	//CREATE DAFTAR INVOICE and routh to daftar invoice
 	const [createDaftar_invoice] = useMutation(CREATE_DAFTAR_INVOICE, {
-		refetchQueries: [{ query: GET_DATA }]
+		refetchQueries: [{ query: GET_INVOICE }]
 	})
 
 	//create mutation function
@@ -164,6 +150,20 @@ export default function Home() {
 			return !dataDaftarInvoice?.daftar_invoice
 				.map((item) => item.nomor_surat_jalan)
 				.includes(item.nomor_surat_jalan)
+		} else {
+			return item
+		}
+	})
+
+	//watch kota_tujuan
+	const kota_tujuan = watch(`kota_tujuan`)
+
+	console.log(`kota_tujuan`, kota_tujuan)
+
+	//find data from filtered surat jalan where kota_tujuan = kota_tujuan
+	const filteredSuratJalan3 = filteredSuratJalan?.filter((item) => {
+		if (kota_tujuan) {
+			return item.kota_tujuan === kota_tujuan
 		} else {
 			return item
 		}
@@ -348,7 +348,6 @@ export default function Home() {
 	const subTotal = subTotal1 + subTotal4
 
 	const subAfterPPN = sum_bersih + subTotal3
-	console.log(`subAfterPPN`, subAfterPPN)
 
 	const subPPN = subAfterPPN - subTotal
 
@@ -361,7 +360,7 @@ export default function Home() {
 
 	console.log(`count`, count)
 
-	const onSubmit = (formData) => {
+	const onSubmit = async (formData) => {
 		console.log(`formData`, formData)
 
 		//merge formData.nomor_surat_jalanA?.filter((item) => item !== ``) and formData.nomor_surat_jalan with map
@@ -500,21 +499,32 @@ export default function Home() {
 			item.accurate = formData.accurate
 		})
 
-		console.log(`dataInvoice`, dataInvoice)
-
-		for (let i = 0; i < dataInvoice.length; i++) {
-			createDataInvoice(dataInvoice[i])
-		}
-
-		const check = dataDaftarInvoice?.daftar_invoice.find(
-			(item) => item.nomor_ttb === dataInvoice.map((item) => item.nomor_ttb)
+		console.log(
+			`dataInvoice_final_stringify`,
+			JSON.stringify(dataInvoice, null, 2)
 		)
-		if (check === undefined) {
+
+		//find if nomor surat jalan already exist in daftar invoice if not createdata
+		const dataInvoiceExist = dataDaftarInvoice?.daftar_invoice?.filter(
+			(item) => item.nomor_surat_jalan === formData.nomor_surat_jalan
+		)
+
+		if (dataInvoiceExist.length === 0) {
+			createDataInvoice(dataInvoice)
 			notification.success({
-				message: `Data berhasil dibuat`
+				message: `Berhasil Menambahkan Invoice`,
+				description: `Lakukan Refresh Jika Tidak Muncul`
+			})
+			//redirect to daftar invoice and reload page
+			router.push(`/keuangan/daftar-invoice`)
+		} else {
+			notification.error({
+				message: `Gagal`,
+				description: `Nomor surat jalan sudah ada Invoice`
 			})
 		}
 	}
+
 	return (
 		<AdminPage
 			parent={
@@ -701,7 +711,7 @@ export default function Home() {
 														? `Pilih Nomor Surat Jalan`
 														: selectednoSJA[index]}
 												</option>
-												{filteredSuratJalan2
+												{filteredSuratJalan3
 													?.map((ttb) => {
 														return (
 															<option
