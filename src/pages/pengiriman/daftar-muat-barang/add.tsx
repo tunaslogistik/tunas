@@ -610,22 +610,28 @@ export default function Home() {
 			})
 
 			for (let i = 0; i < data_packing_list.length; i++) {
-				data_packing_list.map((item) => {
-					item.nomor_surat_jalan =
-						`SP/` +
-						dataFilterTTB?.[0]?.kota_tujuan +
-						`/` +
-						String(moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)) +
-						`/` +
-						addLeadingZeros(increment2, 4)
-				})
 				const check = data?.daftar_muat_barang.find(
 					(item) => item.nomor_ttb === dataFilter2[i].nomor_ttb
 				)
 				if (check === undefined) {
+					data_packing_list.forEach((item, i) => {
+						item.nomor_surat_jalan =
+							`SP/` +
+							dataFilterTTB?.[0]?.kota_tujuan +
+							`/` +
+							String(moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)) +
+							`/` +
+							addLeadingZeros(increment + i, 4)
+					})
 					createDataSuratJalan(data_packing_list[i])
 				}
 			}
+
+			//using foreach add leading zeros(increment + i,4) to nomor surat jalan for data_packing_list
+
+			console.log(`dataFilter2s`, data_packing_list)
+
+			console.log(`dataFilter2`, data_packing_list)
 			const check = data?.daftar_muat_barang.find(
 				(item) => item.nomor_ttb === dataFilter2[0].nomor_ttb
 			)
