@@ -249,6 +249,8 @@ export default function SettingUserEdit() {
 		const datas = {
 			id: parseInt(id as string),
 			komentar_tiba_pelabuhan: komentarTibaPelabuhan,
+			//new date
+			tanggal_tiba_pelabuhan: moment().format(`YYYY-MM-DD HH:mm:ss`),
 			status: `tiba_pelabuhan`
 		}
 
@@ -820,6 +822,7 @@ export default function SettingUserEdit() {
 							<input
 								type="file"
 								name="photo_seal"
+								style={{ marginTop: `2%` }}
 								onChange={(e) => {
 									setFile2(e.target.files[0])
 								}}
