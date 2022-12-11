@@ -87,6 +87,7 @@ export default function Home() {
 	//DATA FOr table with date moment
 	const dataTable = filteredData?.map((item) => {
 		return {
+			id: item.id,
 			nomor_workorder: item.nomor_workorder,
 			kendaraan: item.kendaraan,
 			nomor_container: item.nomor_container,
@@ -223,17 +224,11 @@ export default function Home() {
 							//if tanggal container is not null || "" , make border black
 							marginLeft: `1%`,
 							border: `${
-								record.tanggal_container !== null ||
 								record.tanggal_container !== ``
 									? `1px solid green`
 									: `1px solid black`
 							}`,
-							color: `${
-								record.tanggal_container !== null ||
-								record.tanggal_container !== ``
-									? `green`
-									: `black`
-							}`
+							color: `${record.tanggal_container !== `` ? `green` : `black`}`
 						}}
 						className="bg-blue-500 text-black rounded-md px-2 py-1"
 					>
@@ -244,17 +239,11 @@ export default function Home() {
 							//if tanggal muat barang is not null || "" , make border black
 							marginLeft: `1%`,
 							border: `${
-								record.tanggal_muat_barang !== null ||
 								record.tanggal_muat_barang !== ``
 									? `1px solid green`
 									: `1px solid black`
 							}`,
-							color: `${
-								record.tanggal_muat_barang !== null ||
-								record.tanggal_muat_barang !== ``
-									? `green`
-									: `black`
-							}`
+							color: `${record.tanggal_muat_barang !== `` ? `green` : `black`}`
 						}}
 						className="bg-blue-500 text-white rounded-md px-2 py-1"
 					>
@@ -265,16 +254,12 @@ export default function Home() {
 							//if tanggal menuju pelabuhan is not null || "" , make border black
 							marginLeft: `1%`,
 							border: `${
-								record.tanggal_menuju_pelabuhan !== null ||
 								record.tanggal_menuju_pelabuhan !== ``
 									? `1px solid green`
 									: `1px solid black`
 							}`,
 							color: `${
-								record.tanggal_menuju_pelabuhan !== null ||
-								record.tanggal_menuju_pelabuhan !== ``
-									? `green`
-									: `black`
+								record.tanggal_menuju_pelabuhan !== `` ? `green` : `black`
 							}`
 						}}
 						className="bg-blue-500 text-white rounded-md px-2 py-1"
@@ -286,16 +271,12 @@ export default function Home() {
 							//if tanggal tiba pelabuhan is null || "" || Invalid date make border black
 							marginLeft: `1%`,
 							border: `${
-								record.tanggal_tiba_pelabuhan !== null ||
 								record.tanggal_tiba_pelabuhan !== ``
 									? `1px solid green`
 									: `1px solid black`
 							}`,
 							color: `${
-								record.tanggal_tiba_pelabuhan !== null ||
-								record.tanggal_tiba_pelabuhan !== ``
-									? `green`
-									: `black`
+								record.tanggal_tiba_pelabuhan !== `` ? `green` : `black`
 							}`
 						}}
 						className="bg-blue-500 text-white rounded-md px-2 py-1"
@@ -307,19 +288,11 @@ export default function Home() {
 							//if tanggal pindah muatan is not null || "" , make border black
 							marginLeft: `1%`,
 							border: `${
-								record.tanggal_muatan !== null ||
-								record.tanggal_muatan !== `` ||
-								record.tanggal_container !== `Invalid date`
+								record.tanggal_muatan !== ``
 									? `1px solid green`
 									: `1px solid black`
 							}`,
-							color: `${
-								record.tanggal_muatan !== null ||
-								record.tanggal_muatan !== `` ||
-								record.tanggal_container !== `Invalid date`
-									? `green`
-									: `black`
-							}`
+							color: `${record.tanggal_muatan !== `` ? `green` : `black`}`
 						}}
 						className="bg-blue-500 text-white rounded-md px-2 py-1"
 					>
@@ -330,19 +303,11 @@ export default function Home() {
 							//if tanggal menuju destinasi is not null || "" , make border and font color black
 							marginLeft: `1%`,
 							border: `${
-								record.tanggal_destinasi !== null ||
-								record.tanggal_destinasi !== `` ||
-								record.tanggal_container !== `Invalid date`
+								record.tanggal_destinasi !== ``
 									? `1px solid green`
 									: `1px solid black`
 							}`,
-							color: `${
-								record.tanggal_destinasi !== null ||
-								record.tanggal_destinasi !== `` ||
-								record.tanggal_container !== `Invalid date`
-									? `green`
-									: `black`
-							}`
+							color: `${record.tanggal_destinasi !== `` ? `green` : `black`}`
 						}}
 						className="bg-blue-500 text-white rounded-md px-2 py-1"
 					>
@@ -406,7 +371,7 @@ export default function Home() {
 							onRow={(record) => {
 								return {
 									onClick: () => {
-										router.push(`/keuangan/daftar-invoice/${record.id}`)
+										router.push(`/pengiriman/workorder/${record.id}`)
 									}
 								}
 							}}

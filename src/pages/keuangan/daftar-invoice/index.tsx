@@ -190,7 +190,7 @@ export default function Home() {
 								<div className="form-group">
 									<button className="button is-primary">
 										<Link href="/keuangan/daftar-invoice/add">
-											<a style={{ color: `white`, width: `170px` }}>Tambah</a>
+											<a style={{ color: `white`, width: `100px` }}>Tambah</a>
 										</Link>
 									</button>
 								</div>

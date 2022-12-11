@@ -13,6 +13,7 @@ export const types = gql`
 		vendor_pelayanan: String
 		tanggal_invoice: String
 		nama_kapal: String
+		harga_surat_jalan: String
 		tanggal_keberangkatan: String
 		keterangan: String
 		nomor_container: String
@@ -26,6 +27,9 @@ export const types = gql`
 		total_tagihan: String
 		tax: String
 		subtotal: String
+		jenis_biaya_tambahan: String
+		id_biaya_tambahan: String
+		id_biaya_utama: String
 		subtotal_tambahan: String
 	}
 
@@ -43,6 +47,7 @@ export const types = gql`
 		total_koli: String
 		total_volume: String
 		vendor_pelayanan: String
+		harga_surat_jalan: String
 		nama_kapal: String
 		tanggal_invoice: String
 		tanggal_keberangkatan: String
@@ -57,6 +62,9 @@ export const types = gql`
 		pengirim: String
 		total_tagihan: String
 		tax: String
+		jenis_biaya_tambahan: String
+		id_biaya_tambahan: String
+		id_biaya_utama: String
 		subtotal: String
 		subtotal_tambahan: String
 	}
@@ -73,6 +81,7 @@ export const types = gql`
 		vendor_pelayanan: String
 		nama_kapal: String
 		tanggal_invoice: String
+		harga_surat_jalan: String
 		tanggal_keberangkatan: String
 		keterangan: String
 		nomor_container: String
@@ -85,6 +94,9 @@ export const types = gql`
 		pengirim: String
 		total_tagihan: String
 		tax: String
+		jenis_biaya_tambahan: String
+		id_biaya_tambahan: String
+		id_biaya_utama: String
 		subtotal: String
 		subtotal_tambahan: String
 	}

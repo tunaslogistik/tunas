@@ -19,12 +19,14 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} ./prisma/seed.ts"
   },
   "dependencies": {
+    "@actions/core": "^1.10.0",
     "@ant-design/plots": "^1.2.2",
     "@apollo/client": "^3.5.10",
     "@hookform/resolvers": "^2.8.8",
     "@next/bundle-analyzer": "^12.3.1",
     "@prisma/client": "^4.7.1",
     "@react-pdf/renderer": "^3.0.1",
+    "@supabase/supabase-js": "^2.1.3",
     "@tiptap/extension-color": "^2.0.0-beta.9",
     "@tiptap/extension-image": "^2.0.0-beta.27",
     "@tiptap/extension-link": "^2.0.0-beta.36",
@@ -59,10 +61,12 @@
     "react-select": "^5.3.1",
     "react-table": "^7.7.0",
     "react-to-print": "^2.14.7",
+    "rn-fetch-blob": "^0.12.0",
     "sass": "^1.56.1",
     "swr": "^1.3.0",
     "to-words": "^3.3.0",
     "use-immer": "^0.8.1",
+    "uuidv4": "^6.2.13",
     "yup": "^0.32.11"
   },
   "devDependencies": {

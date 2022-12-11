@@ -7,6 +7,8 @@ import FormRepeater from "@components/form/FormRepeater.component"
 import { Button, DatePicker, notification } from "antd"
 import { GET_ACCURATE } from "graphql/accurate/queries"
 import { GET_CUSTOMER } from "graphql/customer/queries"
+import { CREATE_DAFTAR_BIAYA_TAMBAHAN } from "graphql/daftar_biaya_tambahan/mutations"
+import { GET_DAFTAR_BIAYA_TAMBAHAN } from "graphql/daftar_biaya_tambahan/queries"
 import { CREATE_DAFTAR_INVOICE } from "graphql/daftar_invoice/mutations"
 import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
@@ -58,7 +60,8 @@ export default function Home() {
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	//GET DAFTAR INVOICE
 	const { data: dataDaftarInvoice } = useQuery(GET_INVOICE)
-	console.log(`dataDaftarInvoice`, dataDaftarInvoice)
+	//GET DAFTAR BIAYA TAMBAHAN
+	const { data: dataDaftarBiayaTambahan } = useQuery(GET_DAFTAR_BIAYA_TAMBAHAN)
 
 	//GET ACCURATE
 	const { data: dataAccurate } = useQuery(GET_ACCURATE)
@@ -81,6 +84,19 @@ export default function Home() {
 	//create mutation function
 	const createDataInvoice = (data) => {
 		createDaftar_invoice({ variables: { input: data } })
+	}
+
+	//CREATE DAFTAR BIAYA TAMBAHAN
+	const [createDaftar_biaya_tambahan] = useMutation(
+		CREATE_DAFTAR_BIAYA_TAMBAHAN,
+		{
+			refetchQueries: [{ query: GET_INVOICE }]
+		}
+	)
+
+	//create mutation function
+	const createDataBiayaTambahan = (data) => {
+		createDaftar_biaya_tambahan({ variables: { input: data } })
 	}
 
 	const { fields, append, remove } = useFieldArray({
@@ -451,6 +467,20 @@ export default function Home() {
 					.map((item2) => item2.nomor_seal)[0],
 				nama_barang: namaBarangString,
 				harga: hargaString,
+				jenis_biaya_tambahan: String(formData.jenis_biaya_tambahan),
+				id_biaya_tambahan: String(
+					dataAccurate?.accurate
+						?.filter(
+							(item2) => item2.kode_barang === formData.jenis_biaya_tambahan
+						)
+						.map((item2) => item2.id)[0]
+				),
+				id_biaya_utama: String(
+					dataAccurate?.accurate
+						?.filter((item2) => item2.kode_barang === formData.accurate)
+						.map((item2) => item2.id)[0]
+				),
+				harga_surat_jalan: String(subTotal1),
 				ppn_biaya_tambahan: String(ppnString),
 				harga_biaya_tambahan: String(subTotal2),
 				keterangan: formData.keterangan,
@@ -970,6 +1000,33 @@ export default function Home() {
 								}
 							</select>
 						</div>
+						{
+							//if harga is not empty show this if not hidden
+							harga?.length > 0 && (
+								<div className="field" style={{ marginTop: `1%` }}>
+									<label style={{ fontWeight: `bolder` }} className="label">
+										Jenis Biaya Tambahan
+									</label>
+									<select
+										{...register(`jenis_biaya_tambahan`)}
+										style={{ width: `100%` }}
+										required
+									>
+										<option value="0">Pilih Biaya Tambahan</option>
+										{
+											//from nama_barang
+											nama_barang?.map((item, index) => (
+												<option key={index} value={item.kode_barang}>
+													{` `}
+													{item.nama_barang}
+													{` `}
+												</option>
+											))
+										}
+									</select>
+								</div>
+							)
+						}
 						<div className="field" style={{ marginTop: `1%` }}>
 							<label style={{ fontWeight: `bolder` }} className="label">
 								Keterangan

@@ -192,6 +192,15 @@ model daftar_surat_jalan {
   keterangan            String
 }
 
+model daftar_biaya_tambahan {
+  id                   Int    @id @default(autoincrement())
+  nomor_invoice        String
+  pengirim             String
+  jenis_biaya_tambahan String
+  harga_biaya_tambahan String
+  id_biaya_tambahan    String
+}
+
 model daftar_invoice {
   id                    Int    @id @default(autoincrement())
   nomor_surat_jalan     String
@@ -208,6 +217,10 @@ model daftar_invoice {
   total_volume          String
   nomor_seal            String
   nama_barang           String
+  jenis_biaya_tambahan  String @default("null")
+  id_biaya_tambahan     String @default("null")
+  id_biaya_utama        String @default("null")
+  harga_surat_jalan     String @default("null")
   harga_biaya_tambahan  String
   ppn_biaya_tambahan    String
   harga                 String

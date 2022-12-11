@@ -8,7 +8,12 @@ import FormRepeater from "@components/form/FormRepeater.component"
 import Access from "@components/util/Access.component"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, notification } from "antd"
+import { GET_ACCURATE } from "graphql/accurate/queries"
 import { GET_CUSTOMER } from "graphql/customer/queries"
+import {
+	CREATE_DAFTAR_BIAYA_TAMBAHAN,
+	UPDATE_DAFTAR_BIAYA_TAMBAHAN
+} from "graphql/daftar_biaya_tambahan/mutations"
 import {
 	CREATE_DAFTAR_INVOICE,
 	DELETE_DAFTAR_INVOICE,
@@ -60,7 +65,8 @@ export default function Home() {
 	const { data: dataDaftarSalesOrder } = useQuery(GET_DAFTAR_SALES_ORDER)
 	//GET CUSTOMER
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
-	//GET DAFTAR INVOICE
+	//GET DAFTAR ACCURATE
+	const { data: dataAccurate } = useQuery(GET_ACCURATE)
 
 	const [selectednoSJatas, setselectednoSJatas] = useState()
 	const [selectednoSJA, setselectednoSJA] = useState([])
@@ -132,6 +138,19 @@ export default function Home() {
 		(item) => item.nomor_invoice == filteredData[0]?.nomor_invoice
 	)
 
+	//get accurate from dataDaftarInvoice where id = id
+	const accurate = filteredData?.[0]?.accurate
+
+	const check1 = filteredData?.[0]?.jenis_biaya_tambahan
+
+	console.log("check1", check1)
+
+	//get id dataaccurate where kode_barang = accurate
+	const idAccurate = dataAccurate?.accurate
+		.filter((item) => item.kode_barang == accurate)
+		.map((item) => item.id)
+
+	console.log(`idAccurate`, idAccurate?.[0])
 	//get id all invoice where invoice = nomor_invoice
 	const idInvoice = mapInvoice?.map((item) => item.id)
 
@@ -160,6 +179,16 @@ export default function Home() {
 		createDaftar_invoice({ variables: { input: data } })
 	}
 
+	//create mutation biaya tambahan
+	const [createBiaya_tambahan] = useMutation(CREATE_DAFTAR_BIAYA_TAMBAHAN, {
+		refetchQueries: [{ query: GET_DATA }]
+	})
+
+	//create mutation function
+	const createDataBiaya_tambahan = (data) => {
+		createBiaya_tambahan({ variables: { input: data } })
+	}
+
 	const [updateDaftar_invoice] = useMutation(UPDATE_DAFTAR_INVOICE, {
 		refetchQueries: [{ query: GET_DATA }]
 	})
@@ -169,6 +198,17 @@ export default function Home() {
 		updateDaftar_invoice({ variables: { input: data } })
 	}
 
+	const [updateDaftar_biaya_tambahan] = useMutation(
+		UPDATE_DAFTAR_BIAYA_TAMBAHAN,
+		{
+			refetchQueries: [{ query: GET_DATA }]
+		}
+	)
+
+	//update mutation function
+	const updateDataBiaya_tambahan = (data) => {
+		updateDaftar_biaya_tambahan({ variables: { input: data } })
+	}
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: `test`
@@ -403,7 +443,7 @@ export default function Home() {
 			deleteData(item)
 		})
 	}
-	const onSubmit = (formData) => {
+	const onSubmit = async (formData) => {
 		//merge formData.nomor_surat_jalanA and formData.nomor_surat_jalan
 		const nomorSuratJalan = [
 			...formData.nomor_surat_jalanA,
@@ -425,6 +465,7 @@ export default function Home() {
 		//join ppn into 1 string with ,
 		const ppnString = ppn.join(`,`)
 		console.log(`tanggal`, formData.tanggal_invoice)
+
 		const dataInvoice = nomorSuratJalan?.map((item, index) => {
 			return {
 				//get id from dataDaftarInvoice where nomor_surat_jalan = selectednoSJA
@@ -488,9 +529,19 @@ export default function Home() {
 					.map((item2) => item2.nomor_seal)[0],
 				nama_barang: namaBarangString,
 				harga: hargaString,
+				harga_surat_jalan: String(subTotal1),
 				ppn_biaya_tambahan: String(ppnString),
 				harga_biaya_tambahan: String(subTotal2),
 				keterangan: formData.keterangan,
+				jenis_biaya_tambahan: String(formData.jenis_biaya_tambahan),
+				id_biaya_tambahan: String(
+					dataAccurate?.accurate
+						?.filter(
+							(item2) => item2.kode_barang === formData.jenis_biaya_tambahan
+						)
+						.map((item2) => item2.id)[0]
+				),
+				id_biaya_utama: String(idAccurate?.[0]),
 				total_tagihan: String(subAfterPPN),
 				accurate: dataDaftarInvoice?.daftar_invoice?.[0]?.accurate,
 				pengirim: dataDaftarInvoice?.daftar_invoice?.[0]?.pengirim,
@@ -541,7 +592,26 @@ export default function Home() {
 			(item) => item.nomor_surat_jalan !== undefined
 		)
 
-		console.log(`dataInvoice`, dataInvoice_final)
+		//get only pengirim, nomor_invoice, jenis_biaya_tambahan,id_biaya_tambahan and harga_biaya_tambahan
+		const dataBiaya_tambahan = dataInvoice_final.map((item) => {
+			return {
+				id: item.id,
+				pengirim: item.pengirim,
+				nomor_invoice: item.nomor_invoice,
+				jenis_biaya_tambahan: item.jenis_biaya_tambahan,
+				id_biaya_tambahan: item.id_biaya_tambahan,
+				harga_biaya_tambahan: item.subtotal_tambahan
+			}
+		})
+
+		console.log("data biaya", dataBiaya_tambahan)
+		if (check1 === "undefined") {
+			console.log("okay doki")
+			createDataBiaya_tambahan(dataBiaya_tambahan)
+		} else {
+			console.log("not okay doki")
+			updateDataBiaya_tambahan(dataBiaya_tambahan)
+		}
 
 		updateDataInvoice(dataInvoice_final)
 
@@ -866,6 +936,33 @@ export default function Home() {
 								/>
 							</div>
 						</div>
+						{
+							//if harga is not empty show this if not hidden
+							harga?.length > 0 && (
+								<div className="field" style={{ marginTop: `1%` }}>
+									<label style={{ fontWeight: `bolder` }} className="label">
+										Jenis Biaya Tambahan
+									</label>
+									<select
+										{...register(`jenis_biaya_tambahan`)}
+										style={{ width: `100%` }}
+										required
+									>
+										<option value="0">Pilih Biaya Tambahan</option>
+										{
+											//from nama_barang
+											dataAccurate?.accurate?.map((item, index) => (
+												<option key={index} value={item.kode_barang}>
+													{` `}
+													{item.nama_barang}
+													{` `}
+												</option>
+											))
+										}
+									</select>
+								</div>
+							)
+						}
 						<div className="field" style={{ marginTop: `1%` }}>
 							<label style={{ fontWeight: `bolder` }} className="label">
 								Keterangan

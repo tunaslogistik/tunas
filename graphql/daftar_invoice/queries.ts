@@ -15,7 +15,12 @@ export const GET_DAFTAR_INVOICE = gql`
 			nomor_invoice
 			nomor_seal
 			nomor_surat_jalan
+			harga_surat_jalan
 			nomor_ttb
+			jenis_biaya_tambahan
+			id_biaya_tambahan
+			id_biaya_utama
+			harga_surat_jalan
 			pengirim
 			ppn_biaya_tambahan
 			tanggal_invoice

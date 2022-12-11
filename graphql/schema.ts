@@ -1,6 +1,7 @@
 import { gql } from "apollo-server-micro"
 import { accurate } from "./accurate"
 import { customer } from "./customer"
+import { daftar_biaya_tambahan } from "./daftar_biaya_tambahan"
 import { daftar_harga } from "./daftar_harga"
 import { daftar_invoice } from "./daftar_invoice"
 import { daftar_muat_barang } from "./daftar_muat_barang"
@@ -39,6 +40,7 @@ export const typeDefs = gql`
 	${daftar_invoice.types}
 	${daftar_workorder.types}
 	${accurate.types}
+	${daftar_biaya_tambahan.types}
 
 	type Query {
 		settings: [Setting!]
@@ -181,6 +183,14 @@ export const typeDefs = gql`
 		): MutateDaftar_invoiceResponse!
 		deleteDaftar_invoice(id: Int): MutateDaftar_invoiceResponse!
 
+		createDaftar_biaya_tambahan(
+			input: [CreateDaftar_biaya_tambahanInput!]
+		): MutateDaftar_biaya_tambahanResponse!
+		updateDaftar_biaya_tambahan(
+			input: [UpdateDaftar_biaya_tambahanInput!]
+		): MutateDaftar_biaya_tambahanResponse!
+		deleteDaftar_biaya_tambahan(id: Int): MutateDaftar_biaya_tambahanResponse!
+
 		createDaftar_workorder(
 			input: CreateDaftar_workorderInput!
 		): MutateDaftar_workorderResponse!
@@ -232,6 +242,7 @@ export const resolvers = {
 		...daftar_surat_jalan.resolvers.mutations,
 		...daftar_invoice.resolvers.mutations,
 		...daftar_workorder.resolvers.mutations,
-		...accurate.resolvers.mutations
+		...accurate.resolvers.mutations,
+		...daftar_biaya_tambahan.resolvers.mutations
 	}
 }
