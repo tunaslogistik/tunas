@@ -184,6 +184,7 @@ export default function Home() {
 	nomor_ttbbawah
 	nomor_ttbB[${index}]*/
 
+	console.log(`length`, dataDaftarSuratJalan?.daftar_surat_pengantar.length)
 	//filter sales order where nomor ttb not in daftar muat barang
 	const filterSalesOrder = dataDaftarSalesOrder?.daftar_sales_order?.filter(
 		(item) => {
@@ -221,6 +222,8 @@ export default function Home() {
 	}
 
 	const increment = data?.daftar_muat_barang.length + 1
+
+	const increment2 = dataDaftarSuratJalan?.daftar_surat_pengantar.length + 1
 
 	async function onSubmit(formData) {
 		setLoading(true)
@@ -607,9 +610,6 @@ export default function Home() {
 			})
 
 			for (let i = 0; i < data_packing_list.length; i++) {
-				//make increment
-				const increment =
-					dataDaftarSuratJalan?.daftar_surat_pengantar.length + 1 + i
 				data_packing_list.map((item) => {
 					item.nomor_surat_jalan =
 						`SP/` +
@@ -617,7 +617,7 @@ export default function Home() {
 						`/` +
 						String(moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)) +
 						`/` +
-						addLeadingZeros(increment, 4)
+						addLeadingZeros(increment2, 4)
 				})
 				const check = data?.daftar_muat_barang.find(
 					(item) => item.nomor_ttb === dataFilter2[i].nomor_ttb
@@ -632,7 +632,7 @@ export default function Home() {
 			if (check === undefined) {
 				message.success(`Data Berhasil Disimpan`)
 			}
-			// router.push(`/pengiriman/daftar-muat-barang`)
+			router.push(`/pengiriman/daftar-muat-barang`)
 		} catch (error) {
 			console.log(error)
 		}

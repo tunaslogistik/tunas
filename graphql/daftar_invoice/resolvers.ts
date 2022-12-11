@@ -12,7 +12,7 @@ const mutations = {
 		console.log(args.input[0].jenis_biaya_tambahan)
 		if (
 			args.input[0].jenis_biaya_tambahan === null ||
-			args.input[0].jenis_biaya_tambahan === "undefined" ||
+			args.input[0].jenis_biaya_tambahan === `undefined` ||
 			args.input[0].jenis_biaya_tambahan === ``
 		) {
 			try {
@@ -37,7 +37,8 @@ const mutations = {
 					},
 					transDate: moment(args.input[0].tanggal_invoice).format(`DD/MM/YYYY`),
 					branchName: `jakarta`,
-					taxAmount: args.input[0].tax
+					taxAmount: args.input[0].tax,
+					description: args.input[0].keterangan
 				}
 				// make POST FUNCTION  axios
 				const axios = require(`axios`)
@@ -127,7 +128,8 @@ const mutations = {
 					},
 					transDate: moment(args.input[0].tanggal_invoice).format(`DD/MM/YYYY`),
 					branchName: `jakarta`,
-					taxAmount: args.input[0].tax
+					taxAmount: args.input[0].tax,
+					description: args.input[0].keterangan
 				}
 				// make POST FUNCTION  axios
 				const axios = require(`axios`)

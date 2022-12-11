@@ -143,7 +143,7 @@ export default function Home() {
 
 	const check1 = filteredData?.[0]?.jenis_biaya_tambahan
 
-	console.log("check1", check1)
+	console.log(`check1`, check1)
 
 	//get id dataaccurate where kode_barang = accurate
 	const idAccurate = dataAccurate?.accurate
@@ -604,12 +604,12 @@ export default function Home() {
 			}
 		})
 
-		console.log("data biaya", dataBiaya_tambahan)
-		if (check1 === "undefined") {
-			console.log("okay doki")
+		console.log(`data biaya`, dataBiaya_tambahan)
+		if (check1 === `undefined`) {
+			console.log(`okay doki`)
 			createDataBiaya_tambahan(dataBiaya_tambahan)
 		} else {
-			console.log("not okay doki")
+			console.log(`not okay doki`)
 			updateDataBiaya_tambahan(dataBiaya_tambahan)
 		}
 
@@ -868,9 +868,9 @@ export default function Home() {
 								control={control}
 								register={register}
 								name="newArray"
-								inputNames={[`nama_barang`, `Harga`, `PPN`]}
-								inputLabels={[`Nama Barang`, `Harga`, `PPN`]}
-								inputTypes={[`text`, `text`, `checkbox`]}
+								inputNames={[`nama_barang`, `Harga`]}
+								inputLabels={[`Nama Barang`, `Harga`]}
+								inputTypes={[`text`, `text`]}
 							/>
 						</div>
 						<div style={{ width: `100%` }}>

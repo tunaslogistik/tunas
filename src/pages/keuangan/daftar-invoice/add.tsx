@@ -879,9 +879,9 @@ export default function Home() {
 								control={control}
 								register={register}
 								name="newArray"
-								inputNames={[`nama_barang`, `Harga`, `PPN`]}
-								inputLabels={[`Nama Barang`, `Harga`, `PPN`]}
-								inputTypes={[`text`, `text`, `checkbox`]}
+								inputNames={[`nama_barang`, `Harga`]}
+								inputLabels={[`Nama Barang`, `Harga`]}
+								inputTypes={[`text`, `text`]}
 							/>
 						</div>
 						<div style={{ width: `100%` }}>
