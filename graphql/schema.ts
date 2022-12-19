@@ -16,6 +16,14 @@ import { jenis_pengiriman } from "./jenis_pengiriman"
 import { vechnicle } from "./mobil"
 import { navigation } from "./navigation"
 import { pengaturan } from "./pengaturan"
+import { reference_invoice } from "./reference_invoice"
+import { reference_muat_barang } from "./reference_muat_barang"
+import { reference_packing_list } from "./reference_packing_list"
+import { reference_sales_order } from "./reference_sales_order"
+import { reference_surat_jalan } from "./reference_surat_jalan"
+import { reference_surat_pengantar } from "./reference_surat_pengantar"
+import { reference_ttb } from "./reference_ttb"
+import { reference_workorder } from "./reference_workorder"
 import { setting } from "./setting"
 import { user } from "./user"
 import { vendor } from "./vendor"
@@ -41,6 +49,14 @@ export const typeDefs = gql`
 	${daftar_workorder.types}
 	${accurate.types}
 	${daftar_biaya_tambahan.types}
+	${reference_invoice.types}
+	${reference_surat_pengantar.types}
+	${reference_surat_jalan.types}
+	${reference_workorder.types}
+	${reference_ttb.types}
+	${reference_sales_order.types}
+	${reference_packing_list.types}
+	${reference_muat_barang.types}
 
 	type Query {
 		settings: [Setting!]
@@ -54,6 +70,23 @@ export const typeDefs = gql`
 
 		daftar_tujuan_by_id(id: Int): daftar_tujuan
 		daftar_tujuan: [daftar_tujuan!]
+		reference_invoice: [reference_invoice!]
+		reference_invoice_by_id(id: Int): reference_invoice
+		reference_surat_pengantar: [reference_surat_pengantar!]
+		reference_surat_pengantar_by_id(id: Int): reference_surat_pengantar
+		reference_surat_jalan: [reference_surat_jalan!]
+		reference_surat_jalan_by_id(id: Int): reference_surat_jalan
+		reference_workorder: [reference_workorder!]
+		reference_workorder_by_id(id: Int): reference_workorder
+		reference_ttb: [reference_ttb!]
+		reference_ttb_by_id(id: Int): reference_ttb
+		reference_sales_order: [reference_sales_order!]
+		reference_sales_order_by_id(id: Int): reference_sales_order
+		reference_packing_list: [reference_packing_list!]
+		reference_packing_list_by_id(id: Int): reference_packing_list
+		reference_muat_barang: [reference_muat_barang!]
+		reference_muat_barang_by_id(id: Int): reference_muat_barang
+
 		vendor: [vendor!]
 		customer: [customer!]
 		jenis_pengiriman_by_id(id: Int): jenis_pengiriman
@@ -71,6 +104,8 @@ export const typeDefs = gql`
 
 		daftar_invoice: [daftar_invoice!]
 		daftar_workorder: [daftar_workorder!]
+
+		daftar_biaya_tambahan: [daftar_biaya_tambahan!]
 
 		accurate: [accurate!]
 	}
@@ -98,6 +133,72 @@ export const typeDefs = gql`
 			input: UpdateDaftar_tujuanInput!
 		): MutateDaftar_tujuanResponse!
 		deleteDaftar_tujuan(id: Int): MutateDaftar_tujuanResponse!
+
+		createReference_invoice(
+			input: CreateReference_invoiceInput!
+		): MutateReference_invoiceResponse!
+		updateReference_invoice(
+			input: UpdateReference_invoiceInput!
+		): MutateReference_invoiceResponse!
+		deleteReference_invoice(id: Int): MutateReference_invoiceResponse!
+
+		createReference_surat_pengantar(
+			input: CreateReference_surat_pengantarInput!
+		): MutateReference_surat_pengantarResponse!
+		updateReference_surat_pengantar(
+			input: UpdateReference_surat_pengantarInput!
+		): MutateReference_surat_pengantarResponse!
+		deleteReference_surat_pengantar(
+			id: Int
+		): MutateReference_surat_pengantarResponse!
+
+		createReference_surat_jalan(
+			input: CreateReference_surat_jalanInput!
+		): MutateReference_surat_jalanResponse!
+		updateReference_surat_jalan(
+			input: UpdateReference_surat_jalanInput!
+		): MutateReference_surat_jalanResponse!
+		deleteReference_surat_jalan(id: Int): MutateReference_surat_jalanResponse!
+
+		createReference_workorder(
+			input: CreateReference_workorderInput!
+		): MutateReference_workorderResponse!
+		updateReference_workorder(
+			input: UpdateReference_workorderInput!
+		): MutateReference_workorderResponse!
+		deleteReference_workorder(id: Int): MutateReference_workorderResponse!
+
+		createReference_ttb(
+			input: CreateReference_ttbInput!
+		): MutateReference_ttbResponse!
+		updateReference_ttb(
+			input: UpdateReference_ttbInput!
+		): MutateReference_ttbResponse!
+		deleteReference_ttb(id: Int): MutateReference_ttbResponse!
+
+		createReference_sales_order(
+			input: CreateReference_sales_orderInput!
+		): MutateReference_sales_orderResponse!
+		updateReference_sales_order(
+			input: UpdateReference_sales_orderInput!
+		): MutateReference_sales_orderResponse!
+		deleteReference_sales_order(id: Int): MutateReference_sales_orderResponse!
+
+		createReference_muat_barang(
+			input: CreateReference_muat_barangInput!
+		): MutateReference_muat_barangResponse!
+		updateReference_muat_barang(
+			input: UpdateReference_muat_barangInput!
+		): MutateReference_muat_barangResponse!
+		deleteReference_muat_barang(id: Int): MutateReference_muat_barangResponse!
+
+		createReference_packing_list(
+			input: CreateReference_packing_listInput!
+		): MutateReference_packing_listResponse!
+		updateReference_packing_list(
+			input: UpdateReference_packing_listInput!
+		): MutateReference_packing_listResponse!
+		deleteReference_packing_list(id: Int): MutateReference_packing_listResponse!
 
 		createVendor(input: CreateVendorInput!): MutateVendorResponse!
 		updateVendor(input: UpdateVendorInput!): MutateVendorResponse!
@@ -221,7 +322,16 @@ export const resolvers = {
 		...daftar_surat_jalan.resolvers.queries,
 		...daftar_invoice.resolvers.queries,
 		...daftar_workorder.resolvers.queries,
-		...accurate.resolvers.queries
+		...accurate.resolvers.queries,
+		...daftar_biaya_tambahan.resolvers.queries,
+		...reference_invoice.resolvers.queries,
+		...reference_workorder.resolvers.queries,
+		...reference_surat_jalan.resolvers.queries,
+		...reference_surat_pengantar.resolvers.queries,
+		...reference_packing_list.resolvers.queries,
+		...reference_muat_barang.resolvers.queries,
+		...reference_sales_order.resolvers.queries,
+		...reference_ttb.resolvers.queries
 	},
 	Mutation: {
 		...setting.resolvers.mutations,
@@ -243,6 +353,14 @@ export const resolvers = {
 		...daftar_invoice.resolvers.mutations,
 		...daftar_workorder.resolvers.mutations,
 		...accurate.resolvers.mutations,
-		...daftar_biaya_tambahan.resolvers.mutations
+		...daftar_biaya_tambahan.resolvers.mutations,
+		...reference_invoice.resolvers.mutations,
+		...reference_workorder.resolvers.mutations,
+		...reference_surat_jalan.resolvers.mutations,
+		...reference_surat_pengantar.resolvers.mutations,
+		...reference_packing_list.resolvers.mutations,
+		...reference_muat_barang.resolvers.mutations,
+		...reference_sales_order.resolvers.mutations,
+		...reference_ttb.resolvers.mutations
 	}
 }

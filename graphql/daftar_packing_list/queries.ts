@@ -4,6 +4,7 @@ export const GET_DAFTAR_PACKING_LIST = gql`
 	query daftar_packing_list {
 		daftar_packing_list {
 			id
+			nomor_packing_list
 			nomor_muat_barang
 			nomor_ttb
 			total_ttb

@@ -142,12 +142,18 @@ model daftar_sales_order {
   nomor_sales_order   String
   total_volume        Int
   harga               Int
-  harga_sebelum_ppn   Int
+  harga_sesudah_ppn   Int      @default(0)
   dp                  Int
+  total_harga_ttb     Int      @default(0)
   total_tagihan       Int
   rekening            String
   tanggal_sales_order DateTime
   term_payment        String
+  nama_barang         String   @default("null")
+  itemNo              String   @default("null")
+  harga_satuan        String   @default("null")
+  harga_total         Int      @default(0)
+  tipe_ppn            String   @default("null")
 }
 
 model daftar_surat_pengantar {
@@ -231,29 +237,36 @@ model daftar_invoice {
   tax                   String
   subtotal              String
   subtotal_tambahan     String
+  biaya_tambahan_sales  String @default("null")
+  itemNo_sales_order    String @default("null")
+  biaya_tambahan_join   String @default("null")
+  itemNo_join           String @default("null")
+  nama_barang_join      String @default("null")
+  kota_tujuan           String @default("null")
 }
 
 model daftar_packing_list {
-  id                Int    @id @default(autoincrement())
-  nomor_muat_barang String
-  pengirim          String
-  penerima          String
-  nomor_ttb         String
-  total_ttb         String
-  tanggal_masuk     String
-  nama_barang       String
-  volume            String
-  koli              String
-  satuan            String
-  estimated_date    String
-  total_koli        String
-  kota_tujuan       String
-  total_volume      String
-  nomor_kendaraan   String
-  vendor_pelayanan  String
-  posisi            String
-  nomor_container   String
-  nomor_seal        String
+  id                 Int    @id @default(autoincrement())
+  nomor_packing_list String
+  nomor_muat_barang  String
+  pengirim           String
+  penerima           String
+  nomor_ttb          String
+  total_ttb          String
+  tanggal_masuk      String
+  nama_barang        String
+  volume             String
+  koli               String
+  satuan             String
+  estimated_date     String
+  total_koli         String
+  kota_tujuan        String
+  total_volume       String
+  nomor_kendaraan    String
+  vendor_pelayanan   String
+  posisi             String
+  nomor_container    String
+  nomor_seal         String
 }
 
 model daftar_ttb {
@@ -287,37 +300,38 @@ model daftar_tujuan {
 }
 
 model daftar_workorder {
-  id                        Int    @id @default(autoincrement())
-  nomor_workorder           String
-  kendaraan                 String
-  nomor_container           String
-  nomor_seal                String
-  kota_tujuan               String
-  komentar_container        String @default("null")
-  komentar_muat_barang      String @default("null")
-  komentar_menuju_pelabuhan String @default("null")
-  komentar_tiba_pelabuhan   String @default("null")
-  komentar_muatan           String @default("null")
-  komentar_destinasi        String @default("null")
-  tanggal_wo                String
-  tanggal_container         String
-  tanggal_muat_barang       String
-  tanggal_menuju_pelabuhan  String
-  tanggal_tiba_pelabuhan    String
-  tanggal_muatan            String
-  tanggal_destinasi         String
-  nomor_kendaraan           String
-  nama_supir                String
-  nama_kenek                String
-  wa_supir                  String
-  wa_kenek                  String
-  photo_container           String @default("null")
-  photo_seal_pelabuhan      String @default("null")
-  photo_surat_jalan         String @default("null")
-  photo_muat_barang         String @default("null")
-  photo_seal_muatan         String @default("null")
-  photo_seal_destinasi      String @default("null")
-  status                    String @default("null")
+  id                         Int    @id @default(autoincrement())
+  nomor_workorder            String
+  kendaraan                  String
+  nomor_container            String
+  nomor_seal                 String
+  kota_tujuan                String
+  komentar_container         String @default("null")
+  komentar_muat_barang       String @default("null")
+  komentar_menuju_pelabuhan  String @default("null")
+  komentar_tiba_pelabuhan    String @default("null")
+  komentar_muatan            String @default("null")
+  komentar_destinasi         String @default("null")
+  tanggal_wo                 String
+  tanggal_container          String
+  tanggal_muat_barang        String
+  tanggal_menuju_pelabuhan   String
+  tanggal_tiba_pelabuhan     String
+  tanggal_muatan             String
+  tanggal_destinasi          String
+  nomor_kendaraan            String
+  nama_supir                 String
+  nama_kenek                 String
+  wa_supir                   String
+  wa_kenek                   String
+  photo_container            String @default("null")
+  photo_container_seal       String @default("null")
+  photo_surat_jalan_stackful String @default("null")
+  photo_surat_jalan_pabrik   String @default("null")
+  photo_surat_pengantar      String @default("null")
+  photo_seal_pelabuhan       String @default("null")
+  nama_kapal                 String
+  status                     String @default("null")
 }
 
 model jenis_pengiriman {
@@ -325,6 +339,78 @@ model jenis_pengiriman {
   nama_pengiriman String
   creator         String
   updated_by      String
+}
+
+model reference_ttb {
+  id            Int    @id @default(autoincrement())
+  kode_tujuan   String @default("null")
+  kota_tujuan   String @default("null")
+  tanggal_tahun String @default("null")
+  bulan_tahun   String @default("null")
+  increment     Int    @default(0)
+}
+
+model reference_sales_order {
+  id            Int    @id @default(autoincrement())
+  kode_tujuan   String @default("null")
+  kota_tujuan   String @default("null")
+  tanggal_tahun String @default("null")
+  bulan_tahun   String @default("null")
+  increment     Int    @default(0)
+}
+
+model reference_muat_barang {
+  id            Int    @id @default(autoincrement())
+  kode_tujuan   String @default("null")
+  kota_tujuan   String @default("null")
+  tanggal_tahun String @default("null")
+  bulan_tahun   String @default("null")
+  increment     Int    @default(0)
+}
+
+model reference_packing_list {
+  id            Int    @id @default(autoincrement())
+  kode_tujuan   String @default("null")
+  kota_tujuan   String @default("null")
+  tanggal_tahun String @default("null")
+  bulan_tahun   String @default("null")
+  increment     Int    @default(0)
+}
+
+model reference_surat_pengantar {
+  id            Int    @id @default(autoincrement())
+  kode_tujuan   String @default("null")
+  kota_tujuan   String @default("null")
+  tanggal_tahun String @default("null")
+  bulan_tahun   String @default("null")
+  increment     Int    @default(0)
+}
+
+model reference_surat_jalan {
+  id            Int    @id @default(autoincrement())
+  kode_tujuan   String @default("null")
+  kota_tujuan   String @default("null")
+  tanggal_tahun String @default("null")
+  bulan_tahun   String @default("null")
+  increment     Int    @default(0)
+}
+
+model reference_invoice {
+  id            Int    @id @default(autoincrement())
+  kode_tujuan   String @default("null")
+  kota_tujuan   String @default("null")
+  tanggal_tahun String @default("null")
+  bulan_tahun   String @default("null")
+  increment     Int    @default(0)
+}
+
+model reference_workorder {
+  id            Int    @id @default(autoincrement())
+  kode_tujuan   String @default("null")
+  kota_tujuan   String @default("null")
+  tanggal_tahun String @default("null")
+  bulan_tahun   String @default("null")
+  increment     Int
 }
 
 model vendor {

@@ -11,10 +11,16 @@ export const types = gql`
 		kota_tujuan: String
 		rekening: String
 		total_tagihan: Int
-		harga_sebelum_ppn: Int
+		harga_sesudah_ppn: Int
 		dp: Int
 		tanggal_sales_order: String
 		term_payment: String
+		nama_barang: String
+		tipe_ppn: String
+		itemNo: String
+		harga_satuan: String
+		harga_total: Int
+		total_harga_ttb: Int
 	}
 
 	type daftar_sales_order {
@@ -31,10 +37,16 @@ export const types = gql`
 		harga: Int
 		dp: Int
 		total_tagihan: Int
-		harga_sebelum_ppn: Int
+		harga_sesudah_ppn: Int
 		kota_tujuan: String
 		tanggal_sales_order: String
 		term_payment: String
+		nama_barang: String
+		tipe_ppn: String
+		itemNo: String
+		harga_satuan: String
+		harga_total: Int
+		total_harga_ttb: Int
 	}
 
 	input UpdateDaftar_sales_orderInput {
@@ -46,11 +58,17 @@ export const types = gql`
 		pengirim: String
 		rekening: String
 		harga: Int
-		harga_sebelum_ppn: Int
+		harga_sesudah_ppn: Int
 		dp: Int
 		total_tagihan: Int
 		tanggal_sales_order: String
 		term_payment: String
+		tipe_ppn: String
+		nama_barang: String
+		itemNo: String
+		harga_satuan: String
+		harga_total: Int
+		total_harga_ttb: Int
 	}
 
 	type MutateDaftar_sales_orderResponse {

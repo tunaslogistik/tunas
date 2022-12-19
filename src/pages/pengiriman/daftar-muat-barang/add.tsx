@@ -13,6 +13,12 @@ import { CREATE_DAFTAR_SURAT_PENGANTAR } from "graphql/daftar_surat_pengantar/mu
 import { GET_DAFTAR_SURAT_PENGANTAR } from "graphql/daftar_surat_pengantar/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import { GET_VECHNICLE } from "graphql/mobil/queries"
+import { UPDATE_REFERENCE_MUAT_BARANG } from "graphql/reference_muat_barang/mutations"
+import { GET_REFERENCE_MUAT_BARANG } from "graphql/reference_muat_barang/queries"
+import { UPDATE_REFERENCE_PACKING_LIST } from "graphql/reference_packing_list/mutations"
+import { GET_REFERENCE_PACKING_LIST } from "graphql/reference_packing_list/queries"
+import { UPDATE_REFERENCE_SURAT_PENGANTAR } from "graphql/reference_surat_pengantar/mutations"
+import { GET_REFERENCE_SURAT_PENGANTAR } from "graphql/reference_surat_pengantar/queries"
 import { GET_VENDOR } from "graphql/vendor/queries"
 import moment from "moment"
 import Link from "next/link"
@@ -55,6 +61,16 @@ export default function Home() {
 	const { data: dataDaftarSuratJalan } = useQuery(GET_DAFTAR_SURAT_PENGANTAR)
 	//get data sales order
 	const { data: dataDaftarSalesOrder } = useQuery(GET_DAFTAR_SALES_ORDER)
+	//get data reference muat barang
+	const { data: dataReferenceMuatBarang } = useQuery(GET_REFERENCE_MUAT_BARANG)
+	//get data reference packing list
+	const { data: dataReferencePackingList } = useQuery(
+		GET_REFERENCE_PACKING_LIST
+	)
+	//get data reference surat pengantar
+	const { data: dataReferenceSuratPengantar } = useQuery(
+		GET_REFERENCE_SURAT_PENGANTAR
+	)
 
 	const router = useRouter()
 	const setForm = useForm()
@@ -102,6 +118,42 @@ export default function Home() {
 	//create mutation function
 	const createDataPackingList = (data) => {
 		createDaftar_packing_list({ variables: { input: data } })
+	}
+
+	const [updateReferenceMuatBarang] = useMutation(
+		UPDATE_REFERENCE_MUAT_BARANG,
+		{
+			refetchQueries: [{ query: GET_DATA }]
+		}
+	)
+
+	//create mutation function
+	const updateDataReferenceMuatBarang = (data) => {
+		updateReferenceMuatBarang({ variables: { input: data } })
+	}
+
+	const [updateReferencePackingList] = useMutation(
+		UPDATE_REFERENCE_PACKING_LIST,
+		{
+			refetchQueries: [{ query: GET_DATA }]
+		}
+	)
+
+	//create mutation function
+	const updateDataReferencePackingList = (data) => {
+		updateReferencePackingList({ variables: { input: data } })
+	}
+
+	const [updateReferenceSuratPengantar] = useMutation(
+		UPDATE_REFERENCE_SURAT_PENGANTAR,
+		{
+			refetchQueries: [{ query: GET_DATA }]
+		}
+	)
+
+	//create mutation function
+	const updateDataReferenceSuratPengantar = (data) => {
+		updateReferenceSuratPengantar({ variables: { input: data } })
 	}
 
 	const {
@@ -553,15 +605,13 @@ export default function Home() {
 				item.tanggal_muat_barang = formData.tanggal_mb
 			})
 
-			dataFilter.map((item) => {
-				item.nomor_muat_barang =
-					`MB/` +
-					dataFilterTTB?.[0]?.kota_tujuan +
-					`/` +
-					String(moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)) +
-					`/` +
-					addLeadingZeros(increment, 4)
-			})
+			//GET DATA FROM dataReferenceMuatBarang WHERE KOde TUJUAN = dataFilterTTB?.[0]?.kota_tujuan
+			const dataReferenceMB =
+				dataReferenceMuatBarang?.reference_muat_barang?.filter(
+					(item: any) => item.kode_tujuan === dataFilterTTB?.[0]?.kota_tujuan
+				)
+
+			console.log(`dataReferenceMB`, dataReferenceMB)
 
 			const dataFilter2 = dataFilter.filter(
 				(item) => item.nomor_ttb !== `Silahkan Pilih No. TTB`
@@ -570,6 +620,32 @@ export default function Home() {
 			dataFilter2.map((item) => {
 				item.total_ttb = String(dataFilter2.length)
 			})
+
+			dataFilter2.map((item) => {
+				//if String(moment.unix(values.tanggal_mb / 1000).format(`MM`)) !== dataReferenceMB[0].bulan_tahun then addleadingg zeros(1,4) else addleadingzeros(dataReferenceMB + 1,4)
+				if (
+					String(moment.unix(formData.tanggal_mb / 1000).format(`MM`)) !==
+					dataReferenceMB[0].bulan_tahun
+				) {
+					item.nomor_muat_barang =
+						`MB/` +
+						dataFilterTTB?.[0]?.kota_tujuan +
+						`/` +
+						String(moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)) +
+						`/` +
+						addLeadingZeros(1, 4)
+				} else {
+					item.nomor_muat_barang =
+						`MB/` +
+						dataFilterTTB?.[0]?.kota_tujuan +
+						`/` +
+						String(moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)) +
+						`/` +
+						addLeadingZeros(dataReferenceMB[0].increment + 1, 4)
+				}
+			})
+
+			console.log(`dataFilter2`, dataFilter2)
 			// create new data
 			for (let i = 0; i < dataFilter2.length; i++) {
 				const check = data?.daftar_muat_barang.find(
@@ -584,10 +660,60 @@ export default function Home() {
 					createData(dataFilter2[i])
 				}
 			}
+
+			const incrementMB =
+				String(moment.unix(formData.tanggal_mb / 1000).format(`MM`)) !==
+				dataReferenceMB[0].bulan_tahun
+					? 1
+					: dataReferenceMB[0].increment + 1
+
+			const dataReferenceMBupdate = {
+				id: dataReferenceMB[0].id,
+				increment: incrementMB,
+				tanggal_tahun: String(
+					moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)
+				),
+				bulan_tahun: String(
+					moment.unix(formData.tanggal_mb / 1000).format(`MM`)
+				)
+			}
+
+			updateDataReferenceMuatBarang(dataReferenceMBupdate)
+
 			dataFilter2.map((item) => {
 				delete item.tanggal_muat_barang
 				delete item.nama_kapal
 			})
+
+			const dataReferencePL =
+				dataReferencePackingList?.reference_packing_list?.filter(
+					(item: any) => item.kode_tujuan === dataFilterTTB?.[0]?.kota_tujuan
+				)
+
+			dataFilter2.map((item) => {
+				//if String(moment.unix(values.tanggal_mb / 1000).format(`MM`)) !== dataReferencePL[0].bulan_tahun then addleadingg zeros(1,4) else addleadingzeros(dataReferencePL + 1,4)
+				if (
+					String(moment.unix(formData.tanggal_mb / 1000).format(`MM`)) !==
+					dataReferencePL[0].bulan_tahun
+				) {
+					item.nomor_packing_list =
+						`PL/` +
+						dataFilterTTB?.[0]?.kota_tujuan +
+						`/` +
+						String(moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)) +
+						`/` +
+						addLeadingZeros(1, 4)
+				} else {
+					item.nomor_packing_list =
+						`PL/` +
+						dataFilterTTB?.[0]?.kota_tujuan +
+						`/` +
+						String(moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)) +
+						`/` +
+						addLeadingZeros(dataReferencePL[0].increment + 1, 4)
+				}
+			})
+
 			//create packing list
 			for (let i = 0; i < dataFilter2.length; i++) {
 				const check = data?.daftar_muat_barang.find(
@@ -597,6 +723,26 @@ export default function Home() {
 					createDataPackingList(dataFilter2[i])
 				}
 			}
+
+			const incrementPL =
+				String(moment.unix(formData.tanggal_mb / 1000).format(`MM`)) !==
+				dataReferencePL[0].bulan_tahun
+					? 1
+					: dataReferencePL[0].increment + 1
+
+			const dataReferencePLupdate = {
+				id: dataReferencePL[0].id,
+				increment: incrementPL,
+				tanggal_tahun: String(
+					moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)
+				),
+				bulan_tahun: String(
+					moment.unix(formData.tanggal_mb / 1000).format(`MM`)
+				)
+			}
+
+			updateDataReferencePackingList(dataReferencePLupdate)
+
 			const data_packing_list = dataFilter2
 
 			data_packing_list.map((item) => {
@@ -607,38 +753,80 @@ export default function Home() {
 			data_packing_list.map((item) => {
 				delete item.tanggal_muat_barang
 				delete item.keterangan
+				delete item.nomor_packing_list
 			})
+			const dataReferenceSP =
+				dataReferenceSuratPengantar?.reference_surat_pengantar?.filter(
+					(item: any) => item.kode_tujuan === dataFilterTTB?.[0]?.kota_tujuan
+				)
 
+			// //if String(moment.unix(values.tanggal_mb / 1000).format(`MM`)) !== dataReferenceSP[0].bulan_tahun then addleadingzero start from 1 + i for data length else addleadingzeros(dataReferenceSP.increment + 1,4)
 			for (let i = 0; i < data_packing_list.length; i++) {
 				const check = data?.daftar_muat_barang.find(
 					(item) => item.nomor_ttb === dataFilter2[i].nomor_ttb
 				)
 				if (check === undefined) {
 					data_packing_list.forEach((item, i) => {
-						item.nomor_surat_jalan =
-							`SP/` +
-							dataFilterTTB?.[0]?.kota_tujuan +
-							`/` +
-							String(moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)) +
-							`/` +
-							addLeadingZeros(increment + i, 4)
+						if (
+							String(moment.unix(formData.tanggal_mb / 1000).format(`MM`)) !==
+							dataReferenceSP[0].bulan_tahun
+						) {
+							item.nomor_surat_jalan =
+								`SP/` +
+								dataFilterTTB?.[0]?.kota_tujuan +
+								`/` +
+								String(
+									moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)
+								) +
+								`/` +
+								//addleading zero start from 1 until data length
+								addLeadingZeros(1 + i, 4)
+						} else {
+							item.nomor_surat_jalan =
+								`SP/` +
+								dataFilterTTB?.[0]?.kota_tujuan +
+								`/` +
+								String(
+									moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)
+								) +
+								`/` +
+								//addleading zero start from increment + 1 until data length
+								addLeadingZeros(dataReferenceSP[0].increment + 1 + i, 4)
+						}
 					})
 					createDataSuratJalan(data_packing_list[i])
 				}
 			}
 
-			//using foreach add leading zeros(increment + i,4) to nomor surat jalan for data_packing_list
+			const incrementSP =
+				String(moment.unix(formData.tanggal_mb / 1000).format(`MM`)) !==
+				dataReferenceSP[0].bulan_tahun
+					? 1
+					: dataReferencePL[0].increment + data_packing_list.length
 
-			console.log(`dataFilter2s`, data_packing_list)
+			const dataReferenceSPupdate = {
+				id: dataReferenceSP[0].id,
+				increment: incrementSP,
+				tanggal_tahun: String(
+					moment.unix(formData.tanggal_mb / 1000).format(`YY-MM`)
+				),
+				bulan_tahun: String(
+					moment.unix(formData.tanggal_mb / 1000).format(`MM`)
+				)
+			}
 
-			console.log(`dataFilter2`, data_packing_list)
+			updateDataReferenceSuratPengantar(dataReferenceSPupdate)
+
+			console.log(`data_surat_pengantar`, data_packing_list)
+
+			//using foreach add leading zeros(increment + i,4) to no
 			const check = data?.daftar_muat_barang.find(
 				(item) => item.nomor_ttb === dataFilter2[0].nomor_ttb
 			)
 			if (check === undefined) {
 				message.success(`Data Berhasil Disimpan`)
 			}
-			router.push(`/pengiriman/daftar-muat-barang`)
+			// router.push(`/pengiriman/daftar-muat-barang`)
 		} catch (error) {
 			console.log(error)
 		}

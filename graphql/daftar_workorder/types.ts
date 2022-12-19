@@ -27,11 +27,12 @@ export const types = gql`
 		wa_supir: String
 		wa_kenek: String
 		photo_container: String
+		photo_container_seal: String
+		photo_surat_jalan_stackful: String
+		photo_surat_jalan_pabrik: String
+		photo_surat_pengantar: String
 		photo_seal_pelabuhan: String
-		photo_surat_jalan: String
-		photo_muat_barang: String
-		photo_seal_muatan: String
-		photo_seal_destinasi: String
+		nama_kapal: String
 		status: String
 	}
 
@@ -65,11 +66,12 @@ export const types = gql`
 		wa_supir: String
 		wa_kenek: String
 		photo_container: String
+		photo_container_seal: String
+		photo_surat_jalan_stackful: String
+		photo_surat_jalan_pabrik: String
+		photo_surat_pengantar: String
 		photo_seal_pelabuhan: String
-		photo_surat_jalan: String
-		photo_muat_barang: String
-		photo_seal_muatan: String
-		photo_seal_destinasi: String
+		nama_kapal: String
 		status: String
 	}
 
@@ -99,11 +101,12 @@ export const types = gql`
 		wa_supir: String
 		wa_kenek: String
 		photo_container: String
+		photo_container_seal: String
+		photo_surat_jalan_stackful: String
+		photo_surat_jalan_pabrik: String
+		photo_surat_pengantar: String
 		photo_seal_pelabuhan: String
-		photo_surat_jalan: String
-		photo_muat_barang: String
-		photo_seal_muatan: String
-		photo_seal_destinasi: String
+		nama_kapal: String
 		status: String
 	}
 

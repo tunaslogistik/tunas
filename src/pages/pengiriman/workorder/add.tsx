@@ -8,6 +8,8 @@ import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import { CREATE_DAFTAR_WORKORDER } from "graphql/daftar_workorder/mutations"
 import { GET_DAFTAR_WORKORDER } from "graphql/daftar_workorder/queries"
 import { GET_VECHNICLE } from "graphql/mobil/queries"
+import { UPDATE_REFERENCE_WORKORDER } from "graphql/reference_workorder/mutations"
+import { GET_REFERENCE_WORKORDER } from "graphql/reference_workorder/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -41,6 +43,10 @@ export default function Home() {
 	const { data: dataMobil } = useQuery(GET_VECHNICLE)
 	//GET DAFTAR WORKORDER
 	const { data: dataWorkorder } = useQuery(GET_DAFTAR_WORKORDER)
+	//GET REFERENCE WORKORDER
+	const { data: dataReferenceWorkorder } = useQuery(GET_REFERENCE_WORKORDER)
+
+	console.log(`data reference workorder`, dataReferenceWorkorder)
 
 	const router = useRouter()
 	const setForm = useForm()
@@ -53,6 +59,16 @@ export default function Home() {
 	//create mutation function
 	const createData = (data) => {
 		createDaftar_workorder({ variables: { input: data } })
+	}
+
+	//update
+	const [updateReferenceWorkorder] = useMutation(UPDATE_REFERENCE_WORKORDER, {
+		refetchQueries: [{ query: GET_DATA }]
+	})
+
+	//update function
+	const updateData = (data) => {
+		updateReferenceWorkorder({ variables: { input: data } })
 	}
 
 	//make function set value tipe kendaraan by nomor kendaraan
@@ -112,11 +128,12 @@ export default function Home() {
 					wa_supir: formData.nomor_supir,
 					wa_kenek: formData.nomor_kenek,
 					photo_container: ``,
+					photo_container_seal: ``,
+					photo_surat_jalan_stackful: ``,
+					photo_surat_jalan_pabrik: ``,
+					photo_surat_pengantar: ``,
 					photo_seal_pelabuhan: ``,
-					photo_surat_jalan: ``,
-					photo_muat_barang: ``,
-					photo_seal_muatan: ``,
-					photo_seal_destinasi: ``,
+					nama_kapal: ``,
 					status: ``
 				}
 			})
@@ -133,6 +150,52 @@ export default function Home() {
 					return acc
 				}
 			}, [])
+
+			const dataReference = dataReferenceWorkorder?.reference_workorder?.filter(
+				(item: any) => item.kode_tujuan === kode_kota_tujuan
+			)
+
+			console.log(`dataReference`, dataReference)
+
+			merged.map((item) => {
+				//if String(moment.unix(formData.tanggalb / 1000).format(`YY-MM`)) !== dataReference[0].tanggal_tahun then addleadingg zeros(1,4) else addleadingzeros(dataReference + 1,4)
+				if (
+					String(moment.unix(formData.tanggal / 1000).format(`MM`)) !==
+					dataReference[0].bulan_tahun
+				) {
+					item.nomor_workorder = `WO/${kode_kota_tujuan}/${moment(
+						formData.tanggal
+					).format(`YY-MM`)}/${addLeadingZeros(1, 4)}`
+				} else {
+					item.nomor_workorder = `WO/${kode_kota_tujuan}/${moment(
+						formData.tanggal
+					).format(`YY-MM`)}/${addLeadingZeros(
+						parseInt(dataReference[0].increment) + 1,
+						4
+					)}`
+				}
+			})
+
+			const increment =
+				String(moment.unix(formData.tanggal / 1000).format(`MM`)) !==
+				dataReference[0].bulan_tahun
+					? 1
+					: dataReference[0].increment + 1
+
+			const tanggal_tahun = String(
+				moment.unix(formData.tanggal / 1000).format(`YY-MM`)
+			)
+
+			const dataReferenceWOupdate = {
+				id: dataReference[0].id,
+				increment: increment,
+				tanggal_tahun: tanggal_tahun,
+				bulan_tahun: String(moment.unix(formData.tanggal / 1000).format(`MM`))
+			}
+
+			updateData(dataReferenceWOupdate)
+
+			console.log(`dataReference`, dataReference)
 
 			//for each data in myChildrenArray create workorder
 			for (let i = 0; i < merged.length; i++) {

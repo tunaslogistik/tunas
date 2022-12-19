@@ -19,10 +19,16 @@ const mutations = {
 				kota_tujuan,
 				rekening,
 				total_tagihan,
-				harga_sebelum_ppn,
+				harga_sesudah_ppn,
 				dp,
 				tanggal_sales_order,
-				term_payment
+				term_payment,
+				nama_barang,
+				itemNo,
+				harga_satuan,
+				harga_total,
+				tipe_ppn,
+				total_harga_ttb
 			} = args.input
 
 			const daftar_sales_order = await context.prisma.daftar_sales_order.create(
@@ -35,12 +41,18 @@ const mutations = {
 						pengirim,
 						kota_tujuan,
 						rekening,
-						harga_sebelum_ppn,
+						harga_sesudah_ppn,
 						dp,
 						harga,
 						total_tagihan,
 						tanggal_sales_order,
-						term_payment
+						term_payment,
+						nama_barang,
+						itemNo,
+						harga_satuan,
+						harga_total,
+						tipe_ppn,
+						total_harga_ttb
 					}
 				}
 			)
@@ -69,10 +81,16 @@ const mutations = {
 				kota_tujuan,
 				rekening,
 				dp,
-				harga_sebelum_ppn,
+				harga_sesudah_ppn,
 				pengirim,
 				tanggal_sales_order,
-				term_payment
+				term_payment,
+				nama_barang,
+				itemNo,
+				harga_satuan,
+				harga_total,
+				tipe_ppn,
+				total_harga_ttb
 			} = args.input
 			let daftar_sales_order
 
@@ -88,10 +106,16 @@ const mutations = {
 					harga,
 					total_tagihan,
 					dp,
-					harga_sebelum_ppn,
+					harga_sesudah_ppn,
 					pengirim,
 					tanggal_sales_order,
-					term_payment
+					term_payment,
+					nama_barang,
+					itemNo,
+					harga_satuan,
+					harga_total,
+					tipe_ppn,
+					total_harga_ttb
 				}
 			})
 

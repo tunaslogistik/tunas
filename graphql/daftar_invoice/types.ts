@@ -31,6 +31,12 @@ export const types = gql`
 		id_biaya_tambahan: String
 		id_biaya_utama: String
 		subtotal_tambahan: String
+		biaya_tambahan_sales: String
+		itemNo_sales_order: String
+		biaya_tambahan_join: String
+		itemNo_join: String
+		nama_barang_join: String
+		kota_tujuan: String
 	}
 
 	type daftar_invoice {
@@ -67,6 +73,12 @@ export const types = gql`
 		id_biaya_utama: String
 		subtotal: String
 		subtotal_tambahan: String
+		biaya_tambahan_sales: String
+		itemNo_sales_order: String
+		biaya_tambahan_join: String
+		itemNo_join: String
+		nama_barang_join: String
+		kota_tujuan: String
 	}
 
 	input UpdateDaftar_invoiceInput {
@@ -99,6 +111,12 @@ export const types = gql`
 		id_biaya_utama: String
 		subtotal: String
 		subtotal_tambahan: String
+		biaya_tambahan_sales: String
+		itemNo_sales_order: String
+		biaya_tambahan_join: String
+		itemNo_join: String
+		nama_barang_join: String
+		kota_tujuan: String
 	}
 
 	type MutateDaftar_invoiceResponse {

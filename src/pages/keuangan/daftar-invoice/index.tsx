@@ -56,8 +56,7 @@ interface DataType {
 }
 
 export default function Home() {
-	const { data, loading } = useQuery(GET_DATA)
-
+	const { data, loading } = useQuery(GET_DATA, { fetchPolicy: `no-cache` })
 	//GET DAftar ttb
 	const { data: dataTTB } = useQuery(GET_DAFTAR_TTB)
 

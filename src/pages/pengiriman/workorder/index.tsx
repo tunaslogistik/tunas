@@ -41,11 +41,12 @@ const GET_DATA = gql`
 			wa_supir
 			wa_kenek
 			photo_container
+			photo_container_seal
+			photo_surat_jalan_stackful
+			photo_surat_jalan_pabrik
+			photo_surat_pengantar
 			photo_seal_pelabuhan
-			photo_surat_jalan
-			photo_muat_barang
-			photo_seal_muatan
-			photo_seal_destinasi
+			nama_kapal
 			status
 		}
 	}

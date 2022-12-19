@@ -83,7 +83,7 @@ export default function SettingUserEdit() {
 	const handleSubmitEdit = (e) => {
 		e.preventDefault()
 		const data = {
-			id: parseInt(id[0]),
+			id: parseInt(id as string),
 			kode_tujuan: e.target.kode_tujuan.value,
 			nama_tujuan: e.target.nama_tujuan.value,
 			creator: String(dashboardState.auth.id),

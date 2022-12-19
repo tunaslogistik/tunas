@@ -4,6 +4,14 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import { DashboardContext } from "@contexts/DashboardContext.context"
 import { message } from "antd"
 
+import { CREATE_REFERENCE_INVOICE } from "graphql/reference_invoice/mutations"
+import { CREATE_REFERENCE_MUAT_BARANG } from "graphql/reference_muat_barang/mutations"
+import { CREATE_REFERENCE_PACKING_LIST } from "graphql/reference_packing_list/mutations"
+import { CREATE_REFERENCE_SALES_ORDER } from "graphql/reference_sales_order/mutations"
+import { CREATE_REFERENCE_SURAT_JALAN } from "graphql/reference_surat_jalan/mutations"
+import { CREATE_REFERENCE_SURAT_PENGANTAR } from "graphql/reference_surat_pengantar/mutations"
+import { CREATE_REFERENCE_TTB } from "graphql/reference_ttb/mutations"
+import { CREATE_REFERENCE_WORKORDER } from "graphql/reference_workorder/mutations"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useContext } from "react"
@@ -42,11 +50,71 @@ export default function SettingUserEdit() {
 	const { data } = useQuery(GET_DATA)
 	const router = useRouter()
 	const setForm = useForm()
+
+	//create REFERENCE
+	const [createReferenceInvoice] = useMutation(CREATE_REFERENCE_INVOICE, {
+		refetchQueries: [{ query: GET_DATA }]
+	})
+
+	const [createReferenceMuatBarang] = useMutation(
+		CREATE_REFERENCE_MUAT_BARANG,
+		{
+			refetchQueries: [{ query: GET_DATA }]
+		}
+	)
+
+	const [createReferencePackingList] = useMutation(
+		CREATE_REFERENCE_PACKING_LIST,
+		{
+			refetchQueries: [{ query: GET_DATA }]
+		}
+	)
+
+	const [createReferenceSalesOrder] = useMutation(
+		CREATE_REFERENCE_SALES_ORDER,
+		{
+			refetchQueries: [{ query: GET_DATA }]
+		}
+	)
+
+	const [createReferenceSuratJalan] = useMutation(
+		CREATE_REFERENCE_SURAT_JALAN,
+		{
+			refetchQueries: [{ query: GET_DATA }]
+		}
+	)
+
+	const [createReferenceSuratPengantar] = useMutation(
+		CREATE_REFERENCE_SURAT_PENGANTAR,
+		{
+			refetchQueries: [{ query: GET_DATA }]
+		}
+	)
+
+	const [createReferenceTTB] = useMutation(CREATE_REFERENCE_TTB, {
+		refetchQueries: [{ query: GET_DATA }]
+	})
+
+	const [createReferenceWorkOrder] = useMutation(CREATE_REFERENCE_WORKORDER, {
+		refetchQueries: [{ query: GET_DATA }]
+	})
+
 	const [createDaftarTujuan] = useMutation(CREATE_DAFTAR_TUJUAN, {
 		refetchQueries: [{ query: GET_DATA }]
 	})
 
-	//create mutation function
+	//create REFERENCE mutation function
+	const createReference = (data) => {
+		createReferenceInvoice({ variables: { input: data } })
+		createReferenceMuatBarang({ variables: { input: data } })
+		createReferencePackingList({ variables: { input: data } })
+		createReferenceSalesOrder({ variables: { input: data } })
+		createReferenceSuratJalan({ variables: { input: data } })
+		createReferenceSuratPengantar({ variables: { input: data } })
+		createReferenceTTB({ variables: { input: data } })
+		createReferenceWorkOrder({ variables: { input: data } })
+	}
+
 	const createData = (data) => {
 		createDaftarTujuan({ variables: { input: data } })
 	}
@@ -63,10 +131,20 @@ export default function SettingUserEdit() {
 		const duplicate = data.daftar_tujuan.find(
 			(item) => item.kode_tujuan === dataSubmit.kode_tujuan
 		)
+
+		const dataReference = {
+			kode_tujuan: e.target.kode_tujuan.value,
+			kota_tujuan: e.target.nama_tujuan.value,
+			tanggal_tahun: ``,
+			bulan_tahun: ``,
+			increment: 0
+		}
+
 		if (duplicate) {
 			message.error(`Kode Tujuan sudah ada`)
 		} else {
 			createData(dataSubmit)
+			createReference(dataReference)
 			console.log(data)
 			message.success(`Data berhasil ditambahkan`)
 			router.push(`/data/daftar-tujuan`)

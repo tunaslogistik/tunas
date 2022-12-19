@@ -11,6 +11,7 @@ const mutations = {
 		try {
 			const {
 				id,
+				nomor_packing_list,
 				nomor_muat_barang,
 				nomor_ttb,
 				total_ttb,
@@ -36,6 +37,7 @@ const mutations = {
 				await context.prisma.daftar_packing_list.create({
 					data: {
 						id,
+						nomor_packing_list,
 						nomor_muat_barang,
 						nomor_ttb,
 						total_ttb,

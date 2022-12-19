@@ -43,11 +43,12 @@ const GET_DATA = gql`
 			wa_supir
 			wa_kenek
 			photo_container
+			photo_container_seal
+			photo_surat_jalan_stackful
+			photo_surat_jalan_pabrik
+			photo_surat_pengantar
 			photo_seal_pelabuhan
-			photo_surat_jalan
-			photo_muat_barang
-			photo_seal_muatan
-			photo_seal_destinasi
+			nama_kapal
 			status
 		}
 	}
@@ -91,6 +92,18 @@ export default function SettingUserEdit() {
 	const [file, setFile] = useState<File | null>(null)
 
 	const [file2, setFile2] = useState<File | null>(null)
+
+	const [photo_seal, setPhotoSeal] = useState<File | null>(null)
+
+	//set nama kapal
+	const [nama_kapals, setNamaKapal] = useState(``)
+
+	const [photo_surat_jalan_pabrik, setPhotoSuratJalanPabrik] =
+		useState<File | null>(null)
+
+	const [photo_seal_pelabuhan, setPhotoSealPelabuhan] = useState<File | null>(
+		null
+	)
 	//set url
 	const [url, setUrl] = useState(``)
 
@@ -121,6 +134,16 @@ export default function SettingUserEdit() {
 			console.log(error)
 		}
 
+		const { data: data2 } = await supabase.storage
+			.from(`workorder-bucket`)
+			.upload(`workorder/${photo_seal.name}`, file2 as File)
+
+		if (data) {
+			console.log(data2)
+		} else if (error) {
+			console.log(error)
+		}
+
 		const { data: urlData } = await supabase.storage
 			.from(`workorder-bucket`)
 			.getPublicUrl(`workorder/${file.name}`)
@@ -131,9 +154,20 @@ export default function SettingUserEdit() {
 			console.log(error)
 		}
 
+		const { data: urlData2 } = await supabase.storage
+			.from(`workorder-bucket`)
+			.getPublicUrl(`workorder/${photo_seal.name}`)
+		if (urlData2) {
+			console.log(urlData2)
+			setUrl(urlData2.publicUrl)
+		} else if (error) {
+			console.log(error)
+		}
+
 		const datas = {
 			id: parseInt(id as string),
 			photo_container: urlData.publicUrl,
+			photo_container_seal: urlData2.publicUrl,
 			komentar_container: komentar,
 			tanggal_container: moment().format(`YYYY-MM-DD HH:mm:ss`),
 			status: `container`
@@ -167,10 +201,30 @@ export default function SettingUserEdit() {
 			console.log(error)
 		}
 
+		const { data: data2 } = await supabase.storage
+			.from(`workorder-bucket`)
+			.upload(`workorder/${photo_surat_jalan_pabrik.name}`, file2 as File)
+
+		if (data) {
+			console.log(data2)
+		} else if (error) {
+			console.log(error)
+		}
+
+		const { data: urlData2 } = await supabase.storage
+			.from(`workorder-bucket`)
+			.getPublicUrl(`workorder/${photo_surat_jalan_pabrik.name}`)
+		if (urlData2) {
+			console.log(urlData2)
+			setUrl(urlData2.publicUrl)
+		} else if (error) {
+			console.log(error)
+		}
+
 		const datas = {
 			id: parseInt(id as string),
-			photo_muat_barang: urlData.publicUrl,
-			//new date
+			photo_surat_pengantar: urlData.publicUrl,
+			photo_surat_jalan_pabrik: urlData2.publicUrl,
 			tanggal_muat_barang: moment().format(`YYYY-MM-DD HH:mm:ss`),
 			komentar_muat_barang: komentarMuatBarang,
 			status: `muat_barang`
@@ -186,51 +240,8 @@ export default function SettingUserEdit() {
 	) => {
 		setFile(setForm.getValues(`photo_menuju_pelabuhan`))
 
-		const { data, error } = await supabase.storage
-			.from(`workorder-bucket`)
-			.upload(`workorder/${file.name}`, file as File)
-
-		if (data) {
-			console.log(data)
-		} else if (error) {
-			console.log(error)
-		}
-
-		const { data: data2 } = await supabase.storage
-			.from(`workorder-bucket`)
-			.upload(`workorder/${file2.name}`, file2 as File)
-
-		if (data) {
-			console.log(data2)
-		} else if (error) {
-			console.log(error)
-		}
-
-		const { data: urlData } = await supabase.storage
-			.from(`workorder-bucket`)
-			.getPublicUrl(`workorder/${file.name}`)
-		if (urlData) {
-			console.log(urlData)
-			setUrl(urlData.publicUrl)
-		} else if (error) {
-			console.log(error)
-		}
-
-		const { data: urlData2 } = await supabase.storage
-			.from(`workorder-bucket`)
-			.getPublicUrl(`workorder/${file2.name}`)
-		if (urlData2) {
-			console.log(urlData2)
-			setUrl(urlData2.publicUrl)
-		} else if (error) {
-			console.log(error)
-		}
-
 		const datas = {
 			id: parseInt(id as string),
-			photo_seal_pelabuhan: urlData.publicUrl,
-			photo_surat_jalan: urlData2.publicUrl,
-			//new date
 			tanggal_menuju_pelabuhan: moment().format(`YYYY-MM-DD HH:mm:ss`),
 			komentar_menuju_pelabuhan: komentarMenujuPelabuhan,
 			status: `menuju_pelabuhan`
@@ -245,11 +256,50 @@ export default function SettingUserEdit() {
 		e: ChangeEvent<HTMLInputElement>
 	) => {
 		setFile(setForm.getValues(`photo_tiba_pelabuhan`))
+		const { data, error } = await supabase.storage
+			.from(`workorder-bucket`)
+			.upload(`workorder/${file.name}`, file as File)
 
+		if (data) {
+			console.log(data)
+		} else if (error) {
+			console.log(error)
+		}
+
+		const { data: urlData } = await supabase.storage
+			.from(`workorder-bucket`)
+			.getPublicUrl(`workorder/${file.name}`)
+		if (urlData) {
+			console.log(urlData)
+			setUrl(urlData.publicUrl)
+		} else if (error) {
+			console.log(error)
+		}
+
+		const { data: data2 } = await supabase.storage
+			.from(`workorder-bucket`)
+			.upload(`workorder/${photo_seal_pelabuhan.name}`, file2 as File)
+
+		if (data) {
+			console.log(data2)
+		} else if (error) {
+			console.log(error)
+		}
+
+		const { data: urlData2 } = await supabase.storage
+			.from(`workorder-bucket`)
+			.getPublicUrl(`workorder/${photo_seal_pelabuhan.name}`)
+		if (urlData2) {
+			console.log(urlData2)
+			setUrl(urlData2.publicUrl)
+		} else if (error) {
+			console.log(error)
+		}
 		const datas = {
 			id: parseInt(id as string),
+			photo_surat_jalan_stackful: urlData.publicUrl,
+			photo_seal_pelabuhan: urlData2.publicUrl,
 			komentar_tiba_pelabuhan: komentarTibaPelabuhan,
-			//new date
 			tanggal_tiba_pelabuhan: moment().format(`YYYY-MM-DD HH:mm:ss`),
 			status: `tiba_pelabuhan`
 		}
@@ -262,31 +312,12 @@ export default function SettingUserEdit() {
 	const handleUploadMuatan = async (e: ChangeEvent<HTMLInputElement>) => {
 		setFile(setForm.getValues(`photo_muatan`))
 
-		const { data, error } = await supabase.storage
-			.from(`workorder-bucket`)
-			.upload(`workorder/${file.name}`, file as File)
-
-		if (data) {
-			console.log(data)
-		} else if (error) {
-			console.log(error)
-		}
-
-		const { data: urlData } = await supabase.storage
-			.from(`workorder-bucket`)
-			.getPublicUrl(`workorder/${file.name}`)
-		if (urlData) {
-			console.log(urlData)
-			setUrl(urlData.publicUrl)
-		} else if (error) {
-			console.log(error)
-		}
-
 		const datas = {
 			id: parseInt(id as string),
-			photo_seal_muatan: urlData.publicUrl,
+			tanggal_muatan: moment().format(`YYYY-MM-DD HH:mm:ss`),
+			nama_kapal: nama_kapals,
 			komentar_muatan: komentarMuatan,
-			status: `muatan`
+			status: `pindah_muatan`
 		}
 
 		updateData(datas)
@@ -297,29 +328,8 @@ export default function SettingUserEdit() {
 	const handleUploadDestinasi = async (e: ChangeEvent<HTMLInputElement>) => {
 		setFile(setForm.getValues(`photo_destinasi`))
 
-		const { data, error } = await supabase.storage
-			.from(`workorder-bucket`)
-			.upload(`workorder/${file.name}`, file as File)
-
-		if (data) {
-			console.log(data)
-		} else if (error) {
-			console.log(error)
-		}
-
-		const { data: urlData } = await supabase.storage
-			.from(`workorder-bucket`)
-			.getPublicUrl(`workorder/${file.name}`)
-		if (urlData) {
-			console.log(urlData)
-			setUrl(urlData.publicUrl)
-		} else if (error) {
-			console.log(error)
-		}
-
 		const datas = {
 			id: parseInt(id as string),
-			photo_seal_destinasi: urlData.publicUrl,
 			komentar_destinasi: komentarDestinasi,
 			//new date
 			tanggal_destinasi: moment().format(`YYYY-MM-DD HH:mm:ss`),
@@ -350,7 +360,12 @@ export default function SettingUserEdit() {
 	const [visibleMuatan, setVisibleMuatan] = useState(false)
 	//visible destinasi
 	const [visibleDestinasi, setVisibleDestinasi] = useState(false)
+	//visible message
+	const [visibleMessage, setVisibleMessage] = useState(false)
 
+	const handleOk = () => {
+		setVisibleMessage(false)
+	}
 	//handle okContainer
 	const handleOkContainer = () => {
 		//handle upload image
@@ -366,6 +381,7 @@ export default function SettingUserEdit() {
 		setVisibleTibaPelabuhan(false)
 		setVisibleMuatan(false)
 		setVisibleDestinasi(false)
+		setVisibleMessage(false)
 	}
 
 	const handleOkMuatBarang = () => {
@@ -403,7 +419,6 @@ export default function SettingUserEdit() {
 		setVisibleDestinasi(false)
 	}
 
-	//make antd table for status, tanggal, photo and komentar
 	const columns = [
 		{
 			title: `Status`,
@@ -436,7 +451,7 @@ export default function SettingUserEdit() {
 					{photo ? (
 						<img src={photo} alt="photo" style={{ width: 100, height: 100 }} />
 					) : (
-						<p></p>
+						<p>Tidak Ada Photo Untuk Langkah Ini</p>
 					)}
 				</>
 			)
@@ -448,7 +463,121 @@ export default function SettingUserEdit() {
 		}
 	]
 
-	const columnsSuratJalan = [
+	const columnsMuatBarang = [
+		{
+			title: `Status`,
+			//data index status and tanggal
+			dataIndex: [`status`, `tanggal`],
+			key: `status`,
+			render: (text, record) => (
+				<span
+					style={{
+						color: record.tanggal ? `green` : `black`
+					}}
+				>
+					{record.status}
+				</span>
+			)
+		},
+		{
+			title: `Tanggal`,
+			dataIndex: `tanggal`,
+			key: `tanggal`
+		},
+
+		{
+			title: `Photo`,
+			dataIndex: [`photo`, `photo_surat_jalan_pabrik`],
+			key: `photo`,
+			//make photo from dataindex if dataindex is null then show text "Belum ada foto"
+			render: (text, record) => (
+				<>
+					{record.photo ? (
+						<img
+							src={record.photo}
+							alt="photo"
+							style={{
+								width: 100
+							}}
+						/>
+					) : null}
+					{record.photo_surat_jalan_pabrik ? (
+						<img
+							src={record.photo_surat_jalan_pabrik}
+							alt="photo"
+							style={{
+								width: 100
+							}}
+						/>
+					) : null}
+				</>
+			)
+		},
+		{
+			title: `Komentar`,
+			dataIndex: `komentar`,
+			key: `komentar`
+		}
+	]
+	//make antd table for status, tanggal, photo and komentar
+	const columnsContainer = [
+		{
+			title: `Status`,
+			//data index status and tanggal
+			dataIndex: [`status`, `tanggal`],
+			key: `status`,
+			render: (text, record) => (
+				<span
+					style={{
+						color: record.tanggal ? `green` : `black`
+					}}
+				>
+					{record.status}
+				</span>
+			)
+		},
+		{
+			title: `Tanggal`,
+			dataIndex: `tanggal`,
+			key: `tanggal`
+		},
+
+		{
+			title: `Photo`,
+			dataIndex: [`photo`, `photo_container_seal`],
+			key: `photo`,
+			//make photo from dataindex if dataindex is null then show text "Belum ada foto"
+			render: (text, record) => (
+				<>
+					{record.photo ? (
+						<img
+							src={record.photo}
+							alt="photo"
+							style={{
+								width: 100
+							}}
+						/>
+					) : null}
+					{record.photo_container_seal ? (
+						<img
+							src={record.photo_container_seal}
+							alt="photo"
+							style={{
+								width: 100
+							}}
+						/>
+					) : null}
+				</>
+			)
+		},
+		{
+			title: `Komentar`,
+			dataIndex: `komentar`,
+			key: `komentar`
+		}
+	]
+
+	const columnsTibaPelabuhan = [
 		{
 			title: `Status`,
 			//data index status and tanggal
@@ -471,9 +600,8 @@ export default function SettingUserEdit() {
 		},
 		{
 			title: `Photo`,
-			dataIndex: [`photo`, `phot_surat_jalan`],
+			dataIndex: [`photo`, `photo_seal_pelabuhan`],
 			key: `photo`,
-			//photo above photo_surat_jalan
 			render: (text, record) => (
 				<>
 					{record.photo ? (
@@ -485,9 +613,9 @@ export default function SettingUserEdit() {
 							}}
 						/>
 					) : null}
-					{record.photo_surat_jalan ? (
+					{record.photo_seal_pelabuhan ? (
 						<img
-							src={record.photo_surat_jalan}
+							src={record.photo_seal_pelabuhan}
 							alt="photo"
 							style={{
 								width: 100
@@ -511,6 +639,7 @@ export default function SettingUserEdit() {
 			status: `AMBIL CONTAINER`,
 			tanggal: item.tanggal_container,
 			photo: item.photo_container,
+			photo_container_seal: item.photo_container_seal,
 			komentar: item.komentar_container
 		}
 	})
@@ -521,7 +650,8 @@ export default function SettingUserEdit() {
 			key: item.id,
 			status: `MUAT BARANG`,
 			tanggal: item.tanggal_muat_barang,
-			photo: item.photo_muat_barang,
+			photo: item.photo_surat_pengantar,
+			photo_surat_jalan_pabrik: item.photo_surat_jalan_pabrik,
 			komentar: item.komentar_muat_barang
 		}
 	})
@@ -532,8 +662,6 @@ export default function SettingUserEdit() {
 			key: item.id,
 			status: `MENUJU PELABUHAN`,
 			tanggal: item.tanggal_menuju_pelabuhan,
-			photo: item.photo_seal_pelabuhan,
-			photo_surat_jalan: item.photo_surat_jalan,
 			komentar: item.komentar_menuju_pelabuhan
 		}
 	})
@@ -543,10 +671,14 @@ export default function SettingUserEdit() {
 		return {
 			key: item.id,
 			status: `TIBA PELABUHAN`,
+			photo: item.photo_surat_jalan_stackful,
+			photo_seal_pelabuhan: item.photo_seal_pelabuhan,
 			tanggal: item.tanggal_tiba_pelabuhan,
 			komentar: item.komentar_tiba_pelabuhan
 		}
 	})
+
+	console.log(`dataTibaPelabuhan`, dataTibaPelabuhan)
 
 	//map data muatan from data
 	const dataMuatan = data?.daftar_workorder?.map((item) => {
@@ -615,6 +747,8 @@ export default function SettingUserEdit() {
 											data?.daftar_workorder[0]?.status === `pindah_muatan`
 										) {
 											setVisibleDestinasi(true)
+										} else {
+											setVisibleMessage(true)
 										}
 									}}
 								>
@@ -720,28 +854,28 @@ export default function SettingUserEdit() {
 					<Table
 						style={{ marginTop: `5%` }}
 						rowKey={(record) => record.id}
-						columns={columns}
+						columns={columnsContainer}
 						dataSource={dataContainer}
 						pagination={false}
 					/>
 					<Table
 						rowKey={(record) => record.id}
 						showHeader={false}
-						columns={columns}
+						columns={columnsMuatBarang}
 						dataSource={dataMuatBarang}
 						pagination={false}
 					/>
 					<Table
 						rowKey={(record) => record.id}
 						showHeader={false}
-						columns={columnsSuratJalan}
+						columns={columns}
 						dataSource={dataMenujuPelabuhan}
 						pagination={false}
 					/>
 					<Table
 						rowKey={(record) => record.id}
 						showHeader={false}
-						columns={columns}
+						columns={columnsTibaPelabuhan}
 						dataSource={dataTibaPelabuhan}
 						pagination={false}
 					/>
@@ -766,11 +900,36 @@ export default function SettingUserEdit() {
 							onOk={handleOkContainer}
 							onCancel={handleCancel}
 						>
+							<p
+								style={{
+									marginTop: `3px`,
+									fontWeight: `bold`,
+									marginBottom: `-2px`
+								}}
+							>
+								Photo Container
+							</p>
 							<input
 								type="file"
 								name="photo_container"
 								onChange={(e) => {
 									setFile(e.target.files[0])
+								}}
+							/>
+							<p
+								style={{
+									marginTop: `3px`,
+									fontWeight: `bold`,
+									marginBottom: `-2px`
+								}}
+							>
+								Photo Seal
+							</p>
+							<input
+								type="file"
+								name="photo_container_seal"
+								onChange={(e) => {
+									setPhotoSeal(e.target.files[0])
 								}}
 							/>
 							<TextArea
@@ -789,11 +948,36 @@ export default function SettingUserEdit() {
 							onOk={handleOkMuatBarang}
 							onCancel={handleCancel}
 						>
+							<p
+								style={{
+									marginTop: `3px`,
+									fontWeight: `bold`,
+									marginBottom: `-2px`
+								}}
+							>
+								Photo Surat Pengantar
+							</p>
 							<input
 								type="file"
-								name="photo_muat_barang"
+								name="photo_surat_pengantar"
 								onChange={(e) => {
 									setFile(e.target.files[0])
+								}}
+							/>
+							<p
+								style={{
+									marginTop: `3px`,
+									fontWeight: `bold`,
+									marginBottom: `-2px`
+								}}
+							>
+								Photo Surat Jalan Pabrik
+							</p>
+							<input
+								type="file"
+								name="photo_surat_jalan_pabrik"
+								onChange={(e) => {
+									setPhotoSuratJalanPabrik(e.target.files[0])
 								}}
 							/>
 							<TextArea
@@ -812,21 +996,6 @@ export default function SettingUserEdit() {
 							onOk={handleOkMenujuPelabuhan}
 							onCancel={handleCancel}
 						>
-							<input
-								type="file"
-								name="photo_menuju_pelabuhan"
-								onChange={(e) => {
-									setFile(e.target.files[0])
-								}}
-							/>
-							<input
-								type="file"
-								name="photo_seal"
-								style={{ marginTop: `2%` }}
-								onChange={(e) => {
-									setFile2(e.target.files[0])
-								}}
-							/>
 							<TextArea
 								name="photo_muat_barang"
 								placeholder="Photo Muat Barang"
@@ -843,6 +1012,38 @@ export default function SettingUserEdit() {
 							onOk={handleOkTibaPelabuhan}
 							onCancel={handleCancel}
 						>
+							<p
+								style={{
+									marginTop: `3px`,
+									fontWeight: `bold`,
+									marginBottom: `-2px`
+								}}
+							>
+								Photo Surat Jalan Stackful
+							</p>
+							<input
+								type="file"
+								name="photo_surat_jalan_stackful"
+								onChange={(e) => {
+									setFile(e.target.files[0])
+								}}
+							/>
+							<p
+								style={{
+									marginTop: `3px`,
+									fontWeight: `bold`,
+									marginBottom: `-2px`
+								}}
+							>
+								Photo Seal Pelabuhan
+							</p>
+							<input
+								type="file"
+								name="photo_seal_pelabuhan"
+								onChange={(e) => {
+									setPhotoSealPelabuhan(e.target.files[0])
+								}}
+							/>
 							<TextArea
 								name="komentar_tiba_pelabuhan"
 								placeholder="Komentar Tiba Pelabuhan"
@@ -859,16 +1060,37 @@ export default function SettingUserEdit() {
 							onOk={handleOkMuatan}
 							onCancel={handleCancel}
 						>
+							<p
+								style={{
+									marginTop: `3px`,
+									fontWeight: `bold`,
+									marginBottom: `-2px`
+								}}
+							>
+								Nama Kapal
+							</p>
 							<input
-								type="file"
-								name="photo_container"
+								type="text"
+								name="nama_kapal"
+								placeholder="Nama Kapal"
+								style={{ marginTop: `10px` }}
+								{...register(`nama_kapal`)}
 								onChange={(e) => {
-									setFile(e.target.files[0])
+									setNamaKapal(e.target.value)
 								}}
 							/>
+							<p
+								style={{
+									marginTop: `3px`,
+									fontWeight: `bold`,
+									marginBottom: `-2px`
+								}}
+							>
+								Keterangan
+							</p>
 							<TextArea
 								name="photo_seal_muatan"
-								placeholder="Photo Seal Muatan"
+								placeholder="Komentar"
 								style={{ marginTop: `10px` }}
 								{...register(`photo_seal_muatan`)}
 								onChange={(e) => {
@@ -882,13 +1104,15 @@ export default function SettingUserEdit() {
 							onOk={handleOkDestinasi}
 							onCancel={handleCancel}
 						>
-							<input
-								type="file"
-								name="photo_seal_destinasi"
-								onChange={(e) => {
-									setFile(e.target.files[0])
+							<p
+								style={{
+									marginTop: `3px`,
+									fontWeight: `bold`,
+									marginBottom: `-2px`
 								}}
-							/>
+							>
+								Keterangan
+							</p>
 							<TextArea
 								name="photo_seal_destinasi"
 								placeholder="Photo Seal Destinasi"
@@ -898,6 +1122,20 @@ export default function SettingUserEdit() {
 									setKomentarDestinasi(e.target.value)
 								}}
 							/>
+						</Modal>
+						<Modal
+							visible={visibleMessage}
+							title="Work Order Telah Selesai"
+							onOk={handleOk}
+							onCancel={handleCancel}
+							style={{
+								textAlign: `center`,
+								fontWeight: `bold`,
+								//make center off screen
+								top: `30%`
+							}}
+						>
+							<p>Work Order Telah Selesai, Silahkan Akses Menu Lain</p>
 						</Modal>
 					</form>
 				</div>

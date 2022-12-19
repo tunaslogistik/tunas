@@ -33,6 +33,12 @@ export const GET_DAFTAR_INVOICE = gql`
 			tax
 			subtotal
 			subtotal_tambahan
+			biaya_tambahan_sales
+			itemNo_sales_order
+			biaya_tambahan_join
+			itemNo_join
+			nama_barang_join
+			kota_tujuan
 		}
 	}
 `

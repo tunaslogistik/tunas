@@ -2,12 +2,16 @@
 import { gql, useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
+import FormRepeater from "@components/form/FormRepeater.component"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, DatePicker, message } from "antd"
 
+import { GET_ACCURATE } from "graphql/accurate/queries"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import { GET_PENGATURAN } from "graphql/pengaturan/queries"
+import { UPDATE_REFERENCE_SALES_ORDER } from "graphql/reference_sales_order/mutations"
+import { GET_REFERENCE_SALES_ORDER } from "graphql/reference_sales_order/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -36,12 +40,16 @@ const GET_DATA = gql`
 export default function Home() {
 	const { setLoading } = useLoading()
 	const { data } = useQuery(GET_DATA)
-	//GET DAFTAR TTB
+
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
 	//GET DATA CUSTOMER
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	//GET DATA PENGATURAN
 	const { data: dataPengaturan } = useQuery(GET_PENGATURAN)
+	//GET DATA ACCURATE
+	const { data: dataAccurate } = useQuery(GET_ACCURATE)
+	//GET DATA REFERENCE SALES ORDER
+	const { data: dataReferenceSalesOrder } = useQuery(GET_REFERENCE_SALES_ORDER)
 
 	const router = useRouter()
 	const setForm = useForm()
@@ -56,6 +64,28 @@ export default function Home() {
 	const createData = (data) => {
 		createDaftar_sales_order({ variables: { input: data } })
 	}
+
+	//UPDATE
+	const [updateReferenceSalesOrder] = useMutation(
+		UPDATE_REFERENCE_SALES_ORDER,
+		{
+			refetchQueries: [{ query: GET_REFERENCE_SALES_ORDER }]
+		}
+	)
+
+	const updateData = (data) => {
+		updateReferenceSalesOrder({ variables: { input: data } })
+	}
+
+	//GET TAX OPTION DATAACCURATE TAXNAME
+	const taxName = dataAccurate?.accurate?.map((tax) => {
+		return {
+			label: tax.nama_barang,
+			value: tax.kode_barang
+		}
+	})
+
+	console.log(`taxName`, taxName)
 
 	function addLeadingZeros(num, totalLength) {
 		return String(num).padStart(totalLength, `0`)
@@ -120,17 +150,47 @@ export default function Home() {
 			? getValues(`total_volume_ttb`) * Number(getValues(`harga`)) + PPN
 			: Number(getValues(`harga`)) + PPN
 
-	const harga_sebelum_ppn =
+	const harga_sesudah_ppn =
 		getValues(`total_volume_ttb`) !== 0
-			? getValues(`total_volume_ttb`) * Number(getValues(`harga`))
-			: Number(getValues(`harga`))
+			? getValues(`total_volume_ttb`) * Number(getValues(`harga`)) + PPN
+			: Number(getValues(`harga`)) + PPN
 
-	setValue(`total_tagihan`, total)
+	const newArray1 = watch(`newArray`)
 
-	console.log(
-		`harga_sebelum_ppn`,
-		getValues(`total_volume_ttb`) * Number(getValues(`harga`))
-	)
+	const harga = newArray1?.map((item) => {
+		if (item.Harga === 0) {
+			return 0
+		} else {
+			if (
+				String(item.tipe_ppn) !== `null` ||
+				String(item.tipe_ppn) !== `` ||
+				String(item.tipe_ppn) !== `undefined`
+			) {
+				//find and get taxName from dataAccurate where item.tipe_ppn === kode_barang
+				const taxName = dataAccurate?.accurate?.find((tax) => {
+					return tax.kode_barang === item.tipe_ppn
+				})
+				return (
+					parseInt(item.Harga) +
+					(parseInt(item.Harga) *
+						Number(taxName?.taxName?.replace(/[^0-9]/g, ``))) /
+						100
+				)
+			} else {
+				return parseInt(item.Harga)
+			}
+		}
+	})
+	console.log(`harga`, harga)
+
+	//sum harga
+	const sumHarga = harga?.reduce((a, b) => a + b, 0)
+
+	//if sumHarga not empty then total + sumHarga
+	const total2 = sumHarga ? total + parseInt(sumHarga) : total
+
+	setValue(`total_tagihan`, total2)
+
 	const handleChangeTTB = (value) => {
 		const data = mergeTTB?.find((item) => item.nomor_ttb === value)
 		setValue(`pengirim`, data.pengirim)
@@ -141,8 +201,8 @@ export default function Home() {
 	}
 
 	useEffect(() => {
-		setValue(`total_tagihan`, total)
-	}, [setValue, total])
+		setValue(`total_tagihan`, total2)
+	}, [setValue, total2])
 
 	useEffect(() => {
 		console.log(`watch`, watch(`harga`))
@@ -154,11 +214,35 @@ export default function Home() {
 		}
 	})
 
+	console.log(`harga`, harga)
+
 	async function onSubmit(formData) {
 		setLoading(true)
 		try {
+			//get data from dataReferenceSalesOrder where kode_tujuan === kota_tujuan
+			const dataReferenceSO =
+				dataReferenceSalesOrder?.reference_sales_order?.filter(
+					(item: any) => item.kode_tujuan === formData.kota_tujuan
+				)
+
+			console.log(`dataReferenceSO`, dataReferenceSO)
 			const objArray = Object.keys(formData).map((i) => formData[i])
 
+			const namaBarang = formData.newArray.map((item) => item.nama_barang)
+
+			const hargaBarang = formData.newArray.map((item) => item.Harga)
+
+			//get ppn from newArray formData
+			const ppn = formData.newArray.map((item) => item.tipe_ppn)
+
+			//join nama barang into 1 string with ,
+			const namaBarangString = namaBarang.join(`,`)
+
+			//join harga into 1 string with ,
+			const hargaString = hargaBarang.join(`,`)
+
+			//join ppn into 1 string with ,
+			const ppnString = ppn.join(`,`)
 			//get term payment from customer where nama customer = formdata.pengirim
 			const termPayment = dataCustomer?.customer.find(
 				(item) => item.nama_customer === formData.pengirim
@@ -177,14 +261,21 @@ export default function Home() {
 						addLeadingZeros(panjangSalesOrder, 4),
 					total_volume: parseInt(formData.total_volume_ttb),
 					harga: parseInt(formData.harga),
-					harga_sebelum_ppn: harga_sebelum_ppn,
+					harga_sesudah_ppn: harga_sesudah_ppn,
 					pengirim: formData.pengirim,
 					total_tagihan: parseInt(formData.total_tagihan),
 					rekening: formData.rekening,
 					kota_tujuan: formData.kota_tujuan,
 					dp: parseInt(formData.dp),
 					tanggal_sales_order: formData.tanggal_sales_order,
-					term_payment: termPayment
+					term_payment: termPayment,
+					nama_barang: namaBarangString,
+					itemNo: ``,
+					harga_satuan: hargaString,
+					harga_total: parseInt(sumHarga),
+					tipe_ppn: ppnString,
+					total_harga_ttb:
+						getValues(`total_volume_ttb`) * Number(getValues(`harga`))
 				}
 			})
 
@@ -200,11 +291,62 @@ export default function Home() {
 				}
 			}, [])
 
+			myChildrenArrayMerge.map((item) => {
+				//if String(moment.unix(values.tanggal_sales_order / 1000).format(`YY-MM`)) !== dataReferenceSO[0].tanggal_tahun then addleadingg zeros(1,4) else addleadingzeros(dataReferenceSO + 1,4)
+				if (
+					String(moment.unix(item.tanggal_sales_order / 1000).format(`MM`)) !==
+					dataReferenceSO[0].bulan_tahun
+				) {
+					item.nomor_sales_order =
+						`SO/` +
+						formData.kota_tujuan +
+						`/` +
+						String(
+							moment.unix(formData.tanggal_sales_order / 1000).format(`YY-MM`)
+						) +
+						`/` +
+						addLeadingZeros(1, 4)
+				} else {
+					item.nomor_sales_order =
+						`SO/` +
+						formData.kota_tujuan +
+						`/` +
+						String(
+							moment.unix(formData.tanggal_sales_order / 1000).format(`YY-MM`)
+						) +
+						`/` +
+						addLeadingZeros(dataReferenceSO[0].increment + 1, 4)
+				}
+			})
+
 			//create new data
 			for (let i = 0; i < myChildrenArrayMerge.length; i++) {
 				createData(myChildrenArrayMerge[i])
-				console.log(`My`, myChildrenArrayMerge)
+				console.log(`create data`, myChildrenArrayMerge[i])
 			}
+
+			//if String(moment.unix(values.tanggal_sales_order/ 1000).format(`YY-MM`)) !== dataReferenceSO[0].tanggal_tahun then increment = 1 else increment = dataReferenceSO[0].increment + 1
+			const increment =
+				String(moment.unix(formData.tanggal_ttb / 1000).format(`MM`)) !==
+				dataReferenceSO[0]?.bulan_tahun
+					? 1
+					: dataReferenceSO[0]?.increment + 1
+
+			const tanggal_tahun = String(
+				moment.unix(formData.tanggal_sales_order / 1000).format(`YY-MM`)
+			)
+
+			const dataReferenceSalesupdate = {
+				id: dataReferenceSO[0]?.id,
+				increment: increment,
+				tanggal_tahun: tanggal_tahun,
+				bulan_tahun: String(
+					moment.unix(formData.tanggal_sales_order / 1000).format(`MM`)
+				)
+			}
+
+			updateData(dataReferenceSalesupdate)
+
 			message.success(`Data Berhasil Disimpan`)
 			router.push(`/order/daftar-sales-order`)
 		} catch (error) {
@@ -217,7 +359,7 @@ export default function Home() {
 	return (
 		<AdminPage
 			parent={
-				<Link href="/order/daftar-ttb">
+				<Link href="/order/daftar-sales-order">
 					<a>Daftar Sales Order</a>
 				</Link>
 			}
@@ -364,6 +506,33 @@ export default function Home() {
 							</div>
 						</div>
 						<div
+							style={{ width: `50%`, marginTop: `20px` }}
+							className="content"
+						>
+							<label
+								style={{ fontWeight: `bold`, paddingLeft: `5px` }}
+								className="label"
+							>
+								Biaya Tambahan
+							</label>
+							<FormRepeater
+								setForm={setForm}
+								control={control}
+								register={register}
+								name="newArray"
+								inputNames={[`nama_barang`, `Harga`, `tipe_ppn`]}
+								inputLabels={[`Nama Barang`, `Harga`, `PPN`]}
+								inputTypes={[`text`, `text`, `select`]}
+								inputProps={[
+									{},
+									{},
+									{
+										options: taxName
+									}
+								]}
+							/>
+						</div>
+						<div
 							className="field"
 							style={{
 								display: `inline-block`,
@@ -372,7 +541,7 @@ export default function Home() {
 							}}
 						>
 							<label style={{ fontWeight: `bolder` }} className="label">
-								Total Tagihan inc. PPN 1% (Rp)
+								Total Tagihan inc. PPN (Rp)
 							</label>
 							<div className="control">
 								<input
@@ -383,7 +552,9 @@ export default function Home() {
 									{...register(`total_tagihan`)}
 									readOnly
 								/>
-								<p style={{ fontSize: `10px` }}>Include PPN 1%</p>
+								<p style={{ fontSize: `10px` }}>
+									Tidak Termasuk Biaya Tambahan
+								</p>
 							</div>
 						</div>
 						<div
@@ -411,6 +582,7 @@ export default function Home() {
 								Dalam satuan rupiah
 							</p>
 						</div>
+
 						<div className="field">
 							<label style={{ fontWeight: `bolder` }} className="label">
 								Rekening

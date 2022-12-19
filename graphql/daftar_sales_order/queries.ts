@@ -11,11 +11,17 @@ export const GET_DAFTAR_SALES_ORDER = gql`
 			pengirim
 			rekening
 			kota_tujuan
-			harga_sebelum_ppn
+			harga_sesudah_ppn
 			total_tagihan
 			dp
 			tanggal_sales_order
 			term_payment
+			nama_barang
+			itemNo
+			tipe_ppn
+			harga_satuan
+			harga_total
+			total_harga_ttb
 		}
 	}
 `

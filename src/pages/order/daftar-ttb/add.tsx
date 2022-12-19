@@ -3,13 +3,15 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons"
 import { gql, useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
-import { Button, DatePicker, Form, Input, message, Select, Space } from "antd"
+import { Button, DatePicker, Form, Input, Select, Space, message } from "antd"
 
 import Checkbox from "antd/lib/checkbox/Checkbox"
 import TextArea from "antd/lib/input/TextArea"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import { GET_JENIS_PENGIRIMAN } from "graphql/jenis_pengiriman/queries"
+import { UPDATE_REFERENCE_TTB } from "graphql/reference_ttb/mutations"
+import { GET_REFERENCE_TTB } from "graphql/reference_ttb/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -50,14 +52,12 @@ export default function Home() {
 	const { data: dataDaftarTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 	//GET DATA CUSTOMER
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
+	//GET DATA REFERENCE TTB
+	const { data: dataReferenceTtb } = useQuery(GET_REFERENCE_TTB)
 
 	const router = useRouter()
 	const setForm = useForm()
-	// const {
-	// 	// control,
-	// 	// reset,
-	// 	// register,
-	// } = setForm
+	const { control, reset, register, watch } = setForm
 
 	const [createDaftar_ttb] = useMutation(CREATE_DAFTAR_TTB, {
 		refetchQueries: [{ query: GET_DATA }]
@@ -68,6 +68,15 @@ export default function Home() {
 		createDaftar_ttb({ variables: { input: data } })
 	}
 
+	//UPDATE
+	const [updateReferenceTtb] = useMutation(UPDATE_REFERENCE_TTB, {
+		refetchQueries: [{ query: GET_REFERENCE_TTB }]
+	})
+
+	const updateData = (data) => {
+		updateReferenceTtb({ variables: { input: data } })
+	}
+
 	const { Option } = Select
 	const handleChange = (value: string[]) => {
 		console.log(`selected ${value}`)
@@ -76,6 +85,8 @@ export default function Home() {
 		return String(num).padStart(totalLength, `0`)
 	}
 
+	//watch k
+
 	const onFinish = (values: any) => {
 		//get data ttb length
 		const dataLength = data.daftar_ttb.length + 1
@@ -83,6 +94,11 @@ export default function Home() {
 		const panjang = values?.daftar_ttb?.map((item: any) => {
 			return item.panjang
 		})
+		//get data from datareferencettb where kode_tujuan === kota_tujuan
+		const dataReference = dataReferenceTtb?.reference_ttb?.filter(
+			(item: any) => item.kode_tujuan === values.kota_tujuan
+		)
+
 		if (panjang !== undefined) {
 			const sum = values.daftar_ttb.reduce((accumulator, object) => {
 				return (
@@ -92,20 +108,7 @@ export default function Home() {
 			}, 0)
 			const data = values.daftar_ttb.map((item: any) => {
 				return {
-					ttb_number:
-						values.full_container === true
-							? `TTB-FL/` +
-							  values.kota_tujuan +
-							  `/` +
-							  String(moment.unix(values.tanggal_ttb / 1000).format(`YY-MM`)) +
-							  `/` +
-							  addLeadingZeros(dataLength, 4)
-							: `TTB/` +
-							  values.kota_tujuan +
-							  `/` +
-							  String(moment.unix(values.tanggal_ttb / 1000).format(`YY-MM`)) +
-							  `/` +
-							  addLeadingZeros(dataLength, 4),
+					ttb_number: ``,
 					pengirim: values.pengirim,
 					kota_tujuan: values.kota_tujuan,
 					tanggal_diterima: String(values.tanggal_diterima),
@@ -152,10 +155,69 @@ export default function Home() {
 				}
 			}
 
+			data.map((item) => {
+				//if String(moment.unix(values.tanggal_ttb / 1000).format(`YY-MM`)) !== dataReference[0].tanggal_tahun then addleadingg zeros(1,4) else addleadingzeros(dataReference + 1,4)
+				if (
+					String(moment.unix(values.tanggal_ttb / 1000).format(`MM`)) !==
+					dataReference[0].bulan_tahun
+				) {
+					item.ttb_number =
+						values.full_container === true
+							? `TTB-FL/` +
+							  values.kota_tujuan +
+							  `/` +
+							  String(moment.unix(values.tanggal_ttb / 1000).format(`YY-MM`)) +
+							  `/` +
+							  addLeadingZeros(1, 4)
+							: `TTB/` +
+							  values.kota_tujuan +
+							  `/` +
+							  String(moment.unix(values.tanggal_ttb / 1000).format(`YY-MM`)) +
+							  `/` +
+							  addLeadingZeros(1, 4)
+				} else {
+					item.ttb_number =
+						values.full_container === true
+							? `TTB-FL/` +
+							  values.kota_tujuan +
+							  `/` +
+							  String(moment.unix(values.tanggal_ttb / 1000).format(`YY-MM`)) +
+							  `/` +
+							  addLeadingZeros(dataReference[0].nomor_ttb + 1, 4)
+							: `TTB/` +
+							  values.kota_tujuan +
+							  `/` +
+							  String(moment.unix(values.tanggal_ttb / 1000).format(`YY-MM`)) +
+							  `/` +
+							  addLeadingZeros(dataReference[0].increment + 1, 4)
+				}
+			})
+			//if String(moment.unix(values.tanggal_ttb / 1000).format(`YY-MM`)) !== dataReference[0].tanggal_tahun then increment = 1 else increment = dataReference[0].increment + 1
+			const increment =
+				String(moment.unix(values.tanggal_ttb / 1000).format(`MM`)) !==
+				dataReference[0].bulan_tahun
+					? 1
+					: dataReference[0].increment + 1
+
+			const tanggal_tahun = String(
+				moment.unix(values.tanggal_ttb / 1000).format(`YY-MM`)
+			)
+
+			const dataReferenceTTBupdate = {
+				id: dataReference[0].id,
+				increment: increment,
+				tanggal_tahun: tanggal_tahun,
+				bulan_tahun: String(moment.unix(values.tanggal_ttb / 1000).format(`MM`))
+			}
+
 			// for loop to create data
 			for (let i = 0; i < count; i++) {
 				createData(data[i])
 			}
+
+			//update reference
+			updateData(dataReferenceTTBupdate)
+
 			message.success(`Data berhasil ditambahkan`)
 			router.push(`/order/daftar-ttb`)
 		} else {

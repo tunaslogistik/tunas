@@ -17,10 +17,24 @@ const mutations = {
 	createDaftar_tujuan: async (_parent, args, context: Context) => {
 		try {
 			const { id, kode_tujuan, nama_tujuan, creator, updated_by } = args.input
-
+			const url = `https://public.accurate.id/accurate/api/department/save.do?Scope: department_save`
+			const data = {
+				scope: `department_save`,
+				name: nama_tujuan,
+				description: nama_tujuan
+			}
+			// make POST FUNCTION  axios
+			const axios = require(`axios`)
+			const response = await axios.post(url, data, {
+				headers: {
+					Authorization: `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`,
+					"X-Session-ID": `22f7af2e-1016-4c26-911f-91dd48b69c3b`
+				}
+			})
+			console.log(response.data)
 			const daftar_tujuan = await context.prisma.daftar_tujuan.create({
 				data: {
-					id,
+					id: response.data.s ? response.data.r.id : id,
 					kode_tujuan,
 					nama_tujuan,
 					creator,
@@ -44,10 +58,29 @@ const mutations = {
 			const { id, kode_tujuan, nama_tujuan, creator, updated_by } = args.input
 			let daftar_tujuan
 
+			const url = `https://public.accurate.id/accurate/api/department/save.do?Scope: department_save`
+			const data = {
+				scope: `department_save`,
+				id: id,
+				name: nama_tujuan,
+				description: nama_tujuan
+			}
+			// make POST FUNCTION  axios
+			const axios = require(`axios`)
+			const response = await axios.post(url, data, {
+				headers: {
+					Authorization: `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`,
+					"X-Session-ID": `22f7af2e-1016-4c26-911f-91dd48b69c3b`
+				}
+			})
+			console.log(response.data)
+
+			const idB = response.data.r.id
+
 			daftar_tujuan = await context.prisma.daftar_tujuan.update({
 				where: { id },
 				data: {
-					id,
+					id: idB,
 					kode_tujuan,
 					nama_tujuan,
 					creator,

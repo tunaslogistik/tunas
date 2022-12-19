@@ -10,9 +10,10 @@ import { Button, DatePicker, notification } from "antd"
 
 import { GET_DAFTAR_MUAT_BARANG } from "graphql/daftar_muat_barang/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
+import { UPDATE_REFERENCE_SURAT_JALAN } from "graphql/reference_surat_jalan/mutations"
+import { GET_REFERENCE_SURAT_JALAN } from "graphql/reference_surat_jalan/queries"
 import moment from "moment"
 import Link from "next/link"
-import router from "next/router"
 import { useEffect, useRef, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { CREATE_DAFTAR_SURAT_JALAN } from "../../../../graphql/daftar_surat_jalan/mutations"
@@ -43,6 +44,8 @@ export default function Home() {
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
 	//GET DATA DAFTAR MUAT BARANG
 	const { data: dataDaftarMuatBarang } = useQuery(GET_DAFTAR_MUAT_BARANG)
+	//GET DATA REFERENCE SURAT JALAN
+	const { data: dataReferenceSuratJalan } = useQuery(GET_REFERENCE_SURAT_JALAN)
 	const setForm = useForm()
 	const { control, register, watch, handleSubmit, setValue } = setForm
 
@@ -62,6 +65,18 @@ export default function Home() {
 	//create mutation function
 	const createData = (data) => {
 		createDaftar_sales_jalan({ variables: { input: data } })
+	}
+
+	//update mutation function
+	const [updateReferenceSuratJalan] = useMutation(
+		UPDATE_REFERENCE_SURAT_JALAN,
+		{
+			refetchQueries: [{ query: GET_REFERENCE_SURAT_JALAN }]
+		}
+	)
+
+	const updateData = (data) => {
+		updateReferenceSuratJalan({ variables: { input: data } })
 	}
 
 	const { fields, append, remove } = useFieldArray({
@@ -196,6 +211,66 @@ export default function Home() {
 				item.total_volume = String(sumVolume)
 			})
 			console.log(`myChildrenArrayMerge2`, myChildrenArrayMerge2)
+
+			const dataReference =
+				dataReferenceSuratJalan?.reference_surat_jalan?.filter(
+					(item: any) => item.kode_tujuan === formData.kota_tujuan
+				)
+			myChildrenArrayMerge2.map((item) => {
+				//if String(moment.unix(formData.tanggal_surat_jalan / 1000).format(`YY-MM`)) !== dataReference[0].tanggal_tahun then addleadingg zeros(1,4) else addleadingzeros(dataReference + 1,4)
+				if (
+					String(
+						moment.unix(formData.tanggal_surat_jalan / 1000).format(`MM`)
+					) !== dataReference[0].bulan_tahun
+				) {
+					item.nomor_surat_jalan =
+						isFullContainer === `Full Container`
+							? `SJ/` +
+							  `FL` +
+							  `/` +
+							  String(
+									moment
+										.unix(formData.tanggal_surat_jalan / 1000)
+										.format(`YY-MM`)
+							  ) +
+							  `/` +
+							  addLeadingZeros(1, 4)
+							: `SJ/` +
+							  formData.kota_tujuan +
+							  `/` +
+							  String(
+									moment
+										.unix(formData.tanggal_surat_jalan / 1000)
+										.format(`YY-MM`)
+							  ) +
+							  `/` +
+							  addLeadingZeros(1, 4)
+				} else {
+					item.nomor_surat_jalan =
+						isFullContainer === `Full Container`
+							? `SJ/` +
+							  `FL` +
+							  `/` +
+							  String(
+									moment
+										.unix(formData.tanggal_surat_jalan / 1000)
+										.format(`YY-MM`)
+							  ) +
+							  `/` +
+							  addLeadingZeros(parseInt(dataReference[0].increment) + 1, 4)
+							: `SJ/` +
+							  formData.kota_tujuan +
+							  `/` +
+							  String(
+									moment
+										.unix(formData.tanggal_surat_jalan / 1000)
+										.format(`YY-MM`)
+							  ) +
+							  `/` +
+							  addLeadingZeros(parseInt(dataReference[0].increment) + 1, 4)
+				}
+			})
+
 			//create new data
 			for (let i = 0; i < myChildrenArrayMerge2.length; i++) {
 				const check = data?.daftar_surat_jalan.find(
@@ -211,6 +286,28 @@ export default function Home() {
 				}
 			}
 
+			const increment =
+				String(
+					moment.unix(formData.tanggal_surat_jalan / 1000).format(`MM`)
+				) !== dataReference[0].bulan_tahun
+					? 1
+					: dataReference[0].increment + 1
+
+			const tanggal_tahun = String(
+				moment.unix(formData.tanggal_surat_jalan / 1000).format(`YY-MM`)
+			)
+
+			const dataReferenceSJupdate = {
+				id: dataReference[0].id,
+				increment: increment,
+				tanggal_tahun: tanggal_tahun,
+				bulan_tahun: String(
+					moment.unix(formData.tanggal_surat_jalan / 1000).format(`MM`)
+				)
+			}
+
+			updateData(dataReferenceSJupdate)
+
 			const check = data?.daftar_surat_jalan.find(
 				(item) => item.nomor_ttb === formData.nomor_ttb
 			)
@@ -219,7 +316,7 @@ export default function Home() {
 					message: `Data berhasil dibuat`
 				})
 			}
-			router.push(`/pengiriman/daftar-surat-jalan`)
+			// router.push(`/pengiriman/daftar-surat-jalan`)
 		} catch (error) {
 			console.log(error)
 		}

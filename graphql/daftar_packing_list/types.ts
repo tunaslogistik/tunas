@@ -3,6 +3,7 @@ import { gql } from "apollo-server-micro"
 export const types = gql`
 	type daftar_packing_list {
 		id: Int
+		nomor_packing_list: String
 		nomor_muat_barang: String
 		nomor_ttb: String
 		total_ttb: String
@@ -30,6 +31,7 @@ export const types = gql`
 
 	input CreateDaftar_packing_listInput {
 		id: Int
+		nomor_packing_list: String
 		nomor_muat_barang: String
 		nomor_ttb: String
 		total_ttb: String

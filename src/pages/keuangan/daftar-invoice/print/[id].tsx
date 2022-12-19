@@ -41,6 +41,8 @@ const GET_DATA = gql`
 			nomor_container
 			nomor_seal
 			keterangan
+			nama_barang_join
+			biaya_tambahan_join
 		}
 	}
 `
@@ -174,9 +176,9 @@ export default function Home() {
 	})
 
 	//split nama barang after comma turn to array of object
-	const nama_barang = daftar_invoice?.[0]?.nama_barang?.split(`,`)
+	const nama_barang = daftar_invoice?.[0]?.nama_barang_join?.split(`,`)
 	//split nama harga after comma turn to array of object
-	const harga = daftar_invoice?.[0]?.harga?.split(`,`)
+	const harga = daftar_invoice?.[0]?.biaya_tambahan_join?.split(`,`)
 	//merge nama_barang and harga to array of object
 	const nama_barang_harga = nama_barang?.map((item, index) => {
 		return { nama_barang: item, harga: Number(harga?.[index]) }

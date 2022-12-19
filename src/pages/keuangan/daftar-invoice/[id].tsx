@@ -7,13 +7,14 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import FormRepeater from "@components/form/FormRepeater.component"
 import Access from "@components/util/Access.component"
 import useLoading from "@hooks/useLoading.hook"
-import { Button, notification } from "antd"
+import { Button, Popconfirm, notification } from "antd"
 import { GET_ACCURATE } from "graphql/accurate/queries"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import {
 	CREATE_DAFTAR_BIAYA_TAMBAHAN,
 	UPDATE_DAFTAR_BIAYA_TAMBAHAN
 } from "graphql/daftar_biaya_tambahan/mutations"
+import { GET_DAFTAR_BIAYA_TAMBAHAN } from "graphql/daftar_biaya_tambahan/queries"
 import {
 	CREATE_DAFTAR_INVOICE,
 	DELETE_DAFTAR_INVOICE,
@@ -22,6 +23,7 @@ import {
 import { GET_DAFTAR_INVOICE } from "graphql/daftar_invoice/queries"
 import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
+import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import moment from "moment"
 import Link from "next/link"
 import router from "next/router"
@@ -67,9 +69,16 @@ export default function Home() {
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	//GET DAFTAR ACCURATE
 	const { data: dataAccurate } = useQuery(GET_ACCURATE)
+	//GET DAFTAR BIAYA TAMBAHAN
+	const { data: dataDaftarBiayaTambahan } = useQuery(GET_DAFTAR_BIAYA_TAMBAHAN)
+	//GET DAFTAR TUJUAN
+	const { data: dataDaftarTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 
 	const [selectednoSJatas, setselectednoSJatas] = useState()
 	const [selectednoSJA, setselectednoSJA] = useState([])
+
+	//refetch data
+	const { refetch } = useQuery(GET_DAFTAR_INVOICE)
 
 	const { data: dataDaftarInvoice } = useQuery(GET_DAFTAR_INVOICE, {
 		onCompleted({ daftar_invoice }) {
@@ -92,15 +101,33 @@ export default function Home() {
 			const harga = dataInvoice[0]?.harga.split(`,`)
 
 			//split PPN by comma
-			const PPN = dataInvoice[0]?.ppn_biaya_tambahan.split(`,`)
+			const PPN = dataInvoice[0]?.jenis_biaya_tambahan.split(`,`)
 
 			const nama_barang_harga = nama_barang?.map((item, index) => {
 				return {
 					nama_barang: item,
 					harga: harga[index],
-					PPN: PPN[index]
+					tipe_ppn: PPN[index]
 				}
 			})
+
+			const jenis_biaya_tambahan_split = PPN?.map((item) => {
+				item.split(`,`)
+			})
+
+			//map jenis_biaya_tambahan_split to label and value to array of object
+			const jenis_biaya_tambahan_label_value = jenis_biaya_tambahan_split?.map(
+				(item) => {
+					//find from dataAccurate where kode_barang = item
+					const accurate = dataAccurate?.accurate?.find(
+						(item2) => item2.kode_barang == item
+					)
+					return {
+						label: accurate?.nama_barang,
+						value: accurate?.kode_barang
+					}
+				}
+			)
 
 			//reset data to newArray
 			const newArray = nama_barang_harga?.map((item) => {
@@ -110,12 +137,20 @@ export default function Home() {
 				}
 			})
 
+			console.log(`newArray`, newArray)
+
 			//for data invoice length set nomor_surat_jalanA[index] with nomor_surat_jalan from dataInvoice
 			const nomor_surat_jalan = []
 			for (let i = 0; i < dataInvoice.length; i++) {
 				nomor_surat_jalan.push(dataInvoice[i]?.nomor_surat_jalan)
 			}
-			reset({ newArray })
+
+			//if newArray.nama_barang is not "" || "undefined" then reset({ newArray }) else not
+			newArray?.map((item) => {
+				if (item.nama_barang !== `` || item.nama_barang !== `undefined`) {
+					reset({ newArray })
+				}
+			})
 
 			//convert nomor_surat_jalan to array of object and assign `nomor_surat_jalanA.${index}`
 			const test = nomor_surat_jalan?.map((item, index) => {
@@ -125,6 +160,8 @@ export default function Home() {
 			setselectednoSJA(nomor_surat_jalan)
 
 			reset({ test })
+
+			refetch()
 		}
 	})
 
@@ -135,8 +172,49 @@ export default function Home() {
 
 	//get all data from datdaftarinvoice  where nomor_invoice = nomor_invoice
 	const mapInvoice = dataDaftarInvoice?.daftar_invoice.filter(
-		(item) => item.nomor_invoice == filteredData[0]?.nomor_invoice
+		(item) => item.nomor_invoice == filteredData?.[0]?.nomor_invoice
 	)
+
+	//get jenis_biaya_tambahan from mapInvoice and split by ,
+	const jenis_biaya_tambahan = mapInvoice?.map(
+		(item) => item.jenis_biaya_tambahan
+	)
+
+	console.log(`jenis_biaya_tambahan`, jenis_biaya_tambahan)
+
+	//split jenis_biaya_tambahan by ,
+	const jenis_biaya_tambahan_split = jenis_biaya_tambahan?.map((item) => {
+		return item.split(`,`)
+	})
+
+	const taxNamesaless = jenis_biaya_tambahan_split?.map((item, index) => {
+		const taxName = dataAccurate?.accurate?.filter(
+			(tax) => tax.kode_barang === item[index]
+		)
+		return taxName?.[index]?.nama_barang
+	})
+
+	console.log(`taxNamesaless`, taxNamesaless)
+
+	//for jenis_biaya_length make  default option  from label and value
+	const defaultOption = []
+	for (let i = 0; i < jenis_biaya_tambahan_split?.length; i++) {
+		defaultOption.push({
+			//get label from jenis_biaya_tambahan_split.label
+			label: taxNamesaless,
+			value: taxNamesaless
+		})
+	}
+
+	console.log(`defaultOption`, defaultOption)
+
+	//get all data from databiayatambahan where nomor_invoice = nomor_invoice
+	const mapBiayaTambahan =
+		dataDaftarBiayaTambahan?.daftar_biaya_tambahan
+			.filter((item) => item.nomor_invoice == filteredData?.[0]?.nomor_invoice)
+			.map((item) => item.id_biaya_tambahan) || []
+
+	console.log(`mapBiayaTambahan`, mapBiayaTambahan?.[0])
 
 	//get accurate from dataDaftarInvoice where id = id
 	const accurate = filteredData?.[0]?.accurate
@@ -154,6 +232,8 @@ export default function Home() {
 	//get id all invoice where invoice = nomor_invoice
 	const idInvoice = mapInvoice?.map((item) => item.id)
 
+	//make function delete all id invoice
+
 	console.log(`id_inovice`, idInvoice)
 
 	const [deleteDaftar_invoice] = useMutation(DELETE_DAFTAR_INVOICE, {
@@ -163,6 +243,10 @@ export default function Home() {
 	const deleteData = (id) => {
 		deleteDaftar_invoice({ variables: { deleteDaftar_invoiceId: id } })
 		router.push(`/keuangan/daftar-invoice/`)
+	}
+
+	const deleteAllInvoice = () => {
+		idInvoice?.map((item) => deleteData(item))
 	}
 
 	//get dataDaftarInvoice where nomor_invoice = selectednoSJA
@@ -232,13 +316,135 @@ export default function Home() {
 
 	const nomor_ttb = getTTB()
 
+	//get nama barang and split by , from sales order where nomor ttb is selected
+	const namaBarang = dataDaftarSalesOrder?.daftar_sales_order
+		.filter((item) => nomor_ttb?.includes(item.nomor_ttb))
+		.map((item) => item.nama_barang)
+
+	//map using foreach and split by ,
+	const namaBarangSplit = []
+	namaBarang?.forEach((item) => {
+		namaBarangSplit.push(item.split(`,`))
+	})
+
+	//join nama barang split
+	const namaBarangJoin = namaBarangSplit?.map((item) => item.join(`,`))
+
+	const tipe_ppn = dataDaftarSalesOrder?.daftar_sales_order
+		.filter((item) => nomor_ttb?.includes(item.nomor_ttb))
+		.map((item) => item.tipe_ppn)
+
+	//map using foreach and split by ,
+	const tipe_ppnSplit = []
+	tipe_ppn?.forEach((item) => {
+		tipe_ppnSplit.push(item.split(`,`))
+	})
+
+	//get all harga_sebelum_ppn from sales order where nomor ttb is selected
+	const hargaSatuan = dataDaftarSalesOrder?.daftar_sales_order
+		.filter((item) => nomor_ttb?.includes(item.nomor_ttb))
+		.map((item) => item.harga_satuan)
+
+	//map using foreach and split by ,
+	const hargaSatuanSplit = []
+	hargaSatuan?.forEach((item) => {
+		hargaSatuanSplit.push(item.split(`,`))
+	})
+
+	//join
+	const hargaSatuanJoin = hargaSatuanSplit?.map((item) => item.join(`,`))
+
+	//for hargaSatuanSplit length merge with namaBarangSplit and tipe_ppnSplit
+	const mergeNamaBarang = []
+	for (let i = 0; i < hargaSatuanSplit.length; i++) {
+		mergeNamaBarang.push(
+			...namaBarangSplit[i].map((item, index) => ({
+				namaBarang: item,
+				tipe_ppn: tipe_ppnSplit[i][index],
+				hargaSatuan: hargaSatuanSplit[i][index]
+			}))
+		)
+	}
+
+	console.log(`mergeNamaBarang`, mergeNamaBarang)
+
+	//join tipe_ppn  from mergeNamaBarang
+	const tipe_ppnJoin = mergeNamaBarang?.map((item) => item.tipe_ppn)
+
+	//join with ,
+	const tipe_ppnJoinComma = tipe_ppnJoin?.join(`,`)
+
+	console.log(`tipe_ppnJoinComma`, tipe_ppnJoinComma)
+
+	//sum hargaSatuanSplit
+	const sumHargaSatuan = hargaSatuanSplit?.map((item) =>
+		item.reduce((a, b) => parseInt(a) + parseInt(b), 0)
+	)
+
+	console.log(`sumHargaSatuan: `, sumHargaSatuan)
+
+	const taxName = dataAccurate?.accurate?.map((tax) => {
+		return {
+			label: tax.nama_barang,
+			value: tax.kode_barang
+		}
+	})
+
+	//for tipe_Ppns length find taxName in accurate where tipe_ppns === kode_barang
+	const taxNames = []
+	for (let i = 0; i < tipe_ppnSplit.length; i++) {
+		taxNames.push(
+			...tipe_ppnSplit[i].map((item) =>
+				dataAccurate?.accurate.find((tax) => tax.kode_barang === item)
+			)
+		)
+	}
+
+	console.log(`taxNamesis: `, taxNames)
+
+	const tipe_Ppns = filteredData?.[0]?.ppn_biaya_tambahan.split(`,`)
+
+	console.log(`tipe_Ppns: `, tipe_Ppns)
+
+	//for tipe_Ppns length find taxName in accurate where tipe_ppns === kode_barang
+	const taxNamesales = tipe_Ppns?.map((item) => {
+		const taxName = dataAccurate?.accurate?.filter(
+			(tax) => tax.kode_barang === item
+		)
+		return {
+			label: taxName?.[0]?.nama_barang,
+			value: taxName?.[0]?.kode_barang
+		}
+	})
+
+	console.log(`taxNames: `, taxNamesales)
+
+	//reset data to  formRepeater
+	const mapOption = taxNamesales?.map((taxNamesales) => {
+		return {
+			label: taxNamesales.label,
+			value: taxNamesales.value
+		}
+	})
+
+	console.log(`mapOption: `, mapOption)
+
 	//sum all harga_sebelum_ppn sales order where nomor_sales = nomor_ttb
 	const sumHargaSebelumPpn = () => {
 		const sum = dataDaftarSalesOrder?.daftar_sales_order
 			.filter((item) => nomor_ttb?.includes(item.nomor_ttb))
-			.reduce((a, b) => a + b.total_tagihan, 0)
+			.reduce((a, b) => a + b.harga_sesudah_ppn, 0)
 		return sum
 	}
+
+	const sumHargaTotal = () => {
+		const sum = dataDaftarSalesOrder?.daftar_sales_order
+			.filter((item) => nomor_ttb?.includes(item.nomor_ttb))
+			.reduce((a, b) => a + b.harga_total, 0)
+		return sum
+	}
+
+	const sum_total_ppn = sumHargaTotal()
 
 	const sum_bersih = sumHargaSebelumPpn()
 
@@ -270,6 +476,12 @@ export default function Home() {
 	//watch kota_tujuanA[0]
 	const kota_tujuan = watch(`kota_tujuanA[0]`)
 
+	const nama_tujuan = dataDaftarTujuan?.daftar_tujuan
+		.filter((item) => {
+			return item.kode_tujuan === kota_tujuan
+		})
+		.map((item) => item.nama_tujuan)
+
 	const filteredSuratJalan3 = filteredSuratJalan2?.filter((item) => {
 		if (kota_tujuan) {
 			return item.kota_tujuan === kota_tujuan
@@ -297,7 +509,7 @@ export default function Home() {
 		//get total tagihan from sales order where nomor sales order = allSalesOrder
 		const totalTagihan = dataDaftarSalesOrder?.daftar_sales_order
 			?.filter((item) => allSalesOrder.includes(item.nomor_sales_order))
-			.map((item) => item.harga_sebelum_ppn)
+			.map((item) => item.total_harga_ttb)
 
 		//get pengirim, penerima, kota tujuan, total volume where ttb_number = allTTB
 		const pengirim = dataDaftarTTB?.daftar_ttb
@@ -384,17 +596,31 @@ export default function Home() {
 	//harga from newArray if 0 set array 0
 	const newArray1 = watch(`newArray`)
 
-	const harga_awal = newArray1?.map((item) => {
-		if (item.Harga === 0) {
-			return 0
-		} else {
-			if (String(item.PPN) === `true`) {
-				return parseInt(item.Harga)
-			} else {
-				return item.Harga
+	//if newArray1[i].nama_barang is not empty  for newArray1 length if newArray1.tipe_ppn undefined assign mapoption.value
+	for (let i = 0; i < newArray1?.length; i++) {
+		if (
+			newArray1[i].nama_barang !== `` ||
+			newArray1[i].nama_barang !== `undefined`
+		) {
+			if (newArray1[i].tipe_ppn === undefined) {
+				newArray1[i].tipe_ppn = mapOption?.value
 			}
 		}
+	}
+
+	console.log(`newArray1`, newArray1)
+
+	const harga_awal = newArray1?.map((item) => {
+		return item.Harga
 	})
+
+	const ppn_awal = newArray1?.map((item) => {
+		return item.ppn
+	})
+
+	console.log(`ppn_awal`, ppn_awal)
+
+	console.log(`harga_awal`, harga_awal)
 
 	const subTotal_awal = harga_awal?.reduce((a, b) => {
 		return parseInt(a) + parseInt(b)
@@ -408,26 +634,47 @@ export default function Home() {
 		if (item.Harga === 0) {
 			return 0
 		} else {
-			if (String(item.PPN) === `true`) {
+			if (
+				String(item.tipe_ppn) !== `null` ||
+				String(item.tipe_ppn) !== `` ||
+				String(item.tipe_ppn) !== `undefined` ||
+				String(item.tipe_ppn) !== undefined
+			) {
+				const taxName = dataAccurate?.accurate?.find((tax) => {
+					return tax.kode_barang === item.tipe_ppn
+				})
 				return (
-					parseInt(item.Harga) - parseInt(item.Harga) * (parseInt(ppn) / 100)
+					parseInt(item.Harga) +
+					(parseInt(item.Harga) *
+						Number(taxName?.taxName?.replace(/[^0-9]/g, ``))) /
+						100
 				)
 			} else {
-				return item.Harga
+				return parseInt(item.Harga)
 			}
 		}
 	})
+
+	console.log(`harga`, harga)
 
 	const subTotal2 = harga?.reduce((a, b) => {
 		return parseInt(a) + parseInt(b)
 	}, 0)
 
+	console.log(`subTotal2`, subTotal2)
+
 	//if subtotal 2 nan set 0
-	const subTotal3 = isNaN(subTotal2) ? 0 : subTotal2
+	const subTotal3 = isNaN(subTotal2) ? parseInt(harga_awal) : subTotal2
 
-	const subTotal = subTotal1 + subTotal4
+	console.log(`subTotal3`, subTotal3)
 
-	const subAfterPPN = sum_bersih + subTotal3
+	const subTotal = subTotal1 + subTotal4 + Number(sumHargaSatuan)
+
+	console.log(`subTotal`, subTotal)
+
+	const subAfterPPN = sum_bersih + subTotal3 + sum_total_ppn
+
+	console.log(`subAfterPPN`, subAfterPPN)
 
 	const subPPN = subAfterPPN - subTotal
 
@@ -454,24 +701,28 @@ export default function Home() {
 		const namaBarang = formData.newArray.map((item) => item.nama_barang)
 
 		//get ppn from newArray formData
-		const ppn = formData.newArray.map((item) => item.PPN)
+		const ppn = formData.newArray.map((item) => item.tipe_ppn)
 
 		//join nama barang into 1 string with ,
 		const namaBarangString = namaBarang.join(`,`)
 
 		//join harga into 1 string with ,
-		const hargaString = harga.join(`,`)
+		const hargaString = harga_awal.join(`,`)
 
 		//join ppn into 1 string with ,
 		const ppnString = ppn.join(`,`)
 		console.log(`tanggal`, formData.tanggal_invoice)
+
+		const namaBarangJoins = namaBarangString + `,` + namaBarangJoin
+		const hargaJoins = hargaString + `,` + hargaSatuanJoin
+		const ppnJoins = ppnString + `,` + tipe_ppnJoinComma
 
 		const dataInvoice = nomorSuratJalan?.map((item, index) => {
 			return {
 				//get id from dataDaftarInvoice where nomor_surat_jalan = selectednoSJA
 				id: parseInt(idInvoice),
 				nomor_surat_jalan: item,
-				nomor_invoice: filteredData?.[0]?.nomor_invoice,
+				nomor_invoice: formData.nomor_invoice,
 				//find first nomor ttb from nomor surat jalan where nomor surat jalan = item
 				nomor_ttb: data?.daftar_surat_jalan
 					?.filter((item2) => item2.nomor_surat_jalan === item)
@@ -534,19 +785,19 @@ export default function Home() {
 				harga_biaya_tambahan: String(subTotal2),
 				keterangan: formData.keterangan,
 				jenis_biaya_tambahan: String(formData.jenis_biaya_tambahan),
-				id_biaya_tambahan: String(
-					dataAccurate?.accurate
-						?.filter(
-							(item2) => item2.kode_barang === formData.jenis_biaya_tambahan
-						)
-						.map((item2) => item2.id)[0]
-				),
-				id_biaya_utama: String(idAccurate?.[0]),
+				id_biaya_tambahan: String(mapBiayaTambahan?.[0]),
+				id_biaya_utama: String(filteredData?.[0]?.id_biaya_utama),
 				total_tagihan: String(subAfterPPN),
 				accurate: dataDaftarInvoice?.daftar_invoice?.[0]?.accurate,
 				pengirim: dataDaftarInvoice?.daftar_invoice?.[0]?.pengirim,
 				subtotal: String(subTotal),
-				subtotal_tambahan: String(subTotal4)
+				subtotal_tambahan: String(subTotal4),
+				biaya_tambahan_sales: String(hargaSatuanJoin),
+				itemNo_sales_order: String(tipe_ppnJoinComma),
+				biaya_tambahan_join: String(hargaJoins),
+				itemNo_join: String(ppnJoins),
+				nama_barang_join: String(namaBarangJoins),
+				kota_tujuan: String(nama_tujuan)
 			}
 		})
 
@@ -592,26 +843,39 @@ export default function Home() {
 			(item) => item.nomor_surat_jalan !== undefined
 		)
 
-		//get only pengirim, nomor_invoice, jenis_biaya_tambahan,id_biaya_tambahan and harga_biaya_tambahan
-		const dataBiaya_tambahan = dataInvoice_final.map((item) => {
-			return {
-				id: item.id,
-				pengirim: item.pengirim,
-				nomor_invoice: item.nomor_invoice,
-				jenis_biaya_tambahan: item.jenis_biaya_tambahan,
-				id_biaya_tambahan: item.id_biaya_tambahan,
-				harga_biaya_tambahan: item.subtotal_tambahan
-			}
+		console.log(`dataInvoice_final`, dataInvoice_final)
+
+		// //get only pengirim, nomor_invoice, jenis_biaya_tambahan,id_biaya_tambahan and harga_biaya_tambahan
+		// const dataBiaya_tambahan = dataInvoice_final.map((item) => {
+		// 	return {
+		// 		id: item.id,
+		// 		pengirim: item.pengirim,
+		// 		nomor_invoice: item.nomor_invoice,
+		// 		jenis_biaya_tambahan: item.jenis_biaya_tambahan,
+		// 		id_biaya_tambahan: mapBiayaTambahan?.[0],
+		// 		harga_biaya_tambahan: item.subtotal_tambahan
+		// 	}
+		// })
+		// updateDataInvoice(dataInvoice_final)
+
+		//fetch delete invoice from pages/api delete dataInvoice_final.id
+		const deleteInvoice = await fetch(`/api/delete_invoice`, {
+			method: `DELETE`,
+			headers: {
+				"Content-Type": `application/json`
+			},
+			body: JSON.stringify({
+				id: dataInvoice_final.map((item) => item.id)
+			})
 		})
 
-		console.log(`data biaya`, dataBiaya_tambahan)
-		if (check1 === `undefined`) {
-			console.log(`okay doki`)
-			createDataBiaya_tambahan(dataBiaya_tambahan)
-		} else {
-			console.log(`not okay doki`)
-			updateDataBiaya_tambahan(dataBiaya_tambahan)
-		}
+		const deleteInvoiceJson = await deleteInvoice.json()
+		console.log(`deleteInvoiceJson`, deleteInvoiceJson)
+
+		console.log(
+			`dataInvoicefinasltesting`,
+			dataInvoice_final.map((item) => item.id)
+		)
 
 		updateDataInvoice(dataInvoice_final)
 
@@ -624,6 +888,8 @@ export default function Home() {
 				message: `Data berhasil dibuat`
 			})
 		}
+		//router push and refetch
+		router.push(`/keuangan/daftar-invoice`)
 	}
 	return (
 		<AdminPage
@@ -641,6 +907,27 @@ export default function Home() {
 					auth="write:settings-users"
 					yes={
 						<ul className="actions">
+							<li className="action">
+								<Popconfirm
+									title="Are you sure delete this task?"
+									className="button is-primary"
+									onConfirm={() => {
+										deleteAllInvoice()
+									}}
+								>
+									<Button
+										type="primary"
+										style={{
+											backgroundColor: `white`,
+											borderColor: `black`,
+											color: `black`,
+											marginLeft: `1%`
+										}}
+									>
+										Delete
+									</Button>
+								</Popconfirm>
+							</li>
 							<li className="action">
 								<button
 									className="button button-small button-white button-icon"
@@ -695,6 +982,19 @@ export default function Home() {
 						onSubmit={handleSubmit(onSubmit)}
 						id="formInvoice"
 					>
+						{` `}
+						<div>
+							<label style={{ fontSize: `20px`, fontWeight: `bolder` }}>
+								Nomor Invoice
+							</label>
+							<br></br>
+							<input
+								type="text"
+								{...register(`nomor_invoice`)}
+								style={{ width: `100%` }}
+								defaultValue={filteredData?.[0]?.nomor_invoice}
+							/>
+						</div>
 						<br></br>
 						<label style={{ fontSize: `20px`, fontWeight: `bolder` }}>
 							Daftar Surat Jalan
@@ -711,7 +1011,7 @@ export default function Home() {
 											style={{ display: `inline-block`, width: `28%` }}
 											className="col"
 										>
-											<label style={{ fontSize: `10px`, fontWeight: `bolder` }}>
+											<label style={{ fontSize: `12px`, fontWeight: `bolder` }}>
 												Nomor Surat Jalan
 											</label>
 											<select
@@ -750,7 +1050,7 @@ export default function Home() {
 											}}
 											className="col"
 										>
-											<label style={{ fontSize: `10px`, fontWeight: `bolder` }}>
+											<label style={{ fontSize: `12px`, fontWeight: `bolder` }}>
 												Pengirim
 											</label>
 											<input
@@ -770,7 +1070,7 @@ export default function Home() {
 											}}
 											className="field"
 										>
-											<label style={{ fontSize: `10px`, fontWeight: `bolder` }}>
+											<label style={{ fontSize: `12px`, fontWeight: `bolder` }}>
 												Kota Tujuan
 											</label>
 											<div className="control">
@@ -792,7 +1092,7 @@ export default function Home() {
 											}}
 											className="field"
 										>
-											<label style={{ fontSize: `10px`, fontWeight: `bolder` }}>
+											<label style={{ fontSize: `12px`, fontWeight: `bolder` }}>
 												Total Volume
 											</label>
 											<div className="control">
@@ -814,7 +1114,7 @@ export default function Home() {
 											}}
 											className="field"
 										>
-											<label style={{ fontSize: `10px`, fontWeight: `bolder` }}>
+											<label style={{ fontSize: `12px`, fontWeight: `bolder` }}>
 												Harga
 											</label>
 											<div className="control">
@@ -853,8 +1153,136 @@ export default function Home() {
 								</div>
 							)
 						})}
+						{
+							//if harga is not empty show this if not hidden
+							harga?.length > 0 && (
+								<div className="field" style={{ marginTop: `1%` }}>
+									<label style={{ fontWeight: `bolder` }} className="label">
+										Nama Barang (Accurate)
+									</label>
+									<select
+										{...register(`jenis_biaya_tambahan`)}
+										style={{ width: `100%` }}
+										required
+									>
+										<option value="0">Pilih Biaya Tambahan</option>
+										{
+											//from nama_barang
+											dataAccurate?.accurate?.map((item, index) => (
+												<option key={index} value={item.kode_barang}>
+													{` `}
+													{item.nama_barang}
+													{` `}
+												</option>
+											))
+										}
+									</select>
+								</div>
+							)
+						}
+						<div style={{ marginTop: `2%` }}>
+							<label
+								style={{ fontWeight: `bold`, paddingLeft: `5px` }}
+								className="label"
+							>
+								Biaya Tambahan Sales Order
+							</label>
+						</div>
+						{
+							//usefieldArray mergeNamaBarang
+							mergeNamaBarang.map((item, index) => {
+								return (
+									<div key={index}>
+										<div
+											style={{
+												display: `inline-block`,
+												width: `25%`
+											}}
+											className="field"
+										>
+											<label
+												style={{
+													marginLeft: `5px`,
+													fontSize: `12px`,
+													fontWeight: `bolder`
+												}}
+											>
+												Nama Barang
+											</label>
+											<div className="control">
+												<input
+													style={{ width: `100%`, marginLeft: `5px` }}
+													className="input"
+													type="text"
+													placeholder="Nama Barang"
+													defaultValue={item.namaBarang}
+													{...register(`namaBarang.${index}`)}
+													readOnly
+												/>
+											</div>
+										</div>
+										<div
+											style={{
+												display: `inline-block`,
+												marginLeft: `15px`,
+												width: `20%`
+											}}
+											className="field"
+										>
+											<label
+												style={{
+													fontSize: `12px`,
+													fontWeight: `bolder`
+												}}
+											>
+												Harga
+											</label>
+											<div className="control">
+												<input
+													style={{ width: `100%` }}
+													className="input"
+													type="text"
+													placeholder="Harga"
+													defaultValue={item.hargaSatuan}
+													{...register(`harga.${index}`)}
+													readOnly
+												/>
+											</div>
+										</div>
+										<div
+											style={{
+												display: `inline-block`,
+												marginLeft: `15px`,
+												width: `25%`
+											}}
+											className="field"
+										>
+											<label style={{ fontSize: `12px`, fontWeight: `bolder` }}>
+												PPN
+											</label>
+											<div className="control">
+												<input
+													style={{ width: `100%` }}
+													className="input"
+													type="text"
+													placeholder="Tipe PPN"
+													defaultValue={
+														//find from dataAccurate where item.tipe_ppn === kodeBarang
+														dataAccurate?.accurate.find(
+															(data) => data.kode_barang === item.tipe_ppn
+														).nama_barang
+													}
+													{...register(`tipePpn.${index}`)}
+													readOnly
+												/>
+											</div>
+										</div>
+									</div>
+								)
+							})
+						}
 						<div
-							style={{ width: `50%`, marginTop: `20px` }}
+							style={{ width: `76%`, marginTop: `20px` }}
 							className="content"
 						>
 							<label
@@ -868,12 +1296,43 @@ export default function Home() {
 								control={control}
 								register={register}
 								name="newArray"
-								inputNames={[`nama_barang`, `Harga`]}
-								inputLabels={[`Nama Barang`, `Harga`]}
-								inputTypes={[`text`, `text`]}
+								inputNames={[`nama_barang`, `Harga`, `tipe_ppn`]}
+								inputLabels={[`Nama Barang`, `Harga`, `PPN`]}
+								inputTypes={[`text`, `text`, `select`]}
+								inputProps={[
+									{},
+									{},
+									{
+										options: taxName,
+										placeholder: `Pilih PPN`,
+										defaultValue: mapOption
+									}
+								]}
 							/>
 						</div>
 						<div style={{ width: `100%` }}>
+							<div
+								style={{
+									alignItems: `right`,
+									display: `flex`,
+									justifyContent: `flex-end`
+								}}
+							>
+								<text style={{ fontSize: `12px`, fontWeight: `bold` }}>
+									Sub Total {` : `} Rp.{subTotal.toLocaleString(`id-ID`)}
+								</text>
+							</div>
+							<div
+								style={{
+									alignItems: `right`,
+									display: `flex`,
+									justifyContent: `flex-end`
+								}}
+							>
+								<text style={{ fontSize: `12px`, fontWeight: `bold` }}>
+									PPN {` : `} Rp.{subPPN.toLocaleString(`id-ID`)}
+								</text>
+							</div>
 							<div
 								style={{
 									alignItems: `right`,
@@ -936,33 +1395,6 @@ export default function Home() {
 								/>
 							</div>
 						</div>
-						{
-							//if harga is not empty show this if not hidden
-							harga?.length > 0 && (
-								<div className="field" style={{ marginTop: `1%` }}>
-									<label style={{ fontWeight: `bolder` }} className="label">
-										Jenis Biaya Tambahan
-									</label>
-									<select
-										{...register(`jenis_biaya_tambahan`)}
-										style={{ width: `100%` }}
-										required
-									>
-										<option value="0">Pilih Biaya Tambahan</option>
-										{
-											//from nama_barang
-											dataAccurate?.accurate?.map((item, index) => (
-												<option key={index} value={item.kode_barang}>
-													{` `}
-													{item.nama_barang}
-													{` `}
-												</option>
-											))
-										}
-									</select>
-								</div>
-							)
-						}
 						<div className="field" style={{ marginTop: `1%` }}>
 							<label style={{ fontWeight: `bolder` }} className="label">
 								Keterangan

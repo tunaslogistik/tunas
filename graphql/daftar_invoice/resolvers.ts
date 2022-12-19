@@ -9,204 +9,51 @@ const queries = {
 
 const mutations = {
 	createDaftar_invoice: async (_parent, args, context: Context) => {
-		console.log(args.input[0].jenis_biaya_tambahan)
-		if (
-			args.input[0].jenis_biaya_tambahan === null ||
-			args.input[0].jenis_biaya_tambahan === `undefined` ||
-			args.input[0].jenis_biaya_tambahan === ``
-		) {
-			try {
-				const url = `https://public.accurate.id/accurate/api/sales-invoice/save.do?Scope: sales_invoice_save`
-				console.log(args.input.jenis_biaya_tambahan)
-				const data = {
-					Scope: `sales_invoice_save`,
-					//get only 1 pengirim from args.input
-					customerNo: args.input[0].pengirim,
-					Number: args.input[0].nomor_invoice,
-					detailItem: [
-						{
-							itemNo: args.input[0].accurate,
-							unitPrice: args.input[0].harga_surat_jalan
-						}
-					],
-					salesQuotation: {
-						number: args.input[0].nomor_ttb
-					},
-					deliveryOrder: {
-						number: args.input[0].nomor_surat_jalan
-					},
-					transDate: moment(args.input[0].tanggal_invoice).format(`DD/MM/YYYY`),
-					branchName: `jakarta`,
-					taxAmount: args.input[0].tax,
-					description: args.input[0].keterangan
-				}
-				// make POST FUNCTION  axios
-				const axios = require(`axios`)
-				const response = await axios.post(url, data, {
-					headers: {
-						Authorization: `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`,
-						"X-Session-ID": `22f7af2e-1016-4c26-911f-91dd48b69c3b`
-					}
-				})
-				console.log(response.data)
-				console.log(data)
-
-				const idInvoice = response.data.r.id
-
-				args.input.id = idInvoice
-				const daftar_invoice = await context.prisma.daftar_invoice.createMany({
-					data: args.input.map((item) => ({
-						id: idInvoice,
-						nomor_invoice: item.nomor_invoice,
-						nomor_surat_jalan: item.nomor_surat_jalan,
-						nomor_ttb: item.nomor_ttb,
-						vendor_pelayanan: item.vendor_pelayanan,
-						tanggal_invoice: item.tanggal_invoice,
-						koli: item.koli,
-						volume: item.volume,
-						total_koli: item.total_koli,
-						harga_surat_jalan: item.harga_surat_jalan,
-						total_volume: item.total_volume,
-						tanggal_keberangkatan: item.tanggal_keberangkatan,
-						nama_kapal: item.nama_kapal,
-						nomor_container: item.nomor_container,
-						nomor_seal: item.nomor_seal,
-						nama_barang: item.nama_barang,
-						harga: item.harga,
-						harga_biaya_tambahan: item.harga_biaya_tambahan,
-						ppn_biaya_tambahan: item.ppn_biaya_tambahan,
-						keterangan: item.keterangan,
-						accurate: item.accurate,
-						pengirim: item.pengirim,
-						total_tagihan: item.total_tagihan,
-						tax: item.tax,
-						subtotal: item.subtotal,
-						jenis_biaya_tambahan: item.jenis_biaya_tambahan,
-						id_biaya_tambahan: item.id_biaya_tambahan,
-						id_biaya_utama: item.id_biaya_utama,
-						subtotal_tambahan: item.subtotal_tambahan
-					})),
-
-					//data id = response.data.r.id
-					skipDuplicates: true
-				})
-				console.log(`daftar_invoice`, daftar_invoice)
-				return {
-					code: `200`,
-					success: true,
-					message: `Successfully create new user`,
-					daftar_invoice
-				}
-			} catch (error) {
-				console.log(error)
-				throw new Error(error)
-			}
-		} else {
-			try {
-				const url = `https://public.accurate.id/accurate/api/sales-invoice/save.do?Scope: sales_invoice_save`
-				console.log(args.input.jenis_biaya_tambahan)
-				const data = {
-					Scope: `sales_invoice_save`,
-					//get only 1 pengirim from args.input
-					customerNo: args.input[0].pengirim,
-					Number: args.input[0].nomor_invoice,
-					detailItem: [
-						{
-							itemNo: args.input[0].accurate,
-							unitPrice: args.input[0].harga_surat_jalan
-						},
-						{
-							itemNo: args.input[0].jenis_biaya_tambahan,
-							unitPrice: args.input[0].harga_biaya_tambahan
-						}
-					],
-					salesQuotation: {
-						number: args.input[0].nomor_ttb
-					},
-					deliveryOrder: {
-						number: args.input[0].nomor_surat_jalan
-					},
-					transDate: moment(args.input[0].tanggal_invoice).format(`DD/MM/YYYY`),
-					branchName: `jakarta`,
-					taxAmount: args.input[0].tax,
-					description: args.input[0].keterangan
-				}
-				// make POST FUNCTION  axios
-				const axios = require(`axios`)
-				const response = await axios.post(url, data, {
-					headers: {
-						Authorization: `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`,
-						"X-Session-ID": `22f7af2e-1016-4c26-911f-91dd48b69c3b`
-					}
-				})
-				console.log(response.data)
-				console.log(data)
-
-				const idInvoice = response.data.r.id
-
-				args.input.id = idInvoice
-				const daftar_invoice = await context.prisma.daftar_invoice.createMany({
-					data: args.input.map((item) => ({
-						id: idInvoice,
-						nomor_invoice: item.nomor_invoice,
-						nomor_surat_jalan: item.nomor_surat_jalan,
-						nomor_ttb: item.nomor_ttb,
-						vendor_pelayanan: item.vendor_pelayanan,
-						tanggal_invoice: item.tanggal_invoice,
-						koli: item.koli,
-						volume: item.volume,
-						total_koli: item.total_koli,
-						harga_surat_jalan: item.harga_surat_jalan,
-						total_volume: item.total_volume,
-						tanggal_keberangkatan: item.tanggal_keberangkatan,
-						nama_kapal: item.nama_kapal,
-						nomor_container: item.nomor_container,
-						nomor_seal: item.nomor_seal,
-						nama_barang: item.nama_barang,
-						harga: item.harga,
-						harga_biaya_tambahan: item.harga_biaya_tambahan,
-						ppn_biaya_tambahan: item.ppn_biaya_tambahan,
-						keterangan: item.keterangan,
-						accurate: item.accurate,
-						pengirim: item.pengirim,
-						total_tagihan: item.total_tagihan,
-						tax: item.tax,
-						subtotal: item.subtotal,
-						jenis_biaya_tambahan: item.jenis_biaya_tambahan,
-						id_biaya_tambahan: item.id_biaya_tambahan,
-						id_biaya_utama: item.id_biaya_utama,
-						subtotal_tambahan: item.subtotal_tambahan
-					})),
-
-					//data id = response.data.r.id
-					skipDuplicates: true
-				})
-				console.log(`daftar_invoice`, daftar_invoice)
-				return {
-					code: `200`,
-					success: true,
-					message: `Successfully create new user`,
-					daftar_invoice
-				}
-			} catch (error) {
-				console.log(error)
-				throw new Error(error)
-			}
-		}
-	},
-	updateDaftar_invoice: async (_parent, args, context: Context) => {
 		try {
 			const url = `https://public.accurate.id/accurate/api/sales-invoice/save.do?Scope: sales_invoice_save`
 			const data = {
-				id: args.input[0].id,
+				Scope: `sales_invoice_save`,
+				customerNo: args.input[0].pengirim,
+				Number: args.input[0].nomor_invoice,
 				detailItem: [
 					{
-						id: args.input[0].id_biaya_utama,
-						unitPrice: args.input[0].harga_surat_jalan
+						itemNo: args.input[0].accurate,
+						unitPrice: args.input[0].harga_surat_jalan,
+						departmentName: args.input[0].kota_tujuan
 					}
 				],
-				branchName: `jakarta`
+				salesQuotation: {
+					number: args.input[0].nomor_ttb
+				},
+				deliveryOrder: {
+					number: args.input[0].nomor_surat_jalan
+				},
+				transDate: moment(args.input[0].tanggal_invoice).format(`DD/MM/YYYY`),
+				branchName: `jakarta`,
+				taxAmount: args.input[0].tax,
+				description: args.input[0].keterangan
 			}
+
+			//split args.input.jenis_biaya_tambahan by ,
+			const jenis_biaya_tambahan = args.input[0].itemNo_join.split(`,`)
+
+			//split harga by ,
+			const harga = args.input[0].biaya_tambahan_join.split(`,`)
+
+			const departmentName = args.input[0].kota_tujuan
+
+			//for jenis_biaya_tambahan.length push to data.detailItem
+			for (let i = 0; i < jenis_biaya_tambahan.length; i++) {
+				//if jenis_biaya_tambahan[i] !== "" push to data.detailItem
+				if (jenis_biaya_tambahan[i] !== ``) {
+					data.detailItem.push({
+						itemNo: jenis_biaya_tambahan[i],
+						unitPrice: harga[i],
+						departmentName
+					})
+				}
+			}
+
 			// make POST FUNCTION  axios
 			const axios = require(`axios`)
 			const response = await axios.post(url, data, {
@@ -215,6 +62,217 @@ const mutations = {
 					"X-Session-ID": `22f7af2e-1016-4c26-911f-91dd48b69c3b`
 				}
 			})
+
+			console.log(`data`, data)
+
+			console.log(response.data)
+
+			const idInvoice = response.data.r.id
+
+			args.input.id = idInvoice
+			const daftar_invoice = await context.prisma.daftar_invoice.createMany({
+				data: args.input.map((item) => ({
+					id: idInvoice,
+					nomor_invoice: item.nomor_invoice,
+					nomor_surat_jalan: item.nomor_surat_jalan,
+					nomor_ttb: item.nomor_ttb,
+					vendor_pelayanan: item.vendor_pelayanan,
+					tanggal_invoice: item.tanggal_invoice,
+					koli: item.koli,
+					volume: item.volume,
+					total_koli: item.total_koli,
+					harga_surat_jalan: item.harga_surat_jalan,
+					total_volume: item.total_volume,
+					tanggal_keberangkatan: item.tanggal_keberangkatan,
+					nama_kapal: item.nama_kapal,
+					nomor_container: item.nomor_container,
+					nomor_seal: item.nomor_seal,
+					nama_barang: item.nama_barang,
+					harga: item.harga,
+					harga_biaya_tambahan: item.harga_biaya_tambahan,
+					ppn_biaya_tambahan: item.ppn_biaya_tambahan,
+					keterangan: item.keterangan,
+					accurate: item.accurate,
+					pengirim: item.pengirim,
+					total_tagihan: item.total_tagihan,
+					tax: item.tax,
+					subtotal: item.subtotal,
+					jenis_biaya_tambahan: item.jenis_biaya_tambahan,
+					id_biaya_tambahan: item.id_biaya_tambahan,
+					id_biaya_utama: String(response.data.r.detailItem[0].id),
+					subtotal_tambahan: item.subtotal_tambahan,
+					biaya_tambahan_sales: item.biaya_tambahan_sales,
+					itemNo_sales_order: item.itemNo_sales_order,
+					biaya_tambahan_join: item.biaya_tambahan_join,
+					itemNo_join: item.itemNo_join,
+					nama_barang_join: item.nama_barang_join,
+					kota_tujuan: item.kota_tujuan
+				})),
+
+				//data id = response.data.r.id
+				skipDuplicates: true
+			})
+			return {
+				code: `200`,
+				success: true,
+				message: `Successfully create new user`,
+				daftar_invoice
+			}
+		} catch (error) {
+			console.log(error)
+			throw new Error(error)
+		}
+		// else {
+		// 	try {
+		// 		const url = `https://public.accurate.id/accurate/api/sales-invoice/save.do?Scope: sales_invoice_save`
+		// 		const data = {
+		// 			Scope: `sales_invoice_save`,
+		// 			//get only 1 pengirim from args.input
+		// 			customerNo: args.input[0].pengirim,
+		// 			Number: args.input[0].nomor_invoice,
+		// 			detailItem: [
+		// 				{
+		// 					itemNo: args.input[0].accurate,
+		// 					unitPrice: args.input[0].harga_surat_jalan
+		// 				},
+		// 				{
+		// 					itemNo: args.input[0].jenis_biaya_tambahan,
+		// 					unitPrice: args.input[0].harga_biaya_tambahan
+		// 				}
+		// 			],
+		// 			salesQuotation: {
+		// 				number: args.input[0].nomor_ttb
+		// 			},
+		// 			deliveryOrder: {
+		// 				number: args.input[0].nomor_surat_jalan
+		// 			},
+		// 			transDate: moment(args.input[0].tanggal_invoice).format(`DD/MM/YYYY`),
+		// 			branchName: `jakarta`,
+		// 			taxAmount: args.input[0].tax,
+		// 			description: args.input[0].keterangan
+		// 		}
+		// 		// make POST FUNCTION  axios
+		// 		const axios = require(`axios`)
+		// 		const response = await axios.post(url, data, {
+		// 			headers: {
+		// 				Authorization: `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`,
+		// 				"X-Session-ID": `22f7af2e-1016-4c26-911f-91dd48b69c3b`
+		// 			}
+		// 		})
+
+		// 		console.log(response.data)
+		// 		const idInvoice = response.data.r.id
+
+		// 		args.input.id = idInvoice
+
+		// 		console.log(`id invoice`, idInvoice)
+		// 		const daftar_invoice = await context.prisma.daftar_invoice.createMany({
+		// 			data: args.input.map((item) => ({
+		// 				id: idInvoice,
+		// 				nomor_invoice: item.nomor_invoice,
+		// 				nomor_surat_jalan: item.nomor_surat_jalan,
+		// 				nomor_ttb: item.nomor_ttb,
+		// 				vendor_pelayanan: item.vendor_pelayanan,
+		// 				tanggal_invoice: item.tanggal_invoice,
+		// 				koli: item.koli,
+		// 				volume: item.volume,
+		// 				total_koli: item.total_koli,
+		// 				harga_surat_jalan: item.harga_surat_jalan,
+		// 				total_volume: item.total_volume,
+		// 				tanggal_keberangkatan: item.tanggal_keberangkatan,
+		// 				nama_kapal: item.nama_kapal,
+		// 				nomor_container: item.nomor_container,
+		// 				nomor_seal: item.nomor_seal,
+		// 				nama_barang: item.nama_barang,
+		// 				harga: item.harga,
+		// 				harga_biaya_tambahan: item.harga_biaya_tambahan,
+		// 				ppn_biaya_tambahan: item.ppn_biaya_tambahan,
+		// 				keterangan: item.keterangan,
+		// 				accurate: item.accurate,
+		// 				pengirim: item.pengirim,
+		// 				total_tagihan: item.total_tagihan,
+		// 				tax: item.tax,
+		// 				subtotal: item.subtotal,
+		// 				jenis_biaya_tambahan: item.jenis_biaya_tambahan,
+		// 				id_biaya_tambahan: item.id_biaya_tambahan,
+		// 				id_biaya_utama: String(response.data.r.detailItem[0].id),
+		// 				subtotal_tambahan: item.subtotal_tambahan
+		// 			})),
+
+		// 			//data id = response.data.r.id
+		// 			skipDuplicates: true
+		// 		})
+		// 		return {
+		// 			code: `200`,
+		// 			success: true,
+		// 			message: `Successfully create new user`,
+		// 			daftar_invoice
+		// 		}
+		// 	} catch (error) {
+		// 		console.log(error)
+		// 		throw new Error(error)
+		// 	}
+		// }
+	},
+	updateDaftar_invoice: async (_parent, args, context: Context) => {
+		try {
+			const url = `https://public.accurate.id/accurate/api/sales-invoice/save.do?Scope: sales_invoice_save`
+			const data = {
+				Scope: `sales_invoice_save`,
+				customerNo: args.input[0].pengirim,
+				Number: args.input[0].nomor_invoice,
+				detailItem: [
+					{
+						itemNo: args.input[0].accurate,
+						unitPrice: args.input[0].harga_surat_jalan,
+						departmentName: args.input[0].kota_tujuan
+					}
+				],
+				salesQuotation: {
+					number: args.input[0].nomor_ttb
+				},
+				deliveryOrder: {
+					number: args.input[0].nomor_surat_jalan
+				},
+				transDate: moment(args.input[0].tanggal_invoice).format(`DD/MM/YYYY`),
+				branchName: `jakarta`,
+				taxAmount: args.input[0].tax,
+				description: args.input[0].keterangan
+			}
+
+			//split args.input.jenis_biaya_tambahan by ,
+			const jenis_biaya_tambahan = args.input[0].itemNo_join.split(`,`)
+
+			//split harga by ,
+			const harga = args.input[0].biaya_tambahan_join.split(`,`)
+
+			//kota tujuan
+			const kota_tujuan = args.input[0].kota_tujuan
+
+			//for jenis_biaya_tambahan.length push to data.detailItem
+			for (let i = 0; i < jenis_biaya_tambahan.length; i++) {
+				data.detailItem.push({
+					itemNo: jenis_biaya_tambahan[i],
+					unitPrice: harga[i],
+					departmentName: kota_tujuan
+				})
+			}
+
+			// make POST FUNCTION  axios
+			const axios = require(`axios`)
+			const response = await axios.post(url, data, {
+				headers: {
+					Authorization: `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`,
+					"X-Session-ID": `22f7af2e-1016-4c26-911f-91dd48b69c3b`
+				}
+			})
+
+			console.log(`data`, data)
+
+			console.log(response.data)
+
+			const idInvoice = response.data.r.id
+
 			// console.log(response.data)
 			// console.log(data)
 			let daftar_invoice
@@ -226,6 +284,7 @@ const mutations = {
 							id: input.id
 						},
 						data: {
+							id: idInvoice,
 							nomor_invoice: input.nomor_invoice,
 							nomor_surat_jalan: input.nomor_surat_jalan,
 							nomor_ttb: input.nomor_ttb,
@@ -253,7 +312,13 @@ const mutations = {
 							jenis_biaya_tambahan: input.jenis_biaya_tambahan,
 							id_biaya_tambahan: input.id_biaya_tambahan,
 							id_biaya_utama: input.id_biaya_utama,
-							subtotal_tambahan: input.subtotal_tambahan
+							subtotal_tambahan: input.subtotal_tambahan,
+							biaya_tambahan_sales: input.biaya_tambahan_sales,
+							itemNo_sales_order: input.itemNo_sales_order,
+							biaya_tambahan_join: input.biaya_tambahan_join,
+							itemNo_join: input.itemNo_join,
+							nama_barang_join: input.nama_barang_join,
+							kota_tujuan: input.kota_tujuan
 						}
 					})
 				}))
@@ -276,6 +341,34 @@ const mutations = {
 			const daftar_invoice = await context.prisma.daftar_invoice.delete({
 				where: { id: args.id }
 			})
+
+			var myHeaders = new Headers()
+			myHeaders.append(
+				`Authorization`,
+				`Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`
+			)
+			myHeaders.append(`X-Session-ID`, `22f7af2e-1016-4c26-911f-91dd48b69c3b`)
+			myHeaders.append(
+				`Cookie`,
+				`JSESSIONID=EF702D38172753496D9445A5FFDEC43B.accurate_accurateapp_accuratewwb3`
+			)
+
+			var requestOptions = {
+				method: `POST`,
+				headers: myHeaders
+			}
+
+			try {
+				const response = await fetch(
+					//from request body
+					`https://public.accurate.id/accurate/api/sales-invoice/delete.do?Scope: sales_invoice_save&id=${args.id}`,
+					requestOptions
+				)
+				const result = await response.text()
+				console.log(`result`, result)
+			} catch (error) {
+				console.log(`error`, error)
+			}
 
 			return {
 				code: `200`,
