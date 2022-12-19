@@ -360,6 +360,14 @@ export default function Home() {
 		item.reduce((a, b) => parseInt(a) + parseInt(b), 0)
 	)
 
+	//sum total sumHargaSatuan
+	const sumTotal = sumHargaSatuan?.reduce(
+		(a, b) => parseInt(a) + parseInt(b),
+		0
+	)
+
+	console.log(`sumTotal`, sumTotal)
+
 	const taxName = dataAccurate?.accurate?.map((tax) => {
 		return {
 			label: tax.nama_barang,
@@ -467,6 +475,13 @@ export default function Home() {
 			return item.nomor_surat_jalan === value
 		})
 
+		//temp nomor ttb
+		const ttb_temp = data?.daftar_surat_jalan
+			.filter((item) => {
+				return item.nomor_surat_jalan === value
+			})
+			.map((item) => item.nomor_ttb)
+
 		//allTTB = nomorTTB[0].nomor_ttb
 		const allTTB = nomorTTB?.[0]?.nomor_ttb
 
@@ -477,8 +492,8 @@ export default function Home() {
 
 		//get total tagihan from sales order where nomor sales order = allSalesOrder
 		const totalTagihan = dataDaftarSalesOrder?.daftar_sales_order
-			?.filter((item) => allSalesOrder.includes(item.nomor_sales_order))
-			.map((item) => item.total_harga_ttb)
+			?.filter((item) => ttb_temp?.includes(item.nomor_ttb))
+			.reduce((a, b) => parseInt(a) + parseInt(b.total_harga_ttb), 0)
 
 		//get pengirim, penerima, kota tujuan, total volume where ttb_number = allTTB
 		const pengirim = dataDaftarTTB?.daftar_ttb
@@ -620,9 +635,9 @@ export default function Home() {
 		return parseInt(a) + parseInt(b)
 	}, 0)
 	//if subtotal 2 nan set 0
-	const subTotal3 = isNaN(subTotal2) ? parseInt(harga_awal) : subTotal2
+	const subTotal3 = isNaN(subTotal2) ? 0 : subTotal2
 
-	const subTotal = subTotal1 + subTotal4 + Number(sumHargaSatuan)
+	const subTotal = subTotal1 + subTotal4 + sumTotal
 
 	const subAfterPPN = sum_bersih + subTotal3 + sum_total_ppn
 

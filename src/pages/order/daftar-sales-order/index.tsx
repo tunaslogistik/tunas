@@ -6,10 +6,11 @@ import { Table } from "antd"
 import { ColumnsType } from "antd/lib/table"
 import { GET_USERS } from "graphql/user/queries"
 import Link from "next/link"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 //import icon icon-car.svg
 import Access from "@components/util/Access.component"
+import { watch } from "fs"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import Router from "next/router"
 
@@ -62,6 +63,10 @@ export default function Home() {
 	)?.role
 
 	const { data, loading } = useQuery(GET_DATA)
+
+	useEffect(() => {
+		watch(data)
+	}, [data])
 
 	//GET DAFTAR TUJUAN
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
