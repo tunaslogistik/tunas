@@ -249,13 +249,15 @@ const mutations = {
 			//kota tujuan
 			const kota_tujuan = args.input[0].kota_tujuan
 
-			//for jenis_biaya_tambahan.length push to data.detailItem
 			for (let i = 0; i < jenis_biaya_tambahan.length; i++) {
-				data.detailItem.push({
-					itemNo: jenis_biaya_tambahan[i],
-					unitPrice: harga[i],
-					departmentName: kota_tujuan
-				})
+				//if jenis_biaya_tambahan[i] !== "" push to data.detailItem
+				if (jenis_biaya_tambahan[i] !== ``) {
+					data.detailItem.push({
+						itemNo: jenis_biaya_tambahan[i],
+						unitPrice: harga[i],
+						departmentName: kota_tujuan
+					})
+				}
 			}
 
 			// make POST FUNCTION  axios

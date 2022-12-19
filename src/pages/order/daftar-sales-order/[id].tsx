@@ -111,6 +111,11 @@ export default function Home() {
 				})
 			}
 
+			//if newArray.nama_barang is ""||  null || undefined, remove it
+			newArray = newArray.filter((item) => item.nama_barang !== ``)
+
+			console.log(`newArray`, newArray)
+
 			reset({ newArray })
 
 			setLoading(false)

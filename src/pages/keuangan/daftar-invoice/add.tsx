@@ -261,6 +261,7 @@ export default function Home() {
 	const sumHargaTotal = () => {
 		const sum = dataDaftarSalesOrder?.daftar_sales_order
 			.filter((item) => nomor_ttb?.includes(item.nomor_ttb))
+			//if harga total is
 			.reduce((a, b) => a + b.harga_total, 0)
 		return sum
 	}
@@ -268,6 +269,8 @@ export default function Home() {
 	const sum_total_ppn = sumHargaTotal()
 
 	const sum_bersih = sumHargaSebelumPpn()
+
+	console.log(`sumHargaSebelumPpn`, sumHargaSebelumPpn())
 
 	const filteredSuratJalan = data?.daftar_surat_jalan.filter((item) => {
 		if (watch(`nomor_surat_jalan`) && watch(`nomor_surat_jalanA`)) {
@@ -545,6 +548,8 @@ export default function Home() {
 	const subTotal = subTotal1 + subTotal4 + sales_order_tambahan
 
 	const subAfterPPN = sum_bersih + parseInt(subTotal3) + sum_total_ppn
+
+	console.log(`subTotals`, sum_total_ppn)
 
 	const subPPN = subAfterPPN - subTotal
 

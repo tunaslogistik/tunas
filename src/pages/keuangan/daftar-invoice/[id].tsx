@@ -130,7 +130,7 @@ export default function Home() {
 			)
 
 			//reset data to newArray
-			const newArray = nama_barang_harga?.map((item) => {
+			var newArray = nama_barang_harga?.map((item) => {
 				return {
 					nama_barang: item.nama_barang,
 					Harga: item.harga
@@ -366,7 +366,7 @@ export default function Home() {
 		0
 	)
 
-	console.log(`sumTotal`, sumTotal)
+	console.log(`sumTotals`, sumTotal)
 
 	const taxName = dataAccurate?.accurate?.map((tax) => {
 		return {
@@ -417,11 +417,14 @@ export default function Home() {
 	const sumHargaTotal = () => {
 		const sum = dataDaftarSalesOrder?.daftar_sales_order
 			.filter((item) => nomor_ttb?.includes(item.nomor_ttb))
+			//if a + b harga_total is "" || null || undefined return total_harga_ttb
 			.reduce((a, b) => a + b.harga_total, 0)
 		return sum
 	}
 
 	const sum_total_ppn = sumHargaTotal()
+
+	console.log(`sum_total_ppns`, sum_total_ppn)
 
 	const sum_bersih = sumHargaSebelumPpn()
 
@@ -453,11 +456,15 @@ export default function Home() {
 	//watch kota_tujuanA[0]
 	const kota_tujuan = watch(`kota_tujuanA[0]`)
 
+	console.log(`kota_tujuan`, kota_tujuan)
+
 	const nama_tujuan = dataDaftarTujuan?.daftar_tujuan
-		.filter((item) => {
-			return item.kode_tujuan === kota_tujuan
+		?.filter((item) => {
+			return item.kode_tujuan === String(kota_tujuan)
 		})
 		.map((item) => item.nama_tujuan)
+
+	console.log(`nama_tujuan`, nama_tujuan)
 
 	const filteredSuratJalan3 = filteredSuratJalan2?.filter((item) => {
 		if (kota_tujuan) {
@@ -637,7 +644,11 @@ export default function Home() {
 	//if subtotal 2 nan set 0
 	const subTotal3 = isNaN(subTotal2) ? 0 : subTotal2
 
-	const subTotal = subTotal1 + subTotal4 + sumTotal
+	//if sumTotal nan set 0
+	const tempTotal = sumTotal ? sumTotal : 0
+	const subTotal = subTotal1 + subTotal4 + tempTotal
+
+	console.log(`subTotal`, subTotal4)
 
 	const subAfterPPN = sum_bersih + subTotal3 + sum_total_ppn
 
@@ -832,6 +843,8 @@ export default function Home() {
 		})
 
 		const deleteInvoiceJson = await deleteInvoice.json()
+
+		console.log(`deleteInvoiceJson`, deleteInvoiceJson)
 
 		updateDataInvoice(dataInvoice_final)
 
@@ -1111,7 +1124,7 @@ export default function Home() {
 						})}
 						{
 							//if harga is not empty show this if not hidden
-							harga?.length > 0 && (
+							harga !== `` && (
 								<div className="field" style={{ marginTop: `1%` }}>
 									<label style={{ fontWeight: `bolder` }} className="label">
 										Nama Barang (Accurate)
@@ -1226,7 +1239,7 @@ export default function Home() {
 														//find from dataAccurate where item.tipe_ppn === kodeBarang
 														dataAccurate?.accurate.find(
 															(data) => data.kode_barang === item.tipe_ppn
-														).nama_barang
+														)?.nama_barang
 													}
 													{...register(`tipePpn.${index}`)}
 													readOnly

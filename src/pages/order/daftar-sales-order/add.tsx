@@ -5,7 +5,6 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import FormRepeater from "@components/form/FormRepeater.component"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, DatePicker, message } from "antd"
-
 import { GET_ACCURATE } from "graphql/accurate/queries"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
@@ -18,7 +17,6 @@ import { useRouter } from "next/router"
 import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { CREATE_DAFTAR_SALES_ORDER } from "../../../../graphql/daftar_sales_order/mutations"
-//get data
 
 const GET_DATA = gql`
 	query daftar_sales_order {
@@ -65,7 +63,6 @@ export default function Home() {
 		createDaftar_sales_order({ variables: { input: data } })
 	}
 
-	//UPDATE
 	const [updateReferenceSalesOrder] = useMutation(
 		UPDATE_REFERENCE_SALES_ORDER,
 		{
