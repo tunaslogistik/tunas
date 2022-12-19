@@ -131,8 +131,6 @@ export default function Home() {
 		?.filter((item) => item.nama_customer === selectedPengirm)
 		.map((item) => item.idPelanggan)
 
-	console.log(`ipPelanggan`, idPelanggan)
-
 	//merge selected
 	const mergeSelected = () => {
 		const merge = selectednoSJA.concat(selectednoSJatas)
@@ -200,16 +198,11 @@ export default function Home() {
 			}))
 		)
 	}
-
-	console.log(`mergeNamaBarang`, mergeNamaBarang)
-
 	//join tipe_ppn  from mergeNamaBarang
 	const tipe_ppnJoin = mergeNamaBarang?.map((item) => item.tipe_ppn)
 
 	//join with ,
 	const tipe_ppnJoinComma = tipe_ppnJoin?.join(`,`)
-
-	console.log(`tipe_ppnJoinComma`, tipe_ppnJoinComma)
 
 	//sum hargaSatuanSplit
 	const sumHargaSatuan = hargaSatuanSplit?.map((item) =>
@@ -221,8 +214,6 @@ export default function Home() {
 		(a, b) => parseInt(a) + parseInt(b),
 		0
 	)
-
-	console.log(`sumHargaSatuasssn`, sumHargaSatuanSum)
 
 	const taxName = dataAccurate?.accurate?.map((tax) => {
 		return {
@@ -278,8 +269,6 @@ export default function Home() {
 
 	const sum_bersih = sumHargaSebelumPpn()
 
-	console.log(`sum_bersih`, sum_bersih)
-
 	const filteredSuratJalan = data?.daftar_surat_jalan.filter((item) => {
 		if (watch(`nomor_surat_jalan`) && watch(`nomor_surat_jalanA`)) {
 			return (
@@ -330,10 +319,6 @@ export default function Home() {
 		})
 		.map((item) => item.nama_tujuan)
 
-	console.log(`nama_tujuan`, nama_tujuan)
-
-	console.log(`kota_tujuan`, kota_tujuan)
-
 	//find data from filtered surat jalan where kota_tujuan = kota_tujuan
 	const filteredSuratJalan3 = filteredSuratJalanSelect?.filter((item) => {
 		if (kota_tujuan) {
@@ -373,9 +358,6 @@ export default function Home() {
 				return item.nomor_surat_jalan === value
 			})
 			.map((item) => item.nomor_ttb)
-
-		console.log(`nomorTTB`, ttb_temp)
-
 		//allTTB = nomorTTB[0].nomor_ttb
 		const allTTB = nomorTTB[0].nomor_ttb
 
@@ -388,8 +370,6 @@ export default function Home() {
 		const totalTagihan = dataDaftarSalesOrder?.daftar_sales_order
 			?.filter((item) => ttb_temp?.includes(item.nomor_ttb))
 			.reduce((a, b) => parseInt(a) + parseInt(b.total_harga_ttb), 0)
-
-		console.log(`totalTagihan`, totalTagihan)
 
 		//get pengirim, penerima, kota tujuan, total volume where ttb_number = allTTB
 		const pengirim = dataDaftarTTB?.daftar_ttb
@@ -493,8 +473,6 @@ export default function Home() {
 		?.filter((item) => item.nama_customer === pengirim?.[0])
 		.map((item) => item.tipe_ppn)
 
-	console.log(`ppn`, ppn)
-
 	//get dataAccurate.accurate where taxName = ppn?.[0]
 	const nama_barang = dataAccurate?.accurate?.filter(
 		(item) => item.taxName === ppn?.[0]
@@ -502,7 +480,6 @@ export default function Home() {
 
 	const allHarga = watch(`tagihan`) ? watch(`tagihan`) : 0
 
-	console.log(`allHarga`, allHarga)
 	const allHargaA = watch(`tagihanA`) ? watch(`tagihanA`) : [0]
 
 	//merge
@@ -520,8 +497,6 @@ export default function Home() {
 
 	//join
 	const tipe_ppn_tambahan = tipe_ppns?.join(`,`)
-
-	console.log(`tipe_ppn_tambahan`, tipe_ppn_tambahan)
 
 	const harga_awal = newArray1?.map((item) => {
 		return item.Harga
@@ -562,17 +537,10 @@ export default function Home() {
 	//if subtotal 2 = "nan" or undefined set 0
 	const subTotal3 = isNaN(subTotal2) ? harga_awal : subTotal2
 
-	console.log(`subTotal2`, subTotal3)
-
-	console.log(`Number(sumHargaSatuan)`, sum_total_ppn)
-
 	//if Number(sumHargaSatuan) = "nan" or undefined set 0
 	const sales_order_tambahan = isNaN(Number(sumHargaSatuanSum))
 		? 0
 		: Number(sumHargaSatuanSum)
-
-	console.log(`sales_order_tambahan`, sales_order_tambahan)
-	//if Number(sumHargaSatuan) = "nan" or undefined set 0
 
 	const subTotal = subTotal1 + subTotal4 + sales_order_tambahan
 
@@ -587,11 +555,7 @@ export default function Home() {
 	//count dataDaftarInvoice length
 	const count = dataDaftarInvoice?.daftar_invoice.length + 1
 
-	console.log(`count`, count)
-
 	const onSubmit = async (formData) => {
-		console.log(`formData`, formData)
-
 		//merge formData.nomor_surat_jalanA?.filter((item) => item !== ``) and formData.nomor_surat_jalan with map
 		const nomor_surat_jalan = [
 			...(formData.nomor_surat_jalanA ? formData.nomor_surat_jalanA : []),
@@ -613,14 +577,11 @@ export default function Home() {
 		//join harga into 1 string with ,
 		const hargaString = harga_awal.join(`,`)
 
-		console.log(`hargaString`, hargaString)
-
 		//join harga with harga join
 		const hargaJoins = hargaString + `,` + hargaSatuanJoin
 
 		//join ppn into 1 string with ,
 		const ppnString = ppn.join(`,`)
-		console.log(`ppnString`, ppnString)
 
 		//join ppn with ppn join
 		const ppnJoins = ppnString + `,` + tipe_ppnJoinComma
@@ -802,13 +763,6 @@ export default function Home() {
 		}
 
 		updateDataReferenceInvoice(dataReferencInvoiceupdate)
-
-		console.log(`dataReference`, dataReference)
-
-		console.log(
-			`dataInvoice_final_stringify`,
-			JSON.stringify(dataInvoice, null, 2)
-		)
 
 		//find if nomor surat jalan already exist in daftar invoice if not createdata
 		const dataInvoiceExist = dataDaftarInvoice?.daftar_invoice?.filter(

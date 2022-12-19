@@ -3,7 +3,7 @@ import { gql, useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import { DashboardContext } from "@contexts/DashboardContext.context"
-import { Button, Form, Input, message, Select, Space } from "antd"
+import { Button, Form, Input, Select, Space, message } from "antd"
 
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import { GET_JENIS_PENGIRIMAN } from "graphql/jenis_pengiriman/queries"
@@ -61,7 +61,6 @@ export default function SettingUserEdit() {
 	}
 
 	const onFinish = (values: any) => {
-		console.log(`Received values of form:`, values)
 		//access only array of object inside values
 		const dataSubmit = values.daftar_harga.map((item: any) => {
 			return {
@@ -100,7 +99,6 @@ export default function SettingUserEdit() {
 	// 	}
 	// 	createData(data)
 	// 	message.success(`Data berhasil ditambahkan`)
-	// 	console.log(`data nya ialah`, data)
 	// 	router.push(`/data/daftar-harga`)
 	// }
 

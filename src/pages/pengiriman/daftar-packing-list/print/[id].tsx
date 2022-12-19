@@ -6,8 +6,8 @@ import {
 	Document,
 	Font,
 	Image,
-	Page,
 	PDFViewer,
+	Page,
 	StyleSheet,
 	Text,
 	View
@@ -229,8 +229,6 @@ export default function Home() {
 			estimated_date: daftar_packing_list?.estimated_date
 		}
 	})
-
-	console.log(`da`, dataTTB)
 
 	const nomor_packing_list = daftar_packing_list?.nomor_muat_barang.slice(3)
 	//add 4 letter to nomor_surat_jalan

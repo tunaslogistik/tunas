@@ -123,8 +123,6 @@ export default function SettingUserEdit() {
 		(user) => user.username === username
 	)?.role
 
-	console.log(role)
-
 	const [updateUser] = useMutation(UPDATE_USER, {
 		refetchQueries: [{ query: GET_USERS }]
 	})

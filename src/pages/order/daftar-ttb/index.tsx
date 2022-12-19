@@ -181,7 +181,6 @@ export default function Home() {
 
 	const dataMap = filtered
 	const dataSource = dataMap
-	console.log(dataSource)
 	return (
 		<AdminPage
 			authId="daftar-ttb"

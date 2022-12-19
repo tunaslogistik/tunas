@@ -4,7 +4,7 @@ import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import useLoading from "@hooks/useLoading.hook"
-import { message, Table } from "antd"
+import { Table, message } from "antd"
 
 import { ColumnsType } from "antd/lib/table"
 import { GET_CUSTOMER } from "graphql/customer/queries"
@@ -270,7 +270,6 @@ export default function Home() {
 
 	const dataMap = mapData
 	const dataSource = dataMap
-	console.log(`data`, dataSource)
 
 	async function onSubmit(formData) {
 		setLoading(true)
@@ -291,8 +290,6 @@ export default function Home() {
 			for (let i = 0; i < dataTemp.length; i++) {
 				await updateData(dataTemp[i])
 			}
-
-			console.log(`dataFilterTTB`, formData)
 
 			message.success(`Data Berhasil Disimpan`)
 		} catch (error) {

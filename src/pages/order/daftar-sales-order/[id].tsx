@@ -111,7 +111,6 @@ export default function Home() {
 				})
 			}
 
-			console.log(`newArray: `, newArray)
 			reset({ newArray })
 
 			setLoading(false)
@@ -144,8 +143,6 @@ export default function Home() {
 
 	const tipe_Ppns = filterSalesOrdered?.[0]?.tipe_ppn.split(`,`)
 
-	console.log(`tipe_Ppns: `, tipe_Ppns)
-
 	//for tipe_Ppns length find taxName in accurate where tipe_ppns === kode_barang
 	const taxNames = tipe_Ppns?.map((item) => {
 		const taxName = dataAccurate?.accurate?.filter(
@@ -153,8 +150,6 @@ export default function Home() {
 		)
 		return taxName?.[0]?.nama_barang
 	})
-
-	console.log(`taxNames: `, taxNames)
 
 	//reset data to  formRepeater
 	const mapOption = filterSalesOrdered?.map((item) => {
@@ -211,12 +206,8 @@ export default function Home() {
 		return item.nama_customer === filterTTB?.[0]?.pengirim
 	})
 
-	console.log(`filterCustomer`, filterCustomer)
-
 	//get tipe ppn
 	const tipePPN = filterCustomer?.[0]?.tipe_ppn
-
-	console.log(`tipePPN`, tipePPN)
 
 	//get only number from tipe ppn
 	const tipePPNNumber = tipePPN?.replace(/[^0-9]/g, ``)
@@ -231,10 +222,6 @@ export default function Home() {
 
 	const volume = watch(`total_volume_ttb`)
 	const harga = watch(`harga`)
-
-	console.log(`harga`, harga)
-	console.log(`volume`, volume)
-	console.log(`PPN`, PPN)
 
 	const newArray1 = watch(`newArray`)
 
@@ -282,8 +269,6 @@ export default function Home() {
 	useEffect(() => {
 		setTagihans(totalTagihan)
 	}, [totalTagihan])
-
-	console.log(`tagihans`, tagihans)
 
 	const handleChangeTTB = (value) => {
 		const data = mergeTTB?.find((item) => item.nomor_ttb === value)
@@ -397,7 +382,6 @@ export default function Home() {
 			for (let i = 0; i < myChildrenArrayMerge.length; i++) {
 				createData(myChildrenArrayMerge[i])
 			}
-			console.log(`myChildrenArrayMerge`, myChildrenArrayMerge)
 			deleteData(parseInt(id as string))
 			router.push(`/order/daftar-sales-order`)
 			message.success(`Data Berhasil Disimpan`)

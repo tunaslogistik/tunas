@@ -6,8 +6,8 @@ import {
 	Document,
 	Font,
 	Image,
-	Page,
 	PDFViewer,
+	Page,
 	StyleSheet,
 	Text,
 	View
@@ -161,7 +161,6 @@ const styles = StyleSheet.create({
 export default function Home() {
 	const { data } = useQuery(GET_DATA)
 
-	console.log(`data`, data)
 	const setForm = useForm()
 	const router = useRouter()
 	const id = router.query.id
@@ -309,8 +308,6 @@ export default function Home() {
 
 	const total_ppn =
 		total_tagihan_biaya_tambahan - parseInt(total_tagihan_tambahan)
-
-	// console.log(`dataTTB`, dataTTB)
 
 	// const muatBarang = dataMuatBarang?.daftar_muat_barang.filter(
 	// 	(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number

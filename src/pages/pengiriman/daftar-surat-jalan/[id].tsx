@@ -4,7 +4,7 @@ import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import useLoading from "@hooks/useLoading.hook"
-import { Button, message, Table } from "antd"
+import { Button, Table, message } from "antd"
 
 import { ColumnsType } from "antd/lib/table"
 import { GET_CUSTOMER } from "graphql/customer/queries"
@@ -119,7 +119,7 @@ export default function Home() {
 		(item) =>
 			item.nomor_surat_jalan === filteredDataById?.[0]?.nomor_surat_jalan
 	)
-	console.log(`filteredDatasurat`, filteredDatasurat)
+
 	//merge duplicate data by nomor_ttb
 	const mergeData = filteredDatasurat?.reduce((acc, current) => {
 		const x = acc.find(
@@ -168,8 +168,6 @@ export default function Home() {
 			keterangan: item.keterangan
 		}
 	})
-
-	console.log(`mapData`, mapData)
 
 	//make antd table with search
 	const columns: ColumnsType<DataType> = [
@@ -278,7 +276,7 @@ export default function Home() {
 					keterangan: formData.keterangan
 				}
 			})
-			console.log(`dataTemp`, dataTemp)
+
 			//make loop update for data table
 			for (let i = 0; i < dataTemp.length; i++) {
 				await updateData(dataTemp[i])

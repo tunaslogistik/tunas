@@ -78,8 +78,6 @@ export default function Home() {
 	const idpNumberPlusStringPadFinal =
 		idpString[0] + `.` + idpNumberPlusStringPad
 
-	console.log(`idpNumberPlusStringPadFinal`, idpNumberPlusStringPadFinal)
-
 	const fetchApi = async () => {
 		const res = await fetch(`/api/tax`)
 		const data = await res.json()
@@ -119,7 +117,6 @@ export default function Home() {
 		} else {
 			createData(dataSubmit)
 			message.success(`Data berhasil ditambahkan`)
-			console.log(`data nya ialah`, data)
 			router.push(`/data/customer`)
 		}
 	}

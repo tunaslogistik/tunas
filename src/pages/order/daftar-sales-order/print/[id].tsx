@@ -6,8 +6,8 @@ import {
 	Document,
 	Font,
 	Image,
-	Page,
 	PDFViewer,
+	Page,
 	StyleSheet,
 	Text,
 	View
@@ -134,7 +134,6 @@ export default function Home() {
 	const { data } = useQuery(GET_DATA)
 	const { data: data_TTB } = useQuery(GET_DAFTAR_TTB)
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
-	console.log(`data_TTB`, data_TTB)
 	//get daftar tujuan
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 	//get pengaturan

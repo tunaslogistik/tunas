@@ -7,7 +7,7 @@ import Access from "@components/util/Access.component"
 import { DashboardContext } from "@contexts/DashboardContext.context"
 import { yupResolver } from "@hookform/resolvers/yup"
 import useLoading from "@hooks/useLoading.hook"
-import { Button, message, Popconfirm } from "antd"
+import { Button, Popconfirm, message } from "antd"
 
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
@@ -156,7 +156,6 @@ export default function Home() {
 					full_container: String(formData.full_container)
 				}
 			})
-			console.log(`data form`, formData.tanggal_diterima)
 
 			const sum = temp.reduce((accumulator, object) => {
 				return (
@@ -255,7 +254,6 @@ export default function Home() {
 
 	const date = moment(dataTTB?.[0]?.tanggal_diterima).format(`YYYY-MM-DD`)
 
-	console.log(`date`, date)
 	return (
 		<AdminPage
 			parent={

@@ -236,8 +236,6 @@ export default function Home() {
 	nomor_ttbbawah
 	nomor_ttbB[${index}]*/
 
-	console.log(`length`, dataDaftarSuratJalan?.daftar_surat_pengantar.length)
-	//filter sales order where nomor ttb not in daftar muat barang
 	const filterSalesOrder = dataDaftarSalesOrder?.daftar_sales_order?.filter(
 		(item) => {
 			const x = data?.daftar_muat_barang?.find(
@@ -564,10 +562,11 @@ export default function Home() {
 			dataFilter.map((item) => {
 				item.kota_tujuan = dataFilterTTB?.[0]?.kota_tujuan
 			})
-			console.log(`test`, dataFilterTTB?.[0]?.kota_tujuan)
+
 			dataFilter.map((item) => {
 				item.nomor_container = String(formData.nomor_container)
 			})
+
 			dataFilter.map((item) => {
 				item.nomor_seal = String(formData.nomor_seal)
 			})
@@ -611,8 +610,6 @@ export default function Home() {
 					(item: any) => item.kode_tujuan === dataFilterTTB?.[0]?.kota_tujuan
 				)
 
-			console.log(`dataReferenceMB`, dataReferenceMB)
-
 			const dataFilter2 = dataFilter.filter(
 				(item) => item.nomor_ttb !== `Silahkan Pilih No. TTB`
 			)
@@ -645,7 +642,6 @@ export default function Home() {
 				}
 			})
 
-			console.log(`dataFilter2`, dataFilter2)
 			// create new data
 			for (let i = 0; i < dataFilter2.length; i++) {
 				const check = data?.daftar_muat_barang.find(
@@ -816,8 +812,6 @@ export default function Home() {
 			}
 
 			updateDataReferenceSuratPengantar(dataReferenceSPupdate)
-
-			console.log(`data_surat_pengantar`, data_packing_list)
 
 			//using foreach add leading zeros(increment + i,4) to no
 			const check = data?.daftar_muat_barang.find(

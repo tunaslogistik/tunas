@@ -142,8 +142,6 @@ export default function Home() {
 	// 			countDuplicateMerged[merged[i].kode_asal + merged[i].kode_tujuan]
 	// 	}
 	// }
-	console.log(`datas`, countDuplicateMerged)
-
 	for (let i = 1; i < merged.length; i++) {
 		const j = i - 1
 		if (
@@ -151,7 +149,6 @@ export default function Home() {
 				merged[j].kode_tujuan !== merged[i].kode_tujuan) &&
 			merged[j].rowSpan === 0
 		) {
-			console.log(`i`, i)
 			merged[i].rowSpan =
 				countDuplicateMerged[merged[i].kode_asal + merged[i].kode_tujuan]
 		}
@@ -166,7 +163,6 @@ export default function Home() {
 	}
 
 	const dataSource = merged
-	console.log(`data`, merged)
 	//make antd table with search
 	const columns = [
 		{
@@ -296,7 +292,6 @@ export default function Home() {
 							onRow={(record, rowIndex) => {
 								return {
 									onClick: (event) => {
-										console.log(`record`, record)
 										router.push(`/data/daftar-harga/${record.id}`)
 									}
 								}

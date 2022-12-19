@@ -85,8 +85,6 @@ export default function Home() {
 		}
 	})
 
-	console.log(`taxName`, taxName)
-
 	function addLeadingZeros(num, totalLength) {
 		return String(num).padStart(totalLength, `0`)
 	}
@@ -142,8 +140,6 @@ export default function Home() {
 			  Number(getValues(`harga`)) *
 			  tipePPNPercentage
 			: Number(getValues(`harga`)) * tipePPNPercentage
-
-	console.log(`Percentages`, PPN)
 
 	const total =
 		getValues(`total_volume_ttb`) !== 0
@@ -213,8 +209,6 @@ export default function Home() {
 		}
 	})
 
-	console.log(`harga`, harga)
-
 	async function onSubmit(formData) {
 		setLoading(true)
 		try {
@@ -224,7 +218,6 @@ export default function Home() {
 					(item: any) => item.kode_tujuan === formData.kota_tujuan
 				)
 
-			console.log(`dataReferenceSO`, dataReferenceSO)
 			const objArray = Object.keys(formData).map((i) => formData[i])
 
 			const namaBarang = formData.newArray.map((item) => item.nama_barang)
@@ -328,7 +321,6 @@ export default function Home() {
 			//create new data
 			for (let i = 0; i < myChildrenArrayMerge.length; i++) {
 				createData(myChildrenArrayMerge[i])
-				console.log(`create data`, myChildrenArrayMerge[i])
 			}
 
 			//if String(moment.unix(values.tanggal_sales_order/ 1000).format(`YY-MM`)) !== dataReferenceSO[0].tanggal_tahun then increment = 1 else increment = dataReferenceSO[0].increment + 1
@@ -361,8 +353,6 @@ export default function Home() {
 		}
 		setLoading(false)
 	}
-
-	console.log(`dataBank`, dataPengaturan)
 	return (
 		<AdminPage
 			parent={

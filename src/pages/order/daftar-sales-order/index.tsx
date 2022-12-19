@@ -61,10 +61,6 @@ export default function Home() {
 		(user) => user.username === username
 	)?.role
 
-	console.log(`role`, role)
-
-	console.log()
-
 	const { data, loading } = useQuery(GET_DATA)
 
 	//GET DAFTAR TUJUAN
@@ -182,7 +178,6 @@ export default function Home() {
 
 	const dataMap = dataTable
 	const dataSource = dataMap
-	console.log(dataSource)
 	return (
 		<AdminPage
 			authId="daftar-sales-order"

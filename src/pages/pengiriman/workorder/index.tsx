@@ -152,8 +152,6 @@ export default function Home() {
 	const dataMap = mergeData
 	const dataSource = dataMap
 
-	console.log(`data`, dataSource?.tanggal_container)
-
 	const columns: ColumnsType<DataType> = [
 		{
 			title: `No. Work Order`,

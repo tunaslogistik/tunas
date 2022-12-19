@@ -145,7 +145,6 @@ export default function SettingUserEdit() {
 		} else {
 			createData(dataSubmit)
 			createReference(dataReference)
-			console.log(data)
 			message.success(`Data berhasil ditambahkan`)
 			router.push(`/data/daftar-tujuan`)
 		}

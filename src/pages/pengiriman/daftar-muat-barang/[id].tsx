@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client"
 import IconPrint from "@assets/icons/icon-print.svg"
 import AdminPage from "@components/admin/AdminPage.component"
-import { Button, message, Popconfirm, Table } from "antd"
+import { Button, Popconfirm, Table, message } from "antd"
 
 import { ColumnsType } from "antd/lib/table"
 import { useState } from "react"
@@ -230,7 +230,6 @@ export default function Home() {
 			total_ttb: item.total_ttb
 		}
 	})
-	console.log(`data table`, dataTable)
 	//merge duplicate data by nomor_ttb
 	const mergeData = dataTable
 
@@ -307,8 +306,6 @@ export default function Home() {
 				await updateData(dataTemp[i])
 			}
 
-			console.log(`dataTemp`, dataTemp)
-
 			message.success(`Data Berhasil Disimpan`)
 		} catch (error) {
 			console.log(error)
@@ -351,8 +348,6 @@ export default function Home() {
 	const tanggal_muat_barang = moment(
 		dataTable?.[0]?.tanggal_muat_barang
 	).format(`YYYY-MM-DD`)
-
-	console.log(`dataMapfirst`, dataSource)
 
 	return (
 		<AdminPage

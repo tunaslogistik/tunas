@@ -55,8 +55,6 @@ export default function Home() {
 	//if last update is null, set kode barang to 100071 else last update + 1
 	const kodeBarang = lastUpdate == null ? 100071 : parseInt(lastUpdate) + 1
 
-	console.log(`kode barang`, kodeBarang)
-
 	const handleSubmit = (e) => {
 		e.preventDefault()
 		const dataSubmit = {
@@ -78,7 +76,6 @@ export default function Home() {
 		} else {
 			createData(dataSubmit)
 			message.success(`Data berhasil ditambahkan`)
-			console.log(`data nya ialah`, dataSubmit)
 		}
 	}
 
@@ -95,8 +92,6 @@ export default function Home() {
 	useEffect(() => {
 		fetchApi().then((data) => setDataApi(data))
 	}, [])
-
-	console.log(`data api`, dataApi)
 
 	return (
 		<AdminPage

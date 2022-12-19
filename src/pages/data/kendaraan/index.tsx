@@ -47,7 +47,6 @@ export default function Home() {
 	const { data, loading } = useQuery(GET_DATA)
 
 	const setForm = useForm()
-	console.log(data)
 	//search
 	const [search, setSearch] = useState(``)
 	const handleSearch = (e) => {

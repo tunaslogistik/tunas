@@ -137,8 +137,6 @@ export default function Home() {
 				}
 			})
 
-			console.log(`newArray`, newArray)
-
 			//for data invoice length set nomor_surat_jalanA[index] with nomor_surat_jalan from dataInvoice
 			const nomor_surat_jalan = []
 			for (let i = 0; i < dataInvoice.length; i++) {
@@ -180,8 +178,6 @@ export default function Home() {
 		(item) => item.jenis_biaya_tambahan
 	)
 
-	console.log(`jenis_biaya_tambahan`, jenis_biaya_tambahan)
-
 	//split jenis_biaya_tambahan by ,
 	const jenis_biaya_tambahan_split = jenis_biaya_tambahan?.map((item) => {
 		return item.split(`,`)
@@ -194,8 +190,6 @@ export default function Home() {
 		return taxName?.[index]?.nama_barang
 	})
 
-	console.log(`taxNamesaless`, taxNamesaless)
-
 	//for jenis_biaya_length make  default option  from label and value
 	const defaultOption = []
 	for (let i = 0; i < jenis_biaya_tambahan_split?.length; i++) {
@@ -206,35 +200,24 @@ export default function Home() {
 		})
 	}
 
-	console.log(`defaultOption`, defaultOption)
-
 	//get all data from databiayatambahan where nomor_invoice = nomor_invoice
 	const mapBiayaTambahan =
 		dataDaftarBiayaTambahan?.daftar_biaya_tambahan
 			.filter((item) => item.nomor_invoice == filteredData?.[0]?.nomor_invoice)
 			.map((item) => item.id_biaya_tambahan) || []
 
-	console.log(`mapBiayaTambahan`, mapBiayaTambahan?.[0])
-
 	//get accurate from dataDaftarInvoice where id = id
 	const accurate = filteredData?.[0]?.accurate
 
 	const check1 = filteredData?.[0]?.jenis_biaya_tambahan
-
-	console.log(`check1`, check1)
 
 	//get id dataaccurate where kode_barang = accurate
 	const idAccurate = dataAccurate?.accurate
 		.filter((item) => item.kode_barang == accurate)
 		.map((item) => item.id)
 
-	console.log(`idAccurate`, idAccurate?.[0])
 	//get id all invoice where invoice = nomor_invoice
 	const idInvoice = mapInvoice?.map((item) => item.id)
-
-	//make function delete all id invoice
-
-	console.log(`id_inovice`, idInvoice)
 
 	const [deleteDaftar_invoice] = useMutation(DELETE_DAFTAR_INVOICE, {
 		refetchQueries: [{ query: GET_DATA }]
@@ -366,22 +349,16 @@ export default function Home() {
 		)
 	}
 
-	console.log(`mergeNamaBarang`, mergeNamaBarang)
-
 	//join tipe_ppn  from mergeNamaBarang
 	const tipe_ppnJoin = mergeNamaBarang?.map((item) => item.tipe_ppn)
 
 	//join with ,
 	const tipe_ppnJoinComma = tipe_ppnJoin?.join(`,`)
 
-	console.log(`tipe_ppnJoinComma`, tipe_ppnJoinComma)
-
 	//sum hargaSatuanSplit
 	const sumHargaSatuan = hargaSatuanSplit?.map((item) =>
 		item.reduce((a, b) => parseInt(a) + parseInt(b), 0)
 	)
-
-	console.log(`sumHargaSatuan: `, sumHargaSatuan)
 
 	const taxName = dataAccurate?.accurate?.map((tax) => {
 		return {
@@ -400,11 +377,7 @@ export default function Home() {
 		)
 	}
 
-	console.log(`taxNamesis: `, taxNames)
-
 	const tipe_Ppns = filteredData?.[0]?.ppn_biaya_tambahan.split(`,`)
-
-	console.log(`tipe_Ppns: `, tipe_Ppns)
 
 	//for tipe_Ppns length find taxName in accurate where tipe_ppns === kode_barang
 	const taxNamesales = tipe_Ppns?.map((item) => {
@@ -417,8 +390,6 @@ export default function Home() {
 		}
 	})
 
-	console.log(`taxNames: `, taxNamesales)
-
 	//reset data to  formRepeater
 	const mapOption = taxNamesales?.map((taxNamesales) => {
 		return {
@@ -426,8 +397,6 @@ export default function Home() {
 			value: taxNamesales.value
 		}
 	})
-
-	console.log(`mapOption: `, mapOption)
 
 	//sum all harga_sebelum_ppn sales order where nomor_sales = nomor_ttb
 	const sumHargaSebelumPpn = () => {
@@ -591,8 +560,6 @@ export default function Home() {
 		return parseInt(a) + parseInt(b)
 	}, 0)
 
-	console.log(`subTotal1`, subTotal1)
-
 	//harga from newArray if 0 set array 0
 	const newArray1 = watch(`newArray`)
 
@@ -608,8 +575,6 @@ export default function Home() {
 		}
 	}
 
-	console.log(`newArray1`, newArray1)
-
 	const harga_awal = newArray1?.map((item) => {
 		return item.Harga
 	})
@@ -617,10 +582,6 @@ export default function Home() {
 	const ppn_awal = newArray1?.map((item) => {
 		return item.ppn
 	})
-
-	console.log(`ppn_awal`, ppn_awal)
-
-	console.log(`harga_awal`, harga_awal)
 
 	const subTotal_awal = harga_awal?.reduce((a, b) => {
 		return parseInt(a) + parseInt(b)
@@ -655,26 +616,15 @@ export default function Home() {
 		}
 	})
 
-	console.log(`harga`, harga)
-
 	const subTotal2 = harga?.reduce((a, b) => {
 		return parseInt(a) + parseInt(b)
 	}, 0)
-
-	console.log(`subTotal2`, subTotal2)
-
 	//if subtotal 2 nan set 0
 	const subTotal3 = isNaN(subTotal2) ? parseInt(harga_awal) : subTotal2
 
-	console.log(`subTotal3`, subTotal3)
-
 	const subTotal = subTotal1 + subTotal4 + Number(sumHargaSatuan)
 
-	console.log(`subTotal`, subTotal)
-
 	const subAfterPPN = sum_bersih + subTotal3 + sum_total_ppn
-
-	console.log(`subAfterPPN`, subAfterPPN)
 
 	const subPPN = subAfterPPN - subTotal
 
@@ -711,7 +661,6 @@ export default function Home() {
 
 		//join ppn into 1 string with ,
 		const ppnString = ppn.join(`,`)
-		console.log(`tanggal`, formData.tanggal_invoice)
 
 		const namaBarangJoins = namaBarangString + `,` + namaBarangJoin
 		const hargaJoins = hargaString + `,` + hargaSatuanJoin
@@ -843,8 +792,6 @@ export default function Home() {
 			(item) => item.nomor_surat_jalan !== undefined
 		)
 
-		console.log(`dataInvoice_final`, dataInvoice_final)
-
 		// //get only pengirim, nomor_invoice, jenis_biaya_tambahan,id_biaya_tambahan and harga_biaya_tambahan
 		// const dataBiaya_tambahan = dataInvoice_final.map((item) => {
 		// 	return {
@@ -870,12 +817,6 @@ export default function Home() {
 		})
 
 		const deleteInvoiceJson = await deleteInvoice.json()
-		console.log(`deleteInvoiceJson`, deleteInvoiceJson)
-
-		console.log(
-			`dataInvoicefinasltesting`,
-			dataInvoice_final.map((item) => item.id)
-		)
 
 		updateDataInvoice(dataInvoice_final)
 

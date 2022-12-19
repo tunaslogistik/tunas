@@ -46,8 +46,6 @@ export default function Home() {
 	//GET REFERENCE WORKORDER
 	const { data: dataReferenceWorkorder } = useQuery(GET_REFERENCE_WORKORDER)
 
-	console.log(`data reference workorder`, dataReferenceWorkorder)
-
 	const router = useRouter()
 	const setForm = useForm()
 	const { control, register, handleSubmit, setValue } = setForm
@@ -91,7 +89,6 @@ export default function Home() {
 	async function onSubmit(formData) {
 		setLoading(true)
 		try {
-			console.log(`form data`, formData)
 			const objArray = Object.keys(formData).map((i) => formData[i])
 
 			//get kode kota tujuan from daftar tujuan where nama tujuan = from data nama tujuan
@@ -137,7 +134,6 @@ export default function Home() {
 					status: ``
 				}
 			})
-			console.log(`myChildrenArray`, myChildrenArray)
 
 			//merge duplicate
 			const merged = myChildrenArray.reduce((acc, current) => {
@@ -154,8 +150,6 @@ export default function Home() {
 			const dataReference = dataReferenceWorkorder?.reference_workorder?.filter(
 				(item: any) => item.kode_tujuan === kode_kota_tujuan
 			)
-
-			console.log(`dataReference`, dataReference)
 
 			merged.map((item) => {
 				//if String(moment.unix(formData.tanggalb / 1000).format(`YY-MM`)) !== dataReference[0].tanggal_tahun then addleadingg zeros(1,4) else addleadingzeros(dataReference + 1,4)
@@ -194,8 +188,6 @@ export default function Home() {
 			}
 
 			updateData(dataReferenceWOupdate)
-
-			console.log(`dataReference`, dataReference)
 
 			//for each data in myChildrenArray create workorder
 			for (let i = 0; i < merged.length; i++) {

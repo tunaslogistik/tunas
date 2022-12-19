@@ -66,7 +66,6 @@ export default function SettingUserEdit() {
 		} else {
 			createData(dataSubmit)
 			message.success(`Data berhasil ditambahkan`)
-			console.log(`data`, data)
 			router.push(`/data/jenis-pengiriman`)
 		}
 	}

@@ -6,8 +6,8 @@ import {
 	Document,
 	Font,
 	Image,
-	Page,
 	PDFViewer,
+	Page,
 	StyleSheet,
 	Text,
 	View
@@ -148,8 +148,6 @@ export default function Home() {
 		)
 	})
 
-	console.log(`daftar_surat_jalan`, daftar_surat_jalan)
-
 	//get ttb number
 	const { data: dataTtb } = useQuery(GET_DAFTAR_TTB)
 
@@ -169,7 +167,6 @@ export default function Home() {
 		return item.nomor_ttb
 	})
 
-	console.log(`nomor ttb`, nomor_ttb)
 	//filter data by ttb number in nomor_ttb daftar_surat_jalan
 	const datadaftarTTB = dataTtb?.daftar_ttb?.filter((item) => {
 		return nomor_ttb?.includes(item.ttb_number)
@@ -217,8 +214,6 @@ export default function Home() {
 	const sumKoli = dataTTB?.reduce((acc, item) => {
 		return parseInt(acc) + parseInt(item.koli)
 	}, 0)
-
-	// console.log(`dataTTB`, dataTTB)
 
 	// const muatBarang = dataMuatBarang?.daftar_muat_barang.filter(
 	// 	(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number

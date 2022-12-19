@@ -5,8 +5,8 @@ import Dashboard from "@components/dashboard/Dashboard.component_print"
 import {
 	Document,
 	Image,
-	Page,
 	PDFViewer,
+	Page,
 	StyleSheet,
 	Text,
 	View
@@ -171,8 +171,6 @@ export default function Home() {
 		return nomor_ttb?.includes(item.ttb_number)
 	})
 
-	console.log(`data`, daftar_surat_jalan)
-
 	//datadaftarTTB map
 	const dataTTB = datadaftarTTB?.map((item) => {
 		return {
@@ -207,12 +205,9 @@ export default function Home() {
 			status: item.status
 		}
 	})
-	console.log(`dataTTB`, dataTTB)
 	const MuatBarang = dataDaftarMuatBarang?.daftar_muat_barang.filter(
 		(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number
 	)
-
-	console.log(`nama kapal`, MuatBarang)
 
 	const SuratJalan = dataDaftarSuratJalan?.daftar_surat_jalan.filter(
 		(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number

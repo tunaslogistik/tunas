@@ -3,7 +3,7 @@ import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import { DashboardContext } from "@contexts/DashboardContext.context"
-import { Button, message, Popconfirm } from "antd"
+import { Button, Popconfirm, message } from "antd"
 
 import moment from "moment"
 import Link from "next/link"
@@ -131,7 +131,6 @@ export default function Home() {
 		}
 		updateData(data)
 		message.success(`Data has been updated`)
-		console.log(`data update nya ialah : `, data)
 		//redirect to index
 		router.push(`/data/customer`)
 	}

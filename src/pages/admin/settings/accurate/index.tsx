@@ -83,7 +83,6 @@ export default function Home() {
 	//DATA FOR TABLE
 	const dataSource = filteredData ? filteredData : data?.accurate
 
-	console.log(`data`, data)
 	return (
 		<AdminPage
 			legend=""

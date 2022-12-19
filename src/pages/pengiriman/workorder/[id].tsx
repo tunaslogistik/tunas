@@ -6,7 +6,7 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import { DashboardContext } from "@contexts/DashboardContext.context"
 import { supabase } from "@utils/supabase"
-import { Button, message, Modal, Table } from "antd"
+import { Button, Modal, Table, message } from "antd"
 import TextArea from "antd/lib/input/TextArea"
 import moment from "moment"
 import Link from "next/link"
@@ -677,8 +677,6 @@ export default function SettingUserEdit() {
 			komentar: item.komentar_tiba_pelabuhan
 		}
 	})
-
-	console.log(`dataTibaPelabuhan`, dataTibaPelabuhan)
 
 	//map data muatan from data
 	const dataMuatan = data?.daftar_workorder?.map((item) => {

@@ -137,8 +137,6 @@ export default function Home() {
 
 	const datasource = mergeSimilarRows(dataTtbByNomorTtb)
 
-	console.log(`dataTtbByNomorTtb`, dataTtbByNomorTtb)
-
 	const columns2: ColumnsType<DataType> = [
 		{
 			title: `Penerima/alamat`,

@@ -202,7 +202,6 @@ export default function Home() {
 	}, [])
 	const dataMap = mergeData
 	const dataSource = dataMap
-	console.log(`data`, dataSource)
 	return (
 		<AdminPage
 			authId="daftar-surat-pengantar"

@@ -93,7 +93,6 @@ export default function Home() {
 	)
 	const isFullContainer = selectedTTB?.full_container
 
-	console.log(`isFullContainer`, isFullContainer)
 	async function onSubmit(formData) {
 		setLoading(true)
 		try {
@@ -192,8 +191,6 @@ export default function Home() {
 
 			const myChildrenArrayMerge2 = myChildrenArrayMerge.concat(temp2)
 
-			console.log(`myChildrenArray`, temp2)
-
 			//find mychildrenarraymerge2 koli and volume in ttb where
 
 			//sum koli
@@ -210,7 +207,6 @@ export default function Home() {
 				item.total_koli = String(sumKoli)
 				item.total_volume = String(sumVolume)
 			})
-			console.log(`myChildrenArrayMerge2`, myChildrenArrayMerge2)
 
 			const dataReference =
 				dataReferenceSuratJalan?.reference_surat_jalan?.filter(
@@ -343,8 +339,6 @@ export default function Home() {
 	}, [])
 
 	const ttb_number = selectednoTTBatas
-
-	console.log(`allNumber`, selectednoTTBA)
 
 	//get all ttb number in surat jalan
 	const getAllTTBNumber = data?.daftar_surat_jalan?.map((suratJalan) => {
