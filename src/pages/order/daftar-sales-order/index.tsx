@@ -10,7 +10,6 @@ import { useContext, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 //import icon icon-car.svg
 import Access from "@components/util/Access.component"
-import { watch } from "fs"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import Router from "next/router"
 
@@ -65,7 +64,7 @@ export default function Home() {
 	const { data, loading } = useQuery(GET_DATA)
 
 	useEffect(() => {
-		watch(data)
+		console.log(data)
 	}, [data])
 
 	//GET DAFTAR TUJUAN
