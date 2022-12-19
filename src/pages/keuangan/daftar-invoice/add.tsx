@@ -216,6 +216,14 @@ export default function Home() {
 		item.reduce((a, b) => parseInt(a) + parseInt(b), 0)
 	)
 
+	//sum sumHargaSatuan
+	const sumHargaSatuanSum = sumHargaSatuan?.reduce(
+		(a, b) => parseInt(a) + parseInt(b),
+		0
+	)
+
+	console.log(`sumHargaSatuasssn`, sumHargaSatuanSum)
+
 	const taxName = dataAccurate?.accurate?.map((tax) => {
 		return {
 			label: tax?.nama_barang,
@@ -298,6 +306,20 @@ export default function Home() {
 		}
 	})
 
+	//merge duplicate
+	const filteredSuratJalanSelect = filteredSuratJalan2?.reduce(
+		(acc, current) => {
+			const x = acc.find(
+				(item) => item.nomor_surat_jalan === current.nomor_surat_jalan
+			)
+			if (!x) {
+				return acc.concat([current])
+			} else {
+				return acc
+			}
+		},
+		[]
+	)
 	//watch kota_tujuan
 	const kota_tujuan = watch(`kota_tujuan`)
 
@@ -313,13 +335,28 @@ export default function Home() {
 	console.log(`kota_tujuan`, kota_tujuan)
 
 	//find data from filtered surat jalan where kota_tujuan = kota_tujuan
-	const filteredSuratJalan3 = filteredSuratJalan?.filter((item) => {
+	const filteredSuratJalan3 = filteredSuratJalanSelect?.filter((item) => {
 		if (kota_tujuan) {
 			return item.kota_tujuan === kota_tujuan
 		} else {
 			return item
 		}
 	})
+
+	//merge duplicate
+	const filteredSuratJalanSelect2 = filteredSuratJalan3?.reduce(
+		(acc, current) => {
+			const x = acc.find(
+				(item) => item.nomor_surat_jalan === current.nomor_surat_jalan
+			)
+			if (!x) {
+				return acc.concat([current])
+			} else {
+				return acc
+			}
+		},
+		[]
+	)
 
 	//handleChangeSJ
 	const handleChangeSJ = (value) => {
@@ -330,6 +367,15 @@ export default function Home() {
 			return item.nomor_surat_jalan === value
 		})
 
+		//temp nomor ttb
+		const ttb_temp = data?.daftar_surat_jalan
+			.filter((item) => {
+				return item.nomor_surat_jalan === value
+			})
+			.map((item) => item.nomor_ttb)
+
+		console.log(`nomorTTB`, ttb_temp)
+
 		//allTTB = nomorTTB[0].nomor_ttb
 		const allTTB = nomorTTB[0].nomor_ttb
 
@@ -338,10 +384,12 @@ export default function Home() {
 			?.filter((item) => allTTB?.includes(item.nomor_ttb))
 			.map((item) => item.nomor_sales_order)
 
-		//get total tagihan from sales order where nomor sales order = allSalesOrder
+		//get total tagihan from sales order where nomor ttb include ttb_temp
 		const totalTagihan = dataDaftarSalesOrder?.daftar_sales_order
-			?.filter((item) => allSalesOrder?.includes(item.nomor_sales_order))
-			.map((item) => item.total_harga_ttb)
+			?.filter((item) => ttb_temp?.includes(item.nomor_ttb))
+			.reduce((a, b) => parseInt(a) + parseInt(b.total_harga_ttb), 0)
+
+		console.log(`totalTagihan`, totalTagihan)
 
 		//get pengirim, penerima, kota tujuan, total volume where ttb_number = allTTB
 		const pengirim = dataDaftarTTB?.daftar_ttb
@@ -365,7 +413,7 @@ export default function Home() {
 		setValue(`penerima`, penerima[0])
 		setValue(`kota_tujuan`, kotaTujuan[0])
 		setValue(`total_volume_ttb`, totalVolume[0])
-		setValue(`tagihan`, totalTagihan[0])
+		setValue(`tagihan`, totalTagihan)
 	}
 
 	//handleChangeSJA
@@ -378,6 +426,13 @@ export default function Home() {
 			return item.nomor_surat_jalan === value
 		})
 
+		//temp nomor ttb
+		const ttb_temp = data?.daftar_surat_jalan
+			.filter((item) => {
+				return item.nomor_surat_jalan === value
+			})
+			.map((item) => item.nomor_ttb)
+
 		//allTTB = nomorTTB[0].nomor_ttb
 		const allTTB = nomorTTB[0].nomor_ttb
 
@@ -389,7 +444,7 @@ export default function Home() {
 		//get total tagihan from sales order where nomor sales order = allSalesOrder
 		const totalTagihan = dataDaftarSalesOrder?.daftar_sales_order
 			?.filter((item) => allSalesOrder?.includes(item.nomor_sales_order))
-			.map((item) => item.total_harga_ttb)
+			.reduce((a, b) => parseInt(a) + parseInt(b.total_harga_ttb), 0)
 
 		//get pengirim, penerima, kota tujuan, total volume where ttb_number = allTTB
 		const pengirim = dataDaftarTTB?.daftar_ttb
@@ -412,7 +467,7 @@ export default function Home() {
 		setValue(`penerimaA[${index}]`, penerima[0])
 		setValue(`kota_tujuanA[${index}]`, kotaTujuan[0])
 		setValue(`total_volume_ttbA[${index}]`, totalVolume[0])
-		setValue(`tagihanA[${index}]`, totalTagihan[0])
+		setValue(`tagihanA[${index}]`, totalTagihan)
 	}
 
 	//get nomor_ttb from surat jalan where nomor surat jalan = selectednoSJatas
@@ -446,6 +501,8 @@ export default function Home() {
 	)
 
 	const allHarga = watch(`tagihan`) ? watch(`tagihan`) : 0
+
+	console.log(`allHarga`, allHarga)
 	const allHargaA = watch(`tagihanA`) ? watch(`tagihanA`) : [0]
 
 	//merge
@@ -477,7 +534,6 @@ export default function Home() {
 	//if subtotal 2 nan set 0
 	const subTotal4 = isNaN(subTotal_awal) ? 0 : subTotal_awal
 
-	//get harga from newArray1 Harga and if ppn true then  Harga *( ppn /100)
 	const harga = newArray1?.map((item) => {
 		if (item.Harga === 0) {
 			return 0
@@ -490,12 +546,9 @@ export default function Home() {
 				const taxName = dataAccurate?.accurate?.find((tax) => {
 					return tax.kode_barang === item.tipe_ppn
 				})
-				return (
-					parseInt(item.Harga) +
-					(parseInt(item.Harga) *
-						Number(taxName?.taxName?.replace(/[^0-9]/g, ``))) /
-						100
-				)
+				return Number(taxName?.taxName?.replace(/[^0-9]/g, ``)) !== 0
+					? parseInt(item.Harga) + parseInt(item.Harga) * taxName?.taxName
+					: parseInt(item.Harga) + 0
 			} else {
 				return parseInt(item.Harga)
 			}
@@ -514,9 +567,11 @@ export default function Home() {
 	console.log(`Number(sumHargaSatuan)`, sum_total_ppn)
 
 	//if Number(sumHargaSatuan) = "nan" or undefined set 0
-	const sales_order_tambahan = isNaN(Number(sumHargaSatuan))
+	const sales_order_tambahan = isNaN(Number(sumHargaSatuanSum))
 		? 0
-		: Number(sumHargaSatuan)
+		: Number(sumHargaSatuanSum)
+
+	console.log(`sales_order_tambahan`, sales_order_tambahan)
 	//if Number(sumHargaSatuan) = "nan" or undefined set 0
 
 	const subTotal = subTotal1 + subTotal4 + sales_order_tambahan
@@ -816,7 +871,7 @@ export default function Home() {
 											? `Pilih Nomor Surat Jalan`
 											: selectednoSJatas}
 									</option>
-									{filteredSuratJalan2
+									{filteredSuratJalanSelect
 										?.map((ttb) => {
 											return (
 												<option
@@ -964,7 +1019,7 @@ export default function Home() {
 														? `Pilih Nomor Surat Jalan`
 														: selectednoSJA[index]}
 												</option>
-												{filteredSuratJalan3
+												{filteredSuratJalanSelect2
 													?.map((ttb) => {
 														return (
 															<option

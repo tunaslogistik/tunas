@@ -161,7 +161,7 @@ export default function Home() {
 
 			reset({ test })
 
-			refetch()
+			setLoading(false)
 		}
 	})
 

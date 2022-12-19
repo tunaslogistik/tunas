@@ -1,16 +1,17 @@
 import { gql, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
+import { DashboardContext } from "@contexts/DashboardContext.context"
 import { Table } from "antd"
-
 import { ColumnsType } from "antd/lib/table"
+import { GET_USERS } from "graphql/user/queries"
 import Link from "next/link"
-import router from "next/router"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { useForm } from "react-hook-form"
 //import icon icon-car.svg
 import Access from "@components/util/Access.component"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
+import Router from "next/router"
 
 //get DATA
 
@@ -50,6 +51,20 @@ interface DataType {
 }
 
 export default function Home() {
+	const { state: dashboardState } = useContext(DashboardContext)
+	const username = dashboardState.auth.username
+
+	//GET USERS
+	const { data: dataUsers } = useQuery(GET_USERS)
+
+	const role = dataUsers?.users?.user?.find(
+		(user) => user.username === username
+	)?.role
+
+	console.log(`role`, role)
+
+	console.log()
+
 	const { data, loading } = useQuery(GET_DATA)
 
 	//GET DAFTAR TUJUAN
@@ -221,10 +236,21 @@ export default function Home() {
 							onRow={(record) => {
 								return {
 									onClick: () => {
-										router.push(`/order/daftar-sales-order/${record.id}`)
+										Router.push(`/order/daftar-sales-order/${record.id}`)
 									}
 								}
 							}}
+							// onRow={(record, rowIndex) => {
+							// 	return {
+							// 		onClick: (event) => {
+							// 			if (username === `ei8-admin` || role === `superadmin`) {
+							// 				Router.push(`/order/daftar-sales-order/${record.id}`)
+							// 			} else {
+							// 				message.error(`Anda tidak memiliki akses ke menu ini`)
+							// 			}
+							// 		}
+							// 	}
+							// }}
 						/>
 					</div>
 				</div>

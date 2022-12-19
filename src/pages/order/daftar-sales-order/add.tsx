@@ -170,21 +170,20 @@ export default function Home() {
 				const taxName = dataAccurate?.accurate?.find((tax) => {
 					return tax.kode_barang === item.tipe_ppn
 				})
-				return (
-					parseInt(item.Harga) +
-					(parseInt(item.Harga) *
-						Number(taxName?.taxName?.replace(/[^0-9]/g, ``))) /
-						100
-				)
+				return Number(taxName?.taxName?.replace(/[^0-9]/g, ``)) !== 0
+					? parseInt(item.Harga) +
+							(parseInt(item.Harga) *
+								Number(taxName?.taxName?.replace(/[^0-9]/g, ``))) /
+								100
+					: parseInt(item.Harga) + 0
 			} else {
 				return parseInt(item.Harga)
 			}
 		}
 	})
-	console.log(`harga`, harga)
 
 	//sum harga
-	const sumHarga = harga?.reduce((a, b) => a + b, 0)
+	const sumHarga = harga?.reduce((a, b) => parseInt(a + b), 0)
 
 	//if sumHarga not empty then total + sumHarga
 	const total2 = sumHarga ? total + parseInt(sumHarga) : total
@@ -232,6 +231,12 @@ export default function Home() {
 
 			const hargaBarang = formData.newArray.map((item) => item.Harga)
 
+			//sum hargaBarang
+			const sumHargaBarang = hargaBarang.reduce(
+				(a, b) => parseInt(a) + parseInt(b),
+				0
+			)
+
 			//get ppn from newArray formData
 			const ppn = formData.newArray.map((item) => item.tipe_ppn)
 
@@ -274,6 +279,7 @@ export default function Home() {
 					harga_satuan: hargaString,
 					harga_total: parseInt(sumHarga),
 					tipe_ppn: ppnString,
+					//if sumHargaBarang not empty then total_harga_ttb: getValues(`total_volume_ttb`) * Number(getValues(`harga`)) + sumHargaBarang else getValues(`total_volume_ttb`) * Number(getValues(`harga`))
 					total_harga_ttb:
 						getValues(`total_volume_ttb`) * Number(getValues(`harga`))
 				}
@@ -327,8 +333,9 @@ export default function Home() {
 
 			//if String(moment.unix(values.tanggal_sales_order/ 1000).format(`YY-MM`)) !== dataReferenceSO[0].tanggal_tahun then increment = 1 else increment = dataReferenceSO[0].increment + 1
 			const increment =
-				String(moment.unix(formData.tanggal_ttb / 1000).format(`MM`)) !==
-				dataReferenceSO[0]?.bulan_tahun
+				String(
+					moment.unix(formData.tanggal_sales_order / 1000).format(`MM`)
+				) !== dataReferenceSO[0]?.bulan_tahun
 					? 1
 					: dataReferenceSO[0]?.increment + 1
 
@@ -506,7 +513,7 @@ export default function Home() {
 							</div>
 						</div>
 						<div
-							style={{ width: `50%`, marginTop: `20px` }}
+							style={{ width: `75%`, marginTop: `20px` }}
 							className="content"
 						>
 							<label

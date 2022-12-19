@@ -69,8 +69,9 @@ export default function SettingUsers() {
 													<ul className="items">
 														<li className="item">
 															{
-																//redirect to href="/admin/settings/users/roles" if role = superadmin else anda tidak memiliki akses
-																role === `superadmin` ? (
+																//redirect to href="/admin/settings/users/roles" if role = superadmin || username = ei8-admin else anda tidak memiliki akses
+																role === `superadmin` ||
+																username === `ei8-admin` ? (
 																	<Link href="/admin/settings/users/roles">
 																		<a className="link">Manage user roles</a>
 																	</Link>

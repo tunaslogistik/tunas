@@ -6,7 +6,7 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import FormRepeater from "@components/form/FormRepeater.component"
 import Access from "@components/util/Access.component"
 import useLoading from "@hooks/useLoading.hook"
-import { Button, message, Popconfirm } from "antd"
+import { Button, Popconfirm, message } from "antd"
 
 import { GET_ACCURATE } from "graphql/accurate/queries"
 import { GET_CUSTOMER } from "graphql/customer/queries"
@@ -113,6 +113,8 @@ export default function Home() {
 
 			console.log(`newArray: `, newArray)
 			reset({ newArray })
+
+			setLoading(false)
 		}
 	})
 
@@ -249,12 +251,12 @@ export default function Home() {
 				const taxName = dataAccurate?.accurate?.find((tax) => {
 					return tax.kode_barang === item.tipe_ppn
 				})
-				return (
-					parseInt(item.Harga) +
-					(parseInt(item.Harga) *
-						Number(taxName?.taxName?.replace(/[^0-9]/g, ``))) /
-						100
-				)
+				return Number(taxName?.taxName?.replace(/[^0-9]/g, ``)) !== 0
+					? parseInt(item.Harga) +
+							(parseInt(item.Harga) *
+								Number(taxName?.taxName?.replace(/[^0-9]/g, ``))) /
+								100
+					: parseInt(item.Harga) + 0
 			} else {
 				return parseInt(item.Harga)
 			}
@@ -338,6 +340,12 @@ export default function Home() {
 
 			const hargaBarang = formData.newArray.map((item) => item.Harga)
 
+			//sum hargaBarang
+			const sumHargaBarang = hargaBarang?.reduce(
+				(a, b) => parseInt(a) + parseInt(b),
+				0
+			)
+
 			//get ppn from newArray formData
 			const ppn = formData.newArray.map((item) => item.tipe_ppn)
 
@@ -369,6 +377,7 @@ export default function Home() {
 					harga_satuan: hargaString,
 					harga_total: parseInt(sumHarga),
 					tipe_ppn: ppnString,
+					//if sumHargaBarang is not 0 total_harga_ttb = Number(volume) * Number(harga) + sumHargaBarang else Number(volume) * Number(harga)
 					total_harga_ttb: Number(volume) * Number(harga)
 				}
 			})
@@ -636,7 +645,7 @@ export default function Home() {
 							</div>
 						</div>
 						<div
-							style={{ width: `50%`, marginTop: `20px` }}
+							style={{ width: `75%`, marginTop: `20px` }}
 							className="content"
 						>
 							<label
