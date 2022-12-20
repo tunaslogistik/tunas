@@ -5,9 +5,9 @@ import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import FormRepeater from "@components/form/FormRepeater.component"
 import Access from "@components/util/Access.component"
+import { DashboardContext } from "@contexts/DashboardContext.context"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, Popconfirm, message } from "antd"
-
 import { GET_ACCURATE } from "graphql/accurate/queries"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
@@ -15,7 +15,7 @@ import { GET_PENGATURAN } from "graphql/pengaturan/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import {
 	CREATE_DAFTAR_SALES_ORDER,
@@ -38,6 +38,7 @@ const GET_DATA = gql`
 			term_payment
 			nama_barang
 			harga_satuan
+			total_tagihan
 			tipe_ppn
 			total_harga_ttb
 		}
@@ -46,6 +47,12 @@ const GET_DATA = gql`
 
 export default function Home() {
 	const { setLoading } = useLoading()
+
+	const { state: dashboardState } = useContext(DashboardContext)
+
+	const username = dashboardState.auth.username
+
+	const role = dashboardState.auth.userRole?.name
 
 	const router = useRouter()
 	const id = router.query.id
@@ -412,25 +419,27 @@ export default function Home() {
 					auth="write:settings-users"
 					yes={
 						<ul className="actions">
-							<li className="action">
-								<Popconfirm
-									title="Are you sure delete this task?"
-									className="button is-primary"
-									onConfirm={() => deleteAll()}
-								>
-									<Button
-										type="primary"
-										style={{
-											backgroundColor: `white`,
-											borderColor: `black`,
-											color: `black`,
-											marginLeft: `1%`
-										}}
+							{role === `superadmin` || role === `Superadmin` ? (
+								<li className="action">
+									<Popconfirm
+										title="Are you sure delete this task?"
+										className="button is-primary"
+										onConfirm={() => deleteAll()}
 									>
-										Delete
-									</Button>
-								</Popconfirm>
-							</li>
+										<Button
+											type="primary"
+											style={{
+												backgroundColor: `white`,
+												borderColor: `black`,
+												color: `black`,
+												marginLeft: `1%`
+											}}
+										>
+											Delete
+										</Button>
+									</Popconfirm>
+								</li>
+							) : null}
 							<li className="action">
 								<button
 									className="button button-small button-white button-icon"
@@ -458,21 +467,23 @@ export default function Home() {
 									</i>
 								</button>
 							</li>
-							<li className="action">
-								<Button
-									key="submit"
-									htmlType="submit"
-									className="submit"
-									form="formSalesOrder"
-									style={{
-										backgroundColor: `black`,
-										borderColor: `black`
-									}}
-									type="primary"
-								>
-									Simpan
-								</Button>
-							</li>
+							{role === `superadmin` || role === `Superadmin` ? (
+								<li className="action">
+									<Button
+										key="submit"
+										htmlType="submit"
+										className="submit"
+										form="formSalesOrder"
+										style={{
+											backgroundColor: `black`,
+											borderColor: `black`
+										}}
+										type="primary"
+									>
+										Simpan
+									</Button>
+								</li>
+							) : null}
 						</ul>
 					}
 				/>

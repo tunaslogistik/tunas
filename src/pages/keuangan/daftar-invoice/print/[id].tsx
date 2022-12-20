@@ -303,11 +303,26 @@ export default function Home() {
 	//sum total harga + total tambahan
 	const total_tagihan_tambahan = total_harga + total_tambahan
 
+	//if daftar_invoice?.[0]?.harga_biaya_tambahan is Nan set 0
+	const tempHargaBiayaTambahan = isNaN(
+		daftar_invoice?.[0]?.harga_biaya_tambahan
+	)
+		? 0
+		: daftar_invoice?.[0]?.harga_biaya_tambahan
 	const total_tagihan_biaya_tambahan =
-		parseInt(totalTagihan) + parseInt(daftar_invoice?.[0]?.harga_biaya_tambahan)
+		parseInt(totalTagihan) + parseInt(tempHargaBiayaTambahan)
 
-	const total_ppn =
-		total_tagihan_biaya_tambahan - parseInt(total_tagihan_tambahan)
+	console.log(
+		`total_tagihan_biaya_tambahan`,
+		daftar_invoice?.[0]?.harga_biaya_tambahan
+	)
+
+	//if total_tagihan_biaya_tambahan is nan set 0
+	const tempTagihanBiayaTambahan = isNaN(total_tagihan_biaya_tambahan)
+		? 0
+		: total_tagihan_biaya_tambahan
+
+	const total_ppn = tempTagihanBiayaTambahan - parseInt(total_tagihan_tambahan)
 
 	// const muatBarang = dataMuatBarang?.daftar_muat_barang.filter(
 	// 	(item) => item.nomor_ttb === dataTTB?.[0]?.ttb_number

@@ -6,6 +6,7 @@ import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import FormRepeater from "@components/form/FormRepeater.component"
 import Access from "@components/util/Access.component"
+import { DashboardContext } from "@contexts/DashboardContext.context"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, Popconfirm, notification } from "antd"
 import { GET_ACCURATE } from "graphql/accurate/queries"
@@ -27,7 +28,7 @@ import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import moment from "moment"
 import Link from "next/link"
 import router from "next/router"
-import { useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 
 //get data
@@ -51,13 +52,18 @@ const GET_DATA = gql`
 `
 
 export default function Home() {
-	const formRef = useRef(null)
+	const { state: dashboardState } = useContext(DashboardContext)
+
+	const username = dashboardState.auth.username
+
+	const role = dashboardState.auth.userRole?.name
 
 	//id from router
 	const id = router.query.id
 
 	const setForm = useForm()
-	const { control, register, watch, handleSubmit, setValue, reset } = setForm
+	const { control, register, watch, handleSubmit, setValue, reset, getValues } =
+		setForm
 
 	const { setLoading } = useLoading()
 	const { data } = useQuery(GET_DATA)
@@ -167,6 +173,11 @@ export default function Home() {
 	const filteredData = dataDaftarInvoice?.daftar_invoice?.filter(
 		(item) => item.id === parseInt(id as string)
 	)
+
+	//get nomor_invoice but remove last number after slahs but not dont remove the slash itself
+	const nomor_invoice = filteredData?.[0]?.nomor_invoice.split(`/`)
+	//add slash to nomor_invoice2
+	const nomor_invoice2 = nomor_invoice?.slice(0, -1).join(`/`)
 
 	//get all data from datdaftarinvoice  where nomor_invoice = nomor_invoice
 	const mapInvoice = dataDaftarInvoice?.daftar_invoice.filter(
@@ -666,6 +677,9 @@ export default function Home() {
 			deleteData(item)
 		})
 	}
+
+	const nomor_update = String(nomor_invoice2 + `/` + watch(`nomor_invoice`))
+
 	const onSubmit = async (formData) => {
 		//merge formData.nomor_surat_jalanA and formData.nomor_surat_jalan
 		const nomorSuratJalan = [
@@ -697,7 +711,7 @@ export default function Home() {
 				//get id from dataDaftarInvoice where nomor_surat_jalan = selectednoSJA
 				id: parseInt(idInvoice),
 				nomor_surat_jalan: item,
-				nomor_invoice: formData.nomor_invoice,
+				nomor_invoice: String(nomor_update),
 				//find first nomor ttb from nomor surat jalan where nomor surat jalan = item
 				nomor_ttb: data?.daftar_surat_jalan
 					?.filter((item2) => item2.nomor_surat_jalan === item)
@@ -857,7 +871,6 @@ export default function Home() {
 				message: `Data berhasil dibuat`
 			})
 		}
-		//router push and refetch
 		router.push(`/keuangan/daftar-invoice`)
 	}
 	return (
@@ -876,27 +889,29 @@ export default function Home() {
 					auth="write:settings-users"
 					yes={
 						<ul className="actions">
-							<li className="action">
-								<Popconfirm
-									title="Are you sure delete this task?"
-									className="button is-primary"
-									onConfirm={() => {
-										deleteAllInvoice()
-									}}
-								>
-									<Button
-										type="primary"
-										style={{
-											backgroundColor: `white`,
-											borderColor: `black`,
-											color: `black`,
-											marginLeft: `1%`
+							{role === `superadmin` || role === `Superadmin` ? (
+								<li className="action">
+									<Popconfirm
+										title="Are you sure delete this task?"
+										className="button is-primary"
+										onConfirm={() => {
+											deleteAllInvoice()
 										}}
 									>
-										Delete
-									</Button>
-								</Popconfirm>
-							</li>
+										<Button
+											type="primary"
+											style={{
+												backgroundColor: `white`,
+												borderColor: `black`,
+												color: `black`,
+												marginLeft: `1%`
+											}}
+										>
+											Delete
+										</Button>
+									</Popconfirm>
+								</li>
+							) : null}
 							<li className="action">
 								<button
 									className="button button-small button-white button-icon"
@@ -924,21 +939,23 @@ export default function Home() {
 									</i>
 								</button>
 							</li>
-							<li className="action">
-								<Button
-									key="submit"
-									htmlType="submit"
-									className="submit"
-									form="formInvoice"
-									style={{
-										backgroundColor: `black`,
-										borderColor: `black`
-									}}
-									type="primary"
-								>
-									Simpan
-								</Button>
-							</li>
+							{role === `superadmin` || role === `Superadmin` ? (
+								<li className="action">
+									<Button
+										key="submit"
+										htmlType="submit"
+										className="submit"
+										form="formInvoice"
+										style={{
+											backgroundColor: `black`,
+											borderColor: `black`
+										}}
+										type="primary"
+									>
+										Simpan
+									</Button>
+								</li>
+							) : null}
 						</ul>
 					}
 				/>
@@ -951,18 +968,47 @@ export default function Home() {
 						onSubmit={handleSubmit(onSubmit)}
 						id="formInvoice"
 					>
-						{` `}
+						<label style={{ fontSize: `22px`, fontWeight: `bolder` }}>
+							Nomor Invoice
+						</label>
 						<div>
-							<label style={{ fontSize: `20px`, fontWeight: `bolder` }}>
-								Nomor Invoice
-							</label>
-							<br></br>
-							<input
-								type="text"
-								{...register(`nomor_invoice`)}
-								style={{ width: `100%` }}
-								defaultValue={filteredData?.[0]?.nomor_invoice}
-							/>
+							<div
+								className="form-group"
+								style={{
+									display: `inline-block`,
+									width: `calc(50% - 8px)`,
+									marginTop: `1%`
+								}}
+							>
+								<input
+									type="text"
+									className="form-control"
+									style={{ width: `100%` }}
+									defaultValue={nomor_invoice2}
+									readOnly
+									disabled
+								/>
+							</div>
+							<div
+								className="form-group"
+								style={{
+									display: `inline-block`,
+									width: `calc(50% - 8px)`,
+									margin: `0 8px`
+								}}
+							>
+								<input
+									type="text"
+									required
+									style={{ width: `100%` }}
+									{...register(`nomor_invoice`)}
+									defaultValue={
+										filteredData?.[0]?.nomor_invoice.split(`/`)[
+											filteredData?.[0]?.nomor_invoice.split(`/`).length - 1
+										]
+									}
+								/>
+							</div>
 						</div>
 						<br></br>
 						<label style={{ fontSize: `20px`, fontWeight: `bolder` }}>

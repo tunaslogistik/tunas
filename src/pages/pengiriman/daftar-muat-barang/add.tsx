@@ -820,7 +820,7 @@ export default function Home() {
 			if (check === undefined) {
 				message.success(`Data Berhasil Disimpan`)
 			}
-			// router.push(`/pengiriman/daftar-muat-barang`)
+			router.push(`/pengiriman/daftar-muat-barang`)
 		} catch (error) {
 			console.log(error)
 		}

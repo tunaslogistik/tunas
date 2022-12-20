@@ -8,7 +8,6 @@ import { DashboardContext } from "@contexts/DashboardContext.context"
 import { yupResolver } from "@hookform/resolvers/yup"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, Popconfirm, message } from "antd"
-
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import { GET_JENIS_PENGIRIMAN } from "graphql/jenis_pengiriman/queries"
@@ -52,6 +51,17 @@ const GET_DATA = gql`
 const schema = yup.object({})
 export default function Home() {
 	const { dispatch } = useContext(DashboardContext)
+
+	const { state: dashboardState } = useContext(DashboardContext)
+
+	const username = dashboardState.auth.username
+
+	const role = dashboardState.auth.userRole.name
+
+	console.log(`role: `, role)
+
+	console.log(`username: `, username)
+
 	const { setLoading } = useLoading()
 	const setForm = useForm({
 		resolver: yupResolver(schema)
@@ -270,25 +280,27 @@ export default function Home() {
 					auth="write:settings-users"
 					yes={
 						<ul className="actions">
-							<li className="action">
-								<Popconfirm
-									title="Are you sure delete this task?"
-									className="button is-primary"
-									onConfirm={() => deleteAll()}
-								>
-									<Button
-										type="primary"
-										style={{
-											backgroundColor: `white`,
-											borderColor: `black`,
-											color: `black`,
-											marginLeft: `1%`
-										}}
+							{role === `superadmin` || role === `Superadmin` ? (
+								<li className="action">
+									<Popconfirm
+										title="Are you sure delete this task?"
+										className="button is-primary"
+										onConfirm={() => deleteAll()}
 									>
-										Delete
-									</Button>
-								</Popconfirm>
-							</li>
+										<Button
+											type="primary"
+											style={{
+												backgroundColor: `white`,
+												borderColor: `black`,
+												color: `black`,
+												marginLeft: `1%`
+											}}
+										>
+											Delete
+										</Button>
+									</Popconfirm>
+								</li>
+							) : null}
 							<li className="action">
 								<button
 									className="button button-small button-white button-icon"
@@ -314,21 +326,23 @@ export default function Home() {
 									</i>
 								</button>
 							</li>
-							<li className="action">
-								<Button
-									key="submit"
-									htmlType="submit"
-									className="submit"
-									form="formTTB"
-									style={{
-										backgroundColor: `black`,
-										borderColor: `black`
-									}}
-									type="primary"
-								>
-									Simpan
-								</Button>
-							</li>
+							{role === `superadmin` || role === `Superadmin` ? (
+								<li className="action">
+									<Button
+										key="submit"
+										htmlType="submit"
+										className="submit"
+										form="formTTB"
+										style={{
+											backgroundColor: `black`,
+											borderColor: `black`
+										}}
+										type="primary"
+									>
+										Simpan
+									</Button>
+								</li>
+							) : null}
 						</ul>
 					}
 				/>
