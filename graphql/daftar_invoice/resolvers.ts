@@ -1,6 +1,5 @@
 import moment from "moment"
 import { Context } from "../context"
-import { daftar_invoice } from "./index"
 
 const queries = {
 	daftar_invoice: (_parent, _args, context: Context) => {
@@ -45,11 +44,14 @@ const mutations = {
 
 			//for jenis_biaya_tambahan.length push to data.detailItem
 			for (let i = 0; i < jenis_biaya_tambahan.length; i++) {
-				data.detailItem.push({
-					itemNo: jenis_biaya_tambahan[i],
-					unitPrice: harga[i],
-					departmentName: departmentName
-				})
+				//if jenis_biaya_tambahan[i] !== "" push to data.detailItem
+				if (jenis_biaya_tambahan[i] !== ``) {
+					data.detailItem.push({
+						itemNo: jenis_biaya_tambahan[i],
+						unitPrice: harga[i],
+						departmentName
+					})
+				}
 			}
 
 			// make POST FUNCTION  axios
@@ -70,7 +72,7 @@ const mutations = {
 			args.input.id = idInvoice
 			const daftar_invoice = await context.prisma.daftar_invoice.createMany({
 				data: args.input.map((item) => ({
-					id: response.data.r.id,
+					id: idInvoice,
 					nomor_invoice: item.nomor_invoice,
 					nomor_surat_jalan: item.nomor_surat_jalan,
 					nomor_ttb: item.nomor_ttb,
@@ -117,15 +119,8 @@ const mutations = {
 				daftar_invoice
 			}
 		} catch (error) {
-			//catch data and error
 			console.log(error)
-			return {
-				code: `500`,
-				success: false,
-				message: `Failed to create new user`,
-				error: error,
-				daftar_invoice
-			}
+			throw new Error(error)
 		}
 		// else {
 		// 	try {
