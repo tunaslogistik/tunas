@@ -4,7 +4,7 @@ import Dashboard from "@components/dashboard/Dashboard.component"
 import { Table } from "antd"
 
 import { ColumnsType } from "antd/lib/table"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 //import icon icon-car.svg
 import Access from "@components/util/Access.component"
@@ -56,7 +56,10 @@ interface DataType {
 }
 
 export default function Home() {
-	const { data, loading } = useQuery(GET_DATA, { fetchPolicy: `no-cache` })
+	const { data, loading, refetch } = useQuery(GET_DATA, {
+		fetchPolicy: `no-cache`,
+		nextFetchPolicy: `no-cache`
+	})
 	//GET DAftar ttb
 	const { data: dataTTB } = useQuery(GET_DAFTAR_TTB)
 
@@ -65,6 +68,12 @@ export default function Home() {
 
 	const setForm = useForm()
 
+	//useEffect refetch
+	useEffect(() => {
+		refetch()
+		console.log(data)
+	}, [data])
+
 	//search
 	const [search, setSearch] = useState(``)
 	const handleSearch = (e) => {
@@ -72,10 +81,7 @@ export default function Home() {
 	}
 	//make filtered data
 	const filteredData = data?.daftar_invoice.filter((item) => {
-		return (
-			item.nomor_invoice.toLowerCase().includes(search.toLowerCase()) ||
-			item.kota_tujuan.toLowerCase().includes(search.toLowerCase())
-		)
+		return item.nomor_invoice.toLowerCase().includes(search.toLowerCase())
 	})
 	//make antd table with search
 	const columns: ColumnsType<DataType> = [

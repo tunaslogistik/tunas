@@ -787,7 +787,7 @@ export default function Home() {
 									className="input"
 									type="text"
 									placeholder="nama kapal"
-									value={filterDaftarMuatBarang?.[0]?.nama_kapal}
+									defaultValue={filterDaftarMuatBarang?.[0]?.nama_kapal}
 									{...register(`nama_kapal`)}
 									required
 								/>

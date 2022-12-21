@@ -17,6 +17,7 @@ import { UPDATE_REFERENCE_INVOICE } from "graphql/reference_invoice/mutations"
 import { GET_REFERENCE_INVOICE } from "graphql/reference_invoice/queries"
 import moment from "moment"
 import Link from "next/link"
+import router from "next/router"
 import { useEffect, useRef, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 
@@ -777,21 +778,22 @@ export default function Home() {
 		)
 
 		if (dataInvoiceExist.length === 0) {
+			setLoading(true)
 			createDataInvoice(dataInvoice)
 			notification.success({
 				message: `Berhasil Menambahkan Invoice`,
 				description: `Lakukan Refresh Jika Tidak Muncul`
 			})
 			//redirect to daftar invoice and reload page
-			// router.push(`/keuangan/daftar-invoice`)
+
+			setLoading(false)
+			router.push(`/keuangan/daftar-invoice`)
 		} else {
 			notification.error({
 				message: `Gagal`,
 				description: `Nomor surat jalan sudah ada Invoice`
 			})
 		}
-		//set loading
-		setLoading(false)
 	}
 
 	return (
