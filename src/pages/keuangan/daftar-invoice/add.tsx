@@ -748,6 +748,8 @@ export default function Home() {
 			}
 		})
 
+		console.log(`dataInvoice`, dataInvoice)
+
 		const increment =
 			String(moment.unix(formData.tanggal_invoice / 1000).format(`MM`)) !==
 			dataReference[0]?.bulan_tahun
