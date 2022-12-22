@@ -56,7 +56,7 @@ export default function Home() {
 
 	const username = dashboardState.auth.username
 
-	const role = dashboardState.auth.userRole.name
+	const role = dashboardState.auth.userRole?.name
 
 	console.log(`role: `, role)
 
@@ -280,7 +280,7 @@ export default function Home() {
 					auth="write:settings-users"
 					yes={
 						<ul className="actions">
-							{role === `superadmin` || role === `Superadmin` ? (
+							{role === `superadmin` || role === `Super Admin` ? (
 								<li className="action">
 									<Popconfirm
 										title="Are you sure delete this task?"
@@ -326,7 +326,7 @@ export default function Home() {
 									</i>
 								</button>
 							</li>
-							{role === `superadmin` || role === `Superadmin` ? (
+							{role === `superadmin` || role === `Super Admin` ? (
 								<li className="action">
 									<Button
 										key="submit"

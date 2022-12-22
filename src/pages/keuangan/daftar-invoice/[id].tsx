@@ -889,7 +889,7 @@ export default function Home() {
 					auth="write:settings-users"
 					yes={
 						<ul className="actions">
-							{role === `superadmin` || role === `Superadmin` ? (
+							{role === `superadmin` || role === `Super Admin` ? (
 								<li className="action">
 									<Popconfirm
 										title="Are you sure delete this task?"
@@ -939,7 +939,7 @@ export default function Home() {
 									</i>
 								</button>
 							</li>
-							{role === `superadmin` || role === `Superadmin` ? (
+							{role === `superadmin` || role === `Super Admin` ? (
 								<li className="action">
 									<Button
 										key="submit"
