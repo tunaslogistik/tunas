@@ -155,10 +155,10 @@ export default function Home() {
 					nomor_telepon: formData.nomor_telepon,
 					nama_barang: datum.nama_barang,
 					container_size: String(formData.container_size),
-					panjang: parseInt(datum.panjang),
-					lebar: parseInt(datum.lebar),
-					tinggi: parseInt(datum.tinggi),
-					koli: parseInt(datum.koli),
+					panjang: String(datum.panjang),
+					lebar: String(datum.lebar),
+					tinggi: String(datum.tinggi),
+					koli: String(datum.koli),
 					total_volume: sum,
 					alamat_tujuan: formData.alamat_tujuan,
 					status: `TTB`,
@@ -280,7 +280,9 @@ export default function Home() {
 					auth="write:settings-users"
 					yes={
 						<ul className="actions">
-							{role === `superadmin` || role === `Super Admin` ? (
+							{role === `superadmin` ||
+							role === `Superadmin` ||
+							role === `Super Admin` ? (
 								<li className="action">
 									<Popconfirm
 										title="Are you sure delete this task?"
@@ -326,7 +328,9 @@ export default function Home() {
 									</i>
 								</button>
 							</li>
-							{role === `superadmin` || role === `Super Admin` ? (
+							{role === `superadmin` ||
+							role === `Superadmin` ||
+							role === `Super Admin` ? (
 								<li className="action">
 									<Button
 										key="submit"

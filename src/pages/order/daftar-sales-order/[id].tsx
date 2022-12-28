@@ -355,6 +355,8 @@ export default function Home() {
 			//join ppn into 1 string with ,
 			const ppnString = ppn.join(`,`)
 
+			const total_harga_ttb = Number(volume) * Number(harga)
+
 			const myChildrenArray = objArray.map((item) => {
 				return {
 					nomor_ttb: formData.nomor_ttb,
@@ -362,8 +364,8 @@ export default function Home() {
 					total_volume: parseInt(formData.total_volume_ttb),
 					harga: parseInt(formData.harga),
 					pengirim: formData.pengirim,
-					harga_sesudah_ppn: harga_sesudah_ppn,
-					total_tagihan: totalTagihan,
+					harga_sesudah_ppn: parseInt(harga_sesudah_ppn as any),
+					total_tagihan: parseInt(totalTagihan as any),
 					kota_tujuan: formData.kota_tujuan,
 					rekening: formData.rekening,
 					dp: parseInt(formData.dp),
@@ -375,7 +377,7 @@ export default function Home() {
 					harga_total: parseInt(sumHarga),
 					tipe_ppn: ppnString,
 					//if sumHargaBarang is not 0 total_harga_ttb = Number(volume) * Number(harga) + sumHargaBarang else Number(volume) * Number(harga)
-					total_harga_ttb: Number(volume) * Number(harga)
+					total_harga_ttb: parseInt(total_harga_ttb as any)
 				}
 			})
 
@@ -419,7 +421,9 @@ export default function Home() {
 					auth="write:settings-users"
 					yes={
 						<ul className="actions">
-							{role === `superadmin` || role === `Super Admin` ? (
+							{role === `superadmin` ||
+							role === `Superadmin` ||
+							role === `Super Admin` ? (
 								<li className="action">
 									<Popconfirm
 										title="Are you sure delete this task?"
@@ -467,7 +471,9 @@ export default function Home() {
 									</i>
 								</button>
 							</li>
-							{role === `superadmin` || role === `Super Admin` ? (
+							{role === `superadmin` ||
+							role === `Superadmin` ||
+							role === `Super Admin` ? (
 								<li className="action">
 									<Button
 										key="submit"

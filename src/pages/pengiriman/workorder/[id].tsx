@@ -30,6 +30,8 @@ const GET_DATA = gql`
 			komentar_tiba_pelabuhan
 			komentar_muatan
 			komentar_destinasi
+			komentar_kapal_sandar
+			komentar_barang_terkirim
 			tanggal_wo
 			tanggal_container
 			tanggal_muat_barang
@@ -37,6 +39,8 @@ const GET_DATA = gql`
 			tanggal_tiba_pelabuhan
 			tanggal_muatan
 			tanggal_destinasi
+			tanggal_kapal_sandar
+			tanggal_barang_terkirim
 			nomor_kendaraan
 			nama_supir
 			nama_kenek
@@ -48,6 +52,8 @@ const GET_DATA = gql`
 			photo_surat_jalan_pabrik
 			photo_surat_pengantar
 			photo_seal_pelabuhan
+			photo_kapal_sandar
+			photo_barang_terkirim
 			nama_kapal
 			status
 		}
@@ -77,7 +83,8 @@ export default function SettingUserEdit() {
 	const { register } = setForm
 
 	const { data } = useQuery(GET_DATA, {
-		variables: { id: parseInt(id as string) }
+		variables: { id: parseInt(id as string) },
+		pollInterval: 100
 	})
 
 	const [updateDaftrWorkorder] = useMutation(UPDATE_DAFTAR_WORKORDER, {
@@ -119,6 +126,10 @@ export default function SettingUserEdit() {
 	const [komentarMuatan, setKomentarMuatan] = useState(``)
 	//set komentar destinasi
 	const [komentarDestinasi, setKomentarDestinasi] = useState(``)
+	//set komentar Kapal Sandar
+	const [komentarKapalSandar, setKomentarKapalSandar] = useState(``)
+	//set komentar terkirim
+	const [komentarTerkirim, setKomentarTerkirim] = useState(``)
 
 	//handle upload image
 	const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -341,12 +352,39 @@ export default function SettingUserEdit() {
 		message.success(`Upload berhasil`)
 	}
 
-	// photo_container
-	// photo_seal_pelabuhan
-	// photo_surat_jalan
-	// 	photo_muat_barang
-	// 	photo_seal_muatan
-	// 	photo_seal_destinasi
+	const handleUploadKapalSandar = async (e: ChangeEvent<HTMLInputElement>) => {
+		setFile(setForm.getValues(`photo_kapal_sandar`))
+
+		const datas = {
+			id: parseInt(id as string),
+			komentar_kapal_sandar: komentarKapalSandar,
+			//new date
+			tanggal_kapal_sandar: moment().format(`YYYY-MM-DD HH:mm:ss`),
+			status: `Kapal_Sandar`
+		}
+
+		updateData(datas)
+
+		message.success(`Upload berhasil`)
+	}
+
+	const handleUploadBarangTerkirim = async (
+		e: ChangeEvent<HTMLInputElement>
+	) => {
+		setFile(setForm.getValues(`photo_barang_terkirim`))
+
+		const datas = {
+			id: parseInt(id as string),
+			komentar_barang_terkirim: komentarTerkirim,
+			//new date
+			tanggal_barang_terkirim: moment().format(`YYYY-MM-DD HH:mm:ss`),
+			status: `barang_terkirim`
+		}
+
+		updateData(datas)
+
+		message.success(`Upload berhasil`)
+	}
 
 	//pop up modal
 	const [visibleContainer, setVisibleContainer] = useState(false)
@@ -360,6 +398,10 @@ export default function SettingUserEdit() {
 	const [visibleMuatan, setVisibleMuatan] = useState(false)
 	//visible destinasi
 	const [visibleDestinasi, setVisibleDestinasi] = useState(false)
+	//visible kapal sandar
+	const [visibleKapalSandar, setVisibleKapalSandar] = useState(false)
+	//visible terkirim
+	const [visibleTerkirim, setVisibleTerkirim] = useState(false)
 	//visible message
 	const [visibleMessage, setVisibleMessage] = useState(false)
 
@@ -381,6 +423,8 @@ export default function SettingUserEdit() {
 		setVisibleTibaPelabuhan(false)
 		setVisibleMuatan(false)
 		setVisibleDestinasi(false)
+		setVisibleKapalSandar(false)
+		setVisibleTerkirim(false)
 		setVisibleMessage(false)
 	}
 
@@ -417,6 +461,20 @@ export default function SettingUserEdit() {
 		let e
 		handleUploadDestinasi(e)
 		setVisibleDestinasi(false)
+	}
+
+	const handleOkSandar = () => {
+		//handle upload image
+		let e
+		handleUploadKapalSandar(e)
+		setVisibleKapalSandar(false)
+	}
+
+	const handleOkTerkirim = () => {
+		//handle upload image
+		let e
+		handleUploadBarangTerkirim(e)
+		setVisibleTerkirim(false)
 	}
 
 	const columns = [
@@ -699,6 +757,27 @@ export default function SettingUserEdit() {
 			komentar: item.komentar_destinasi
 		}
 	})
+
+	//map data kapal sandar
+	const dataKapalSandar = data?.daftar_workorder?.map((item) => {
+		return {
+			key: item.id,
+			status: `KAPAL SANDAR`,
+			tanggal: item.tanggal_kapal_sandar,
+			komentar: item.komentar_kapal_sandar
+		}
+	})
+
+	//map data barang terkirim
+	const dataBarangTerkirim = data?.daftar_workorder?.map((item) => {
+		return {
+			key: item.id,
+			status: `BARANG TERKIRIM`,
+			tanggal: item.tanggal_barang_terkirim,
+			komentar: item.komentar_barang_terkirim
+		}
+	})
+
 	return (
 		<AdminPage
 			parent={
@@ -745,6 +824,14 @@ export default function SettingUserEdit() {
 											data?.daftar_workorder[0]?.status === `pindah_muatan`
 										) {
 											setVisibleDestinasi(true)
+										} else if (
+											data?.daftar_workorder[0]?.status === `destinasi`
+										) {
+											setVisibleKapalSandar(true)
+										} else if (
+											data?.daftar_workorder[0]?.status === `Kapal_Sandar`
+										) {
+											setVisibleTerkirim(true)
 										} else {
 											setVisibleMessage(true)
 										}
@@ -891,6 +978,20 @@ export default function SettingUserEdit() {
 						dataSource={dataDestinasi}
 						pagination={false}
 					/>
+					<Table
+						rowKey={(record) => record.id}
+						showHeader={false}
+						columns={columns}
+						dataSource={dataKapalSandar}
+						pagination={false}
+					/>
+					<Table
+						rowKey={(record) => record.id}
+						showHeader={false}
+						columns={columns}
+						dataSource={dataBarangTerkirim}
+						pagination={false}
+					/>
 					<form id="formWorkorder">
 						<Modal
 							title="Upload Photo Container"
@@ -898,15 +999,17 @@ export default function SettingUserEdit() {
 							onOk={handleOkContainer}
 							onCancel={handleCancel}
 						>
-							<p
-								style={{
-									marginTop: `3px`,
-									fontWeight: `bold`,
-									marginBottom: `-2px`
-								}}
-							>
-								Photo Container
-							</p>
+							<div>
+								<p
+									style={{
+										marginTop: `3px`,
+										fontWeight: `bold`,
+										marginBottom: `-2px`
+									}}
+								>
+									Photo Container
+								</p>
+							</div>
 							<input
 								type="file"
 								name="photo_container"
@@ -914,15 +1017,17 @@ export default function SettingUserEdit() {
 									setFile(e.target.files[0])
 								}}
 							/>
-							<p
-								style={{
-									marginTop: `3px`,
-									fontWeight: `bold`,
-									marginBottom: `-2px`
-								}}
-							>
-								Photo Seal
-							</p>
+							<div>
+								<p
+									style={{
+										marginTop: `3px`,
+										fontWeight: `bold`,
+										marginBottom: `-2px`
+									}}
+								>
+									Photo Seal
+								</p>
+							</div>
 							<input
 								type="file"
 								name="photo_container_seal"
@@ -930,6 +1035,17 @@ export default function SettingUserEdit() {
 									setPhotoSeal(e.target.files[0])
 								}}
 							/>
+							<div>
+								<p
+									style={{
+										marginTop: `3px`,
+										fontWeight: `bold`,
+										marginBottom: `-2px`
+									}}
+								>
+									Keterangan
+								</p>
+							</div>
 							<TextArea
 								name="photo_container"
 								placeholder="Photo Container"
@@ -946,15 +1062,17 @@ export default function SettingUserEdit() {
 							onOk={handleOkMuatBarang}
 							onCancel={handleCancel}
 						>
-							<p
-								style={{
-									marginTop: `3px`,
-									fontWeight: `bold`,
-									marginBottom: `-2px`
-								}}
-							>
-								Photo Surat Pengantar
-							</p>
+							<div>
+								<p
+									style={{
+										marginTop: `3px`,
+										fontWeight: `bold`,
+										marginBottom: `-2px`
+									}}
+								>
+									Photo Surat Pengantar
+								</p>
+							</div>
 							<input
 								type="file"
 								name="photo_surat_pengantar"
@@ -962,15 +1080,17 @@ export default function SettingUserEdit() {
 									setFile(e.target.files[0])
 								}}
 							/>
-							<p
-								style={{
-									marginTop: `3px`,
-									fontWeight: `bold`,
-									marginBottom: `-2px`
-								}}
-							>
-								Photo Surat Jalan Pabrik
-							</p>
+							<div>
+								<p
+									style={{
+										marginTop: `3px`,
+										fontWeight: `bold`,
+										marginBottom: `-2px`
+									}}
+								>
+									Photo Surat Jalan Pabrik
+								</p>
+							</div>
 							<input
 								type="file"
 								name="photo_surat_jalan_pabrik"
@@ -1010,15 +1130,17 @@ export default function SettingUserEdit() {
 							onOk={handleOkTibaPelabuhan}
 							onCancel={handleCancel}
 						>
-							<p
-								style={{
-									marginTop: `3px`,
-									fontWeight: `bold`,
-									marginBottom: `-2px`
-								}}
-							>
-								Photo Surat Jalan Stackful
-							</p>
+							<div>
+								<p
+									style={{
+										marginTop: `3px`,
+										fontWeight: `bold`,
+										marginBottom: `-2px`
+									}}
+								>
+									Photo Surat Jalan Stackful
+								</p>
+							</div>
 							<input
 								type="file"
 								name="photo_surat_jalan_stackful"
@@ -1026,15 +1148,17 @@ export default function SettingUserEdit() {
 									setFile(e.target.files[0])
 								}}
 							/>
-							<p
-								style={{
-									marginTop: `3px`,
-									fontWeight: `bold`,
-									marginBottom: `-2px`
-								}}
-							>
-								Photo Seal Pelabuhan
-							</p>
+							<div>
+								<p
+									style={{
+										marginTop: `3px`,
+										fontWeight: `bold`,
+										marginBottom: `-2px`
+									}}
+								>
+									Photo Seal Pelabuhan
+								</p>
+							</div>
 							<input
 								type="file"
 								name="photo_seal_pelabuhan"
@@ -1042,6 +1166,17 @@ export default function SettingUserEdit() {
 									setPhotoSealPelabuhan(e.target.files[0])
 								}}
 							/>
+							<div>
+								<p
+									style={{
+										marginTop: `3px`,
+										fontWeight: `bold`,
+										marginBottom: `-2px`
+									}}
+								>
+									Keterangan
+								</p>
+							</div>
 							<TextArea
 								name="komentar_tiba_pelabuhan"
 								placeholder="Komentar Tiba Pelabuhan"
@@ -1058,20 +1193,22 @@ export default function SettingUserEdit() {
 							onOk={handleOkMuatan}
 							onCancel={handleCancel}
 						>
-							<p
-								style={{
-									marginTop: `3px`,
-									fontWeight: `bold`,
-									marginBottom: `-2px`
-								}}
-							>
-								Nama Kapal
-							</p>
+							<div>
+								<p
+									style={{
+										marginTop: `3px`,
+										fontWeight: `bold`,
+										marginBottom: `-2px`
+									}}
+								>
+									Nama Kapal
+								</p>
+							</div>
 							<input
 								type="text"
 								name="nama_kapal"
 								placeholder="Nama Kapal"
-								style={{ marginTop: `10px` }}
+								style={{ marginTop: `10px`, width: `100%` }}
 								{...register(`nama_kapal`)}
 								onChange={(e) => {
 									setNamaKapal(e.target.value)
@@ -1102,15 +1239,17 @@ export default function SettingUserEdit() {
 							onOk={handleOkDestinasi}
 							onCancel={handleCancel}
 						>
-							<p
-								style={{
-									marginTop: `3px`,
-									fontWeight: `bold`,
-									marginBottom: `-2px`
-								}}
-							>
-								Keterangan
-							</p>
+							<div>
+								<p
+									style={{
+										marginTop: `3px`,
+										fontWeight: `bold`,
+										marginBottom: `-2px`
+									}}
+								>
+									Keterangan
+								</p>
+							</div>
 							<TextArea
 								name="photo_seal_destinasi"
 								placeholder="Photo Seal Destinasi"
@@ -1118,6 +1257,60 @@ export default function SettingUserEdit() {
 								{...register(`photo_seal_destinasi`)}
 								onChange={(e) => {
 									setKomentarDestinasi(e.target.value)
+								}}
+							/>
+						</Modal>
+						<Modal
+							title="Upload Photo"
+							visible={visibleKapalSandar}
+							onOk={handleOkSandar}
+							onCancel={handleCancel}
+						>
+							<div>
+								<p
+									style={{
+										marginTop: `3px`,
+										fontWeight: `bold`,
+										marginBottom: `-2px`
+									}}
+								>
+									Keterangan
+								</p>
+							</div>
+							<TextArea
+								name="photo_kapal_sandar"
+								placeholder=""
+								style={{ marginTop: `10px` }}
+								{...register(`photo_kapal_sandar`)}
+								onChange={(e) => {
+									setKomentarKapalSandar(e.target.value)
+								}}
+							/>
+						</Modal>
+						<Modal
+							title="Upload Photo"
+							visible={visibleTerkirim}
+							onOk={handleOkTerkirim}
+							onCancel={handleCancel}
+						>
+							<div>
+								<p
+									style={{
+										marginTop: `3px`,
+										fontWeight: `bold`,
+										marginBottom: `-2px`
+									}}
+								>
+									Keterangan
+								</p>
+							</div>
+							<TextArea
+								name="photo_barang_terkirim"
+								placeholder=""
+								style={{ marginTop: `10px` }}
+								{...register(`photo_barang_terkirim`)}
+								onChange={(e) => {
+									setKomentarTerkirim(e.target.value)
 								}}
 							/>
 						</Modal>
@@ -1133,7 +1326,9 @@ export default function SettingUserEdit() {
 								top: `30%`
 							}}
 						>
-							<p>Work Order Telah Selesai, Silahkan Akses Menu Lain</p>
+							<div>
+								<p>Work Order Telah Selesai, Silahkan Akses Menu Lain</p>
+							</div>
 						</Modal>
 					</form>
 				</div>

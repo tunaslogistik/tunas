@@ -14,6 +14,8 @@ export const types = gql`
 		komentar_tiba_pelabuhan: String
 		komentar_muatan: String
 		komentar_destinasi: String
+		komentar_kapal_sandar: String
+		komentar_barang_terkirim: String
 		tanggal_wo: String
 		tanggal_container: String
 		tanggal_muat_barang: String
@@ -21,6 +23,8 @@ export const types = gql`
 		tanggal_tiba_pelabuhan: String
 		tanggal_muatan: String
 		tanggal_destinasi: String
+		tanggal_kapal_sandar: String
+		tanggal_barang_terkirim: String
 		nomor_kendaraan: String
 		nama_supir: String
 		nama_kenek: String
@@ -32,6 +36,8 @@ export const types = gql`
 		photo_surat_jalan_pabrik: String
 		photo_surat_pengantar: String
 		photo_seal_pelabuhan: String
+		photo_kapal_sandar: String
+		photo_barang_terkirim: String
 		nama_kapal: String
 		status: String
 	}
@@ -53,6 +59,8 @@ export const types = gql`
 		komentar_tiba_pelabuhan: String
 		komentar_muatan: String
 		komentar_destinasi: String
+		komentar_kapal_sandar: String
+		komentar_barang_terkirim: String
 		tanggal_wo: String
 		tanggal_container: String
 		tanggal_muat_barang: String
@@ -60,6 +68,8 @@ export const types = gql`
 		tanggal_tiba_pelabuhan: String
 		tanggal_muatan: String
 		tanggal_destinasi: String
+		tanggal_kapal_sandar: String
+		tanggal_barang_terkirim: String
 		nomor_kendaraan: String
 		nama_supir: String
 		nama_kenek: String
@@ -71,6 +81,8 @@ export const types = gql`
 		photo_surat_jalan_pabrik: String
 		photo_surat_pengantar: String
 		photo_seal_pelabuhan: String
+		photo_kapal_sandar: String
+		photo_barang_terkirim: String
 		nama_kapal: String
 		status: String
 	}
@@ -88,6 +100,8 @@ export const types = gql`
 		komentar_tiba_pelabuhan: String
 		komentar_muatan: String
 		komentar_destinasi: String
+		komentar_kapal_sandar: String
+		komentar_barang_terkirim: String
 		tanggal_wo: String
 		tanggal_container: String
 		tanggal_muat_barang: String
@@ -95,6 +109,8 @@ export const types = gql`
 		tanggal_tiba_pelabuhan: String
 		tanggal_muatan: String
 		tanggal_destinasi: String
+		tanggal_kapal_sandar: String
+		tanggal_barang_terkirim: String
 		nomor_kendaraan: String
 		nama_supir: String
 		nama_kenek: String
@@ -106,6 +122,8 @@ export const types = gql`
 		photo_surat_jalan_pabrik: String
 		photo_surat_pengantar: String
 		photo_seal_pelabuhan: String
+		photo_kapal_sandar: String
+		photo_barang_terkirim: String
 		nama_kapal: String
 		status: String
 	}

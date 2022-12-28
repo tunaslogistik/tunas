@@ -682,7 +682,10 @@ export default function Home() {
 										borderRight: `1px solid #000000`
 									}}
 								>
-									{item.volume}
+									{
+										// volume only 4 digit
+										item.volume?.toFixed(5)
+									}
 								</Text>
 								<Text
 									style={{

@@ -9,14 +9,14 @@ export const types = gql`
 		tanggal_diterima: String
 		nama_penerima: String
 		jenis_pengiriman: String
-		total_volume: Int
+		total_volume: String
 		nomor_telepon: String
 		nama_barang: String
 		container_size: String
-		panjang: Int
-		lebar: Int
-		tinggi: Int
-		koli: Int
+		panjang: String
+		lebar: String
+		tinggi: String
+		koli: String
 		alamat_tujuan: String
 		status: String
 		kategori: String
@@ -36,12 +36,12 @@ export const types = gql`
 		nama_penerima: String
 		jenis_pengiriman: String
 		nomor_telepon: String
-		total_volume: Int
+		total_volume: String
 		nama_barang: String
-		panjang: Int
-		lebar: Int
-		tinggi: Int
-		koli: Int
+		panjang: String
+		lebar: String
+		tinggi: String
+		koli: String
 		container_size: String
 		alamat_tujuan: String
 		status: String
@@ -58,13 +58,13 @@ export const types = gql`
 		nama_penerima: String
 		jenis_pengiriman: String
 		nomor_telepon: String
-		total_volume: Int
+		total_volume: String
 		nama_barang: String
 		container_size: String
-		panjang: Int
-		lebar: Int
-		tinggi: Int
-		koli: Int
+		panjang: String
+		lebar: String
+		tinggi: String
+		koli: String
 		alamat_tujuan: String
 		status: String
 		kategori: String

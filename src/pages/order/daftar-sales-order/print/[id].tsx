@@ -431,7 +431,7 @@ export default function Home() {
 								fontSize: `10px`
 							}}
 						>
-							{dataTTB?.[0]?.total_volume}
+							{dataSalesOrderfilter?.[0]?.harga}
 						</Text>
 						<Text
 							style={{

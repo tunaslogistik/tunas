@@ -6,8 +6,8 @@ import {
 	Document,
 	Font,
 	Image,
-	Page,
 	PDFViewer,
+	Page,
 	StyleSheet,
 	Text,
 	View
@@ -115,6 +115,15 @@ const styles = StyleSheet.create({
 		textAlign: `left`,
 		fontFamily: `Helvetica-Bold`,
 		borderRight: `1px solid #000000`,
+		justifyContent: `center`,
+		padding: `10px`
+	},
+	tableTextF: {
+		width: `60px`,
+		fontSize: `8px`,
+		textAlign: `left`,
+		fontFamily: `Helvetica-Bold`,
+		borderRight: `0px solid #000000`,
 		justifyContent: `center`,
 		padding: `10px`
 	},
@@ -352,9 +361,24 @@ export default function Home() {
 						>
 							NAMA BARANG
 						</Text>
-						<Text style={styles.tableTextH}>PANJANG</Text>
-						<Text style={styles.tableTextH}>LEBAR</Text>
-						<Text style={styles.tableTextH}>TINGGI</Text>
+						{dataTTB?.[0]?.full_container === `Full Container` && (
+							<Text style={styles.tableTextF}></Text>
+						)}
+						{dataTTB?.[0]?.full_container === `Full Container` && (
+							<Text style={styles.tableTextF}>KOLI</Text>
+						)}
+						{dataTTB?.[0]?.full_container === `Full Container` && (
+							<Text style={styles.tableTextH}></Text>
+						)}
+						{dataTTB?.[0]?.full_container !== `Full Container` && (
+							<Text style={styles.tableTextH}>PANJANG</Text>
+						)}
+						{dataTTB?.[0]?.full_container !== `Full Container` && (
+							<Text style={styles.tableTextH}>LEBAR</Text>
+						)}
+						{dataTTB?.[0]?.full_container !== `Full Container` && (
+							<Text style={styles.tableTextH}>TINGGI</Text>
+						)}
 						<Text
 							style={{
 								width: `60px`,
@@ -396,11 +420,31 @@ export default function Home() {
 								>
 									{item.nama_barang.split()}
 								</Text>
-								<Text style={styles.tableText}>{item.panjang}</Text>
-								<Text style={styles.tableText}>{item.lebar}</Text>
-								<Text style={styles.tableText}>{item.tinggi}</Text>
+								{dataTTB?.[0]?.full_container === `Full Container` && (
+									<Text style={styles.tableTextF}></Text>
+								)}
+								{dataTTB?.[0]?.full_container === `Full Container` && (
+									<Text style={styles.tableTextF}>{item.koli}</Text>
+								)}
+								{dataTTB?.[0]?.full_container === `Full Container` && (
+									<Text style={styles.tableText}></Text>
+								)}
+								{dataTTB?.[0]?.full_container !== `Full Container` && (
+									<Text style={styles.tableText}>{item.panjang}</Text>
+								)}
+								{dataTTB?.[0]?.full_container !== `Full Container` && (
+									<Text style={styles.tableText}>{item.lebar}</Text>
+								)}
+								{dataTTB?.[0]?.full_container !== `Full Container` && (
+									<Text style={styles.tableText}>{item.tinggi}</Text>
+								)}
 								<Text style={styles.tableText3}>
-									{item.panjang * item.lebar * item.tinggi * item.koli}
+									{(
+										item.panjang *
+										item.lebar *
+										item.tinggi *
+										item.koli
+									)?.toFixed(5)}
 								</Text>
 							</View>
 						))}
@@ -441,7 +485,7 @@ export default function Home() {
 									paddingRight: `10px`
 								}}
 							>
-								{dataTTB?.[0]?.total_volume}
+								{Number(dataTTB?.[0]?.total_volume)?.toFixed(5)}
 							</Text>
 						</View>
 					</View>

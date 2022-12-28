@@ -112,6 +112,8 @@ export default function Home() {
 					komentar_tiba_pelabuhan: ``,
 					komentar_muatan: ``,
 					komentar_destinasi: ``,
+					komentar_kapal_sandar: ``,
+					komentar_barang_terkirim: ``,
 					tanggal_wo: moment(formData.tanggal).format(`YYYY-MM-DD`),
 					tanggal_container: ``,
 					tanggal_muat_barang: ``,
@@ -119,6 +121,8 @@ export default function Home() {
 					tanggal_tiba_pelabuhan: ``,
 					tanggal_muatan: ``,
 					tanggal_destinasi: ``,
+					tanggal_kapal_sandar: ``,
+					tanggal_barang_terkirim: ``,
 					nomor_kendaraan: formData.nomor_kendaraan,
 					nama_supir: formData.nama_supir,
 					nama_kenek: formData.nama_kenek,
@@ -130,6 +134,8 @@ export default function Home() {
 					photo_surat_jalan_pabrik: ``,
 					photo_surat_pengantar: ``,
 					photo_seal_pelabuhan: ``,
+					photo_kapal_sandar: ``,
+					photo_barang_terkirim: ``,
 					nama_kapal: ``,
 					status: ``
 				}

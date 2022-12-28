@@ -106,6 +106,8 @@ export default function Home() {
 					object.panjang * object.lebar * object.tinggi * object.koli
 				)
 			}, 0)
+
+			console.log(`sum`, sum)
 			const data = values.daftar_ttb.map((item: any) => {
 				return {
 					ttb_number: ``,
@@ -117,11 +119,11 @@ export default function Home() {
 					nomor_telepon: values.nomor_telepon,
 					nama_barang: item.nama_barang,
 					container_size: String(values.container_size),
-					panjang: parseInt(item.panjang),
-					lebar: parseInt(item.lebar),
-					tinggi: parseInt(item.tinggi),
-					koli: parseInt(item.koli),
-					total_volume: sum,
+					panjang: String(item.panjang),
+					lebar: String(item.lebar),
+					tinggi: String(item.tinggi),
+					koli: String(item.koli),
+					total_volume: String(sum),
 					alamat_tujuan: values.alamat_tujuan,
 					status: `TTB`,
 					kategori: String(values.kategori),
@@ -183,7 +185,7 @@ export default function Home() {
 							  `/` +
 							  String(moment.unix(values.tanggal_ttb / 1000).format(`YY-MM`)) +
 							  `/` +
-							  addLeadingZeros(dataReference[0].nomor_ttb + 1, 4)
+							  addLeadingZeros(dataReference[0].increment + 1, 4)
 							: `TTB/` +
 							  values.kota_tujuan +
 							  `/` +

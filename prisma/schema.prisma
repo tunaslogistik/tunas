@@ -278,12 +278,12 @@ model daftar_ttb {
   nama_penerima    String
   jenis_pengiriman String
   nomor_telepon    String
-  total_volume     Int
+  total_volume     String
   nama_barang      String
-  panjang          Int
-  lebar            Int
-  tinggi           Int
-  koli             Int
+  panjang          String
+  lebar            String
+  tinggi           String
+  koli             String
   container_size   String
   alamat_tujuan    String
   status           String
@@ -312,6 +312,8 @@ model daftar_workorder {
   komentar_tiba_pelabuhan    String @default("null")
   komentar_muatan            String @default("null")
   komentar_destinasi         String @default("null")
+  komentar_kapal_sandar      String @default("null")
+  komentar_barang_terkirim   String @default("null")
   tanggal_wo                 String
   tanggal_container          String
   tanggal_muat_barang        String
@@ -319,6 +321,8 @@ model daftar_workorder {
   tanggal_tiba_pelabuhan     String
   tanggal_muatan             String
   tanggal_destinasi          String
+  tanggal_kapal_sandar       String
+  tanggal_barang_terkirim    String
   nomor_kendaraan            String
   nama_supir                 String
   nama_kenek                 String
@@ -330,6 +334,8 @@ model daftar_workorder {
   photo_surat_jalan_pabrik   String @default("null")
   photo_surat_pengantar      String @default("null")
   photo_seal_pelabuhan       String @default("null")
+  photo_kapal_sandar         String @default("null")
+  photo_barang_terkirim      String @default("null")
   nama_kapal                 String
   status                     String @default("null")
 }

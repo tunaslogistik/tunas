@@ -242,6 +242,9 @@ export default function Home() {
 			const termPayment = dataCustomer?.customer.find(
 				(item) => item.nama_customer === formData.pengirim
 			).term_payment
+
+			const total_harga_ttb =
+				getValues(`total_volume_ttb`) * Number(getValues(`harga`))
 			const myChildrenArray = objArray.map((item) => {
 				return {
 					nomor_ttb: formData.nomor_ttb,
@@ -256,7 +259,7 @@ export default function Home() {
 						addLeadingZeros(panjangSalesOrder, 4),
 					total_volume: parseInt(formData.total_volume_ttb),
 					harga: parseInt(formData.harga),
-					harga_sesudah_ppn: harga_sesudah_ppn,
+					harga_sesudah_ppn: parseInt(harga_sesudah_ppn as any),
 					pengirim: formData.pengirim,
 					total_tagihan: parseInt(formData.total_tagihan),
 					rekening: formData.rekening,
@@ -270,8 +273,7 @@ export default function Home() {
 					harga_total: parseInt(sumHarga),
 					tipe_ppn: ppnString,
 					//if sumHargaBarang not empty then total_harga_ttb: getValues(`total_volume_ttb`) * Number(getValues(`harga`)) + sumHargaBarang else getValues(`total_volume_ttb`) * Number(getValues(`harga`))
-					total_harga_ttb:
-						getValues(`total_volume_ttb`) * Number(getValues(`harga`))
+					total_harga_ttb: parseInt(total_harga_ttb as any)
 				}
 			})
 
@@ -570,6 +572,7 @@ export default function Home() {
 									type="text"
 									placeholder="Pembayaran DP"
 									{...register(`dp`)}
+									required
 								/>
 							</div>
 							<p style={{ fontSize: `10px`, color: `white` }}>

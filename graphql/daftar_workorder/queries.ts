@@ -15,6 +15,8 @@ export const GET_DAFTAR_WORKORDER = gql`
 			komentar_tiba_pelabuhan
 			komentar_muatan
 			komentar_destinasi
+			komentar_kapal_sandar
+			komentar_barang_terkirim
 			tanggal_wo
 			tanggal_container
 			tanggal_muat_barang
@@ -22,6 +24,8 @@ export const GET_DAFTAR_WORKORDER = gql`
 			tanggal_tiba_pelabuhan
 			tanggal_muatan
 			tanggal_destinasi
+			tanggal_kapal_sandar
+			tanggal_barang_terkirim
 			nomor_kendaraan
 			nama_supir
 			nama_kenek
@@ -33,6 +37,8 @@ export const GET_DAFTAR_WORKORDER = gql`
 			photo_surat_jalan_pabrik
 			photo_surat_pengantar
 			photo_seal_pelabuhan
+			photo_kapal_sandar
+			photo_barang_terkirim
 			nama_kapal
 			status
 		}

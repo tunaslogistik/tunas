@@ -14,6 +14,10 @@ const apolloClient = new ApolloClient({
 		query: {
 			fetchPolicy: `no-cache`,
 			errorPolicy: `all`
+		},
+		mutate: {
+			fetchPolicy: `no-cache`,
+			errorPolicy: `all`
 		}
 	}
 })

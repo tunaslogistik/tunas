@@ -88,6 +88,8 @@ export default function Home() {
 
 	const { data: dataDaftarInvoice } = useQuery(GET_DAFTAR_INVOICE, {
 		onCompleted({ daftar_invoice }) {
+			//set loading true
+			setLoading(true)
 			const data = daftar_invoice
 			const filteredData = daftar_invoice?.filter(
 				(item) => item.id === parseInt(id as string)
@@ -889,7 +891,9 @@ export default function Home() {
 					auth="write:settings-users"
 					yes={
 						<ul className="actions">
-							{role === `superadmin` || role === `Super Admin` ? (
+							{role === `superadmin` ||
+							role === `Superadmin` ||
+							role === `Super Admin` ? (
 								<li className="action">
 									<Popconfirm
 										title="Are you sure delete this task?"
@@ -939,7 +943,9 @@ export default function Home() {
 									</i>
 								</button>
 							</li>
-							{role === `superadmin` || role === `Super Admin` ? (
+							{role === `superadmin` ||
+							role === `Superadmin` ||
+							role === `Super Admin` ? (
 								<li className="action">
 									<Button
 										key="submit"
