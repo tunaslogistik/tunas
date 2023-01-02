@@ -20,6 +20,7 @@ import Link from "next/link"
 import router from "next/router"
 import { useEffect, useRef, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
+import { GET_DAFTAR_INVOICE } from "../../../../graphql/daftar_invoice/queries"
 
 //get data
 
@@ -87,7 +88,7 @@ export default function Home() {
 
 	//CREATE DAFTAR INVOICE and routh to daftar invoice
 	const [createDaftar_invoice] = useMutation(CREATE_DAFTAR_INVOICE, {
-		refetchQueries: [{ query: GET_INVOICE }]
+		refetchQueries: [{ query: GET_DAFTAR_INVOICE }]
 	})
 
 	//create mutation function
@@ -99,7 +100,7 @@ export default function Home() {
 	const [createDaftar_biaya_tambahan] = useMutation(
 		CREATE_DAFTAR_BIAYA_TAMBAHAN,
 		{
-			refetchQueries: [{ query: GET_INVOICE }]
+			refetchQueries: [{ query: GET_DAFTAR_INVOICE }]
 		}
 	)
 

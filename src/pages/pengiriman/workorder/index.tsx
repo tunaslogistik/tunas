@@ -28,6 +28,8 @@ const GET_DATA = gql`
 			komentar_tiba_pelabuhan
 			komentar_muatan
 			komentar_destinasi
+			komentar_kapal_sandar
+			komentar_barang_terkirim
 			tanggal_wo
 			tanggal_container
 			tanggal_muat_barang
@@ -35,6 +37,8 @@ const GET_DATA = gql`
 			tanggal_tiba_pelabuhan
 			tanggal_muatan
 			tanggal_destinasi
+			tanggal_kapal_sandar
+			tanggal_barang_terkirim
 			nomor_kendaraan
 			nama_supir
 			nama_kenek
@@ -46,6 +50,8 @@ const GET_DATA = gql`
 			photo_surat_jalan_pabrik
 			photo_surat_pengantar
 			photo_seal_pelabuhan
+			photo_kapal_sandar
+			photo_barang_terkirim
 			nama_kapal
 			status
 		}
@@ -66,6 +72,8 @@ interface DataType {
 	tanggal_tiba_pelabuhan: string
 	tanggal_muatan: string
 	tanggal_destinasi: string
+	tanggal_kapal_sandar: string
+	tanggal_barang_terkirim: string
 }
 
 export default function Home() {
@@ -123,6 +131,14 @@ export default function Home() {
 				item.tanggal_destinasi === `Invalid date`
 					? null
 					: item.tanggal_destinasi,
+			tanggal_kapal_sandar:
+				item.tanggal_kapal_sandar === `Invalid date`
+					? null
+					: item.tanggal_kapal_sandar,
+			tanggal_barang_terkirim:
+				item.tanggal_barang_terkirim === `Invalid date`
+					? null
+					: item.tanggal_barang_terkirim,
 			nomor_kendaraan: item.nomor_kendaraan,
 			nama_supir: item.nama_supir,
 			nama_kenek: item.nama_kenek,
@@ -208,7 +224,7 @@ export default function Home() {
 			],
 			key: `status`,
 			align: `center`,
-			width: `20%`,
+			width: `30%`,
 			sorter: (a, b) => a.status.localeCompare(b.status),
 			sortDirections: [`descend`, `ascend`],
 			render: (text, record) => (
@@ -311,6 +327,38 @@ export default function Home() {
 						className="bg-blue-500 text-white rounded-md px-2 py-1"
 					>
 						Menuju Destinasi
+					</span>
+					<span
+						style={{
+							//if tanggal menuju destinasi is not null || "" , make border and font color black
+							marginLeft: `1%`,
+							border: `${
+								record.tanggal_kapal_sandar !== ``
+									? `1px solid green`
+									: `1px solid black`
+							}`,
+							color: `${record.tanggal_kapal_sandar !== `` ? `green` : `black`}`
+						}}
+						className="bg-blue-500 text-white rounded-md px-2 py-1"
+					>
+						Kapal Sandar
+					</span>
+					<span
+						style={{
+							//if tanggal menuju destinasi is not null || "" , make border and font color black
+							marginLeft: `1%`,
+							border: `${
+								record.tanggal_barang_terkirim !== ``
+									? `1px solid green`
+									: `1px solid black`
+							}`,
+							color: `${
+								record.tanggal_barang_terkirim !== `` ? `green` : `black`
+							}`
+						}}
+						className="bg-blue-500 text-white rounded-md px-2 py-1"
+					>
+						Barang Telah Dikirim
 					</span>
 				</span>
 			)

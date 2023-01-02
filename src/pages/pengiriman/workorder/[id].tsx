@@ -4,14 +4,13 @@ import { gql, useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
-import { DashboardContext } from "@contexts/DashboardContext.context"
 import { supabase } from "@utils/supabase"
 import { Button, Modal, Table, message } from "antd"
 import TextArea from "antd/lib/input/TextArea"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { ChangeEvent, useContext, useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { useForm } from "react-hook-form"
 import { UPDATE_DAFTAR_WORKORDER } from "../../../../graphql/daftar_workorder/mutations"
 //get data using id
@@ -60,22 +59,7 @@ const GET_DATA = gql`
 	}
 `
 
-//text input style
-const inputStyle = {
-	width: `100%`,
-	marginBottom: `10px`,
-	fontSize: `14px`
-}
-
-const inputStyles = {
-	width: `100%`,
-	marginBottom: `10px`,
-	fontSize: `14px`,
-	fontWeight: `bold`
-}
-
 export default function SettingUserEdit() {
-	const { state: dashboardState } = useContext(DashboardContext)
 	const router = useRouter()
 	const { id } = router.query
 

@@ -180,8 +180,11 @@ export default function Home() {
 		}
 	})
 
+	console.log(`data table`, dataTable)
+
 	const dataMap = dataTable
 	const dataSource = dataMap
+
 	return (
 		<AdminPage
 			authId="daftar-sales-order"

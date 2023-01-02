@@ -26,6 +26,7 @@ import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { CREATE_DAFTAR_MUAT_BARANG } from "../../../../graphql/daftar_muat_barang/mutations"
+import { GET_DAFTAR_PACKING_LIST } from "../../../../graphql/daftar_packing_list/queries"
 //get data
 
 const GET_DATA = gql`
@@ -91,7 +92,7 @@ export default function Home() {
 	const [selectednoTTBB] = useState([])
 
 	const [createDaftar_muat_barang] = useMutation(CREATE_DAFTAR_MUAT_BARANG, {
-		refetchQueries: [{ query: GET_DATA }]
+		refetchQueries: [{ query: GET_REFERENCE_MUAT_BARANG }]
 	})
 
 	//create mutation function
@@ -102,7 +103,7 @@ export default function Home() {
 	const [createDaftar_surat_jalan] = useMutation(
 		CREATE_DAFTAR_SURAT_PENGANTAR,
 		{
-			refetchQueries: [{ query: GET_DATA }]
+			refetchQueries: [{ query: GET_DAFTAR_SURAT_PENGANTAR }]
 		}
 	)
 
@@ -112,7 +113,7 @@ export default function Home() {
 	}
 
 	const [createDaftar_packing_list] = useMutation(CREATE_DAFTAR_PACKING_LIST, {
-		refetchQueries: [{ query: GET_DATA }]
+		refetchQueries: [{ query: GET_DAFTAR_PACKING_LIST }]
 	})
 
 	//create mutation function
@@ -272,8 +273,6 @@ export default function Home() {
 	}
 
 	const increment = data?.daftar_muat_barang.length + 1
-
-	const increment2 = dataDaftarSuratJalan?.daftar_surat_pengantar.length + 1
 
 	async function onSubmit(formData) {
 		setLoading(true)

@@ -270,7 +270,7 @@ export default function Home() {
 	}
 
 	const [updateDaftar_invoice] = useMutation(UPDATE_DAFTAR_INVOICE, {
-		refetchQueries: [{ query: GET_DATA }]
+		refetchQueries: [{ query: GET_DAFTAR_INVOICE }]
 	})
 
 	//update mutation function

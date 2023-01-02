@@ -12,6 +12,7 @@ import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import Link from "next/link"
 import router from "next/router"
+import { GET_DAFTAR_INVOICE } from "../../../../graphql/daftar_invoice/queries"
 
 //get DATA
 
@@ -56,9 +57,10 @@ interface DataType {
 }
 
 export default function Home() {
-	const { data, loading, refetch } = useQuery(GET_DATA, {
+	const { data, loading, refetch } = useQuery(GET_DAFTAR_INVOICE, {
 		fetchPolicy: `no-cache`,
-		nextFetchPolicy: `no-cache`
+		nextFetchPolicy: `no-cache`,
+		pollInterval: 500
 	})
 	//GET DAftar ttb
 	const { data: dataTTB } = useQuery(GET_DAFTAR_TTB)

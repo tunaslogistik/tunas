@@ -35,8 +35,6 @@ const GET_DATA = gql`
 
 export default function Home() {
 	const { setLoading } = useLoading()
-	const { data } = useQuery(GET_DATA)
-
 	//GET DAFTAR TUJUAN
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 	//GET MOBIL
@@ -199,7 +197,7 @@ export default function Home() {
 			for (let i = 0; i < merged.length; i++) {
 				createData(merged[i])
 			}
-			// router.push(`/daftar_workorder`)
+			router.push(`/daftar_workorder`)
 			message.success(`Data Berhasil Disimpan`)
 		} catch (error) {
 			console.log(error)
