@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import IconPrint from "@assets/icons/icon-print.svg"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
@@ -8,13 +8,15 @@ import { DashboardContext } from "@contexts/DashboardContext.context"
 import { yupResolver } from "@hookform/resolvers/yup"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, Popconfirm, message } from "antd"
+import { GET_ACCURATE } from "graphql/accurate/queries"
 import { GET_CUSTOMER } from "graphql/customer/queries"
+import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import { GET_JENIS_PENGIRIMAN } from "graphql/jenis_pengiriman/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
 import {
@@ -22,32 +24,6 @@ import {
 	DELETE_DAFTAR_TTB
 } from "../../../../graphql/daftar_ttb/mutations"
 import { jenis_pengiriman } from "../../../../graphql/jenis_pengiriman/index"
-
-const GET_DATA = gql`
-	query daftar_ttb {
-		daftar_ttb {
-			id
-			ttb_number
-			pengirim
-			kota_tujuan
-			tanggal_diterima
-			nama_penerima
-			jenis_pengiriman
-			nomor_telepon
-			nama_barang
-			container_size
-			panjang
-			lebar
-			tinggi
-			koli
-			alamat_tujuan
-			status
-			kategori
-			full_container
-		}
-	}
-`
-
 const schema = yup.object({})
 export default function Home() {
 	const { dispatch } = useContext(DashboardContext)
@@ -66,11 +42,11 @@ export default function Home() {
 	const setForm = useForm({
 		resolver: yupResolver(schema)
 	})
-	const { control, reset, handleSubmit, register } = setForm
+	const { control, reset, handleSubmit, register, setValue } = setForm
 
 	const router = useRouter()
 	const id = router.query.id
-	const { data } = useQuery(GET_DATA, {
+	const { data } = useQuery(GET_DAFTAR_TTB, {
 		onCompleted({ daftar_ttb }) {
 			const data = daftar_ttb
 			const filteredData = daftar_ttb?.filter(
@@ -92,9 +68,11 @@ export default function Home() {
 	const { data: dataDaftarTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 	//GET DATA CUSTOMER
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
+	//GET DATA ACCURATE
+	const { data: dataAccurate } = useQuery(GET_ACCURATE)
 
 	const [createDaftar_ttb] = useMutation(CREATE_DAFTAR_TTB, {
-		refetchQueries: [{ query: GET_DATA }]
+		refetchQueries: [{ query: GET_DAFTAR_TTB }]
 	})
 
 	//create mutation function
@@ -103,12 +81,23 @@ export default function Home() {
 	}
 
 	const [deleteDaftar_ttb] = useMutation(DELETE_DAFTAR_TTB, {
-		refetchQueries: [{ query: GET_DATA }]
+		refetchQueries: [{ query: GET_DAFTAR_TTB }]
 	})
 	const deleteData = (id) => {
 		deleteDaftar_ttb({ variables: { deleteDaftar_ttbId: id } })
 		router.push(`/order/daftar-ttb`)
 	}
+
+	const [ppn, setPpn] = useState(``)
+
+	const handleChange = (value) => {
+		setPpn(value)
+	}
+	const dataAccuratePpn = dataAccurate?.accurate?.filter(
+		(item: any) => item.nama_barang === ppn
+	)
+
+	const tax_name = String(dataAccuratePpn?.[0]?.taxName)
 
 	//GET DATA ttb number where id eqaul to id
 	const dataTTB = data?.daftar_ttb?.filter(
@@ -159,11 +148,14 @@ export default function Home() {
 					lebar: String(datum.lebar),
 					tinggi: String(datum.tinggi),
 					koli: String(datum.koli),
-					total_volume: sum,
+					total_volume: String(sum),
 					alamat_tujuan: formData.alamat_tujuan,
 					status: `TTB`,
 					kategori: String(formData.kategori),
-					full_container: String(formData.full_container)
+					full_container: String(formData.full_container),
+					accurate: String(formData.accurate),
+					ppn: String(formData.ppn),
+					pembayar: String(formData.pembayar)
 				}
 			})
 
@@ -195,7 +187,7 @@ export default function Home() {
 				) {
 					temp[i].kategori = `Barang Tidak Berbahaya`
 				}
-				temp[i].total_volume = sum
+				temp[i].total_volume = String(sum)
 			}
 
 			//create new data
@@ -223,6 +215,13 @@ export default function Home() {
 			}
 		}
 	)
+
+	const mapAccurate = dataAccurate?.accurate?.map((accurate) => {
+		return {
+			label: accurate.nama_barang,
+			ppn: accurate.taxName
+		}
+	})
 
 	//map data filter
 	// const mapDataFilter = dataFilter
@@ -374,7 +373,14 @@ export default function Home() {
 								/>
 							</div>
 						</div>
-						<div className="form-group" style={{ paddingTop: `1%` }}>
+						<div
+							className="form-group"
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `1%`
+							}}
+						>
 							<label style={{ fontWeight: `bold` }} className="label">
 								Pengirim
 							</label>
@@ -390,6 +396,38 @@ export default function Home() {
 									value={dataTTB?.[0]?.pengirim}
 								>
 									{dataTTB?.[0]?.pengirim}
+								</option>
+								{mapCustomer?.map((customer) => (
+									<option key={customer.label} value={customer.label}>
+										{customer.label}
+									</option>
+								))}
+							</select>
+						</div>
+						<div
+							className="form-group"
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `1%`,
+								marginLeft: `15px`
+							}}
+						>
+							<label style={{ fontWeight: `bold` }} className="label">
+								Pembayar
+							</label>
+							<select
+								className="form-control"
+								name="pembayar"
+								{...register(`pembayar`)}
+								style={{ width: `100%` }}
+								required
+							>
+								<option
+									key={dataTTB?.[0]?.pembayar}
+									value={dataTTB?.[0]?.pembayar}
+								>
+									{dataTTB?.[0]?.pembayar}
 								</option>
 								{mapCustomer?.map((customer) => (
 									<option key={customer.label} value={customer.label}>
@@ -580,6 +618,61 @@ export default function Home() {
 										style: { width: `100%`, marginLeft: `0px` }
 									}
 								]}
+							/>
+						</div>
+						<div
+							className="form-group"
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `1%`
+							}}
+						>
+							<label style={{ fontWeight: `bold` }} className="label">
+								Accurate
+							</label>
+							<select
+								className="form-control"
+								name="accurate"
+								{...register(`accurate`)}
+								style={{ width: `100%` }}
+								onChange={(e) => handleChange(e.target.value)}
+								required
+							>
+								<option
+									key={dataTTB?.[0]?.accurate}
+									value={dataTTB?.[0]?.accurate}
+								>
+									{dataTTB?.[0]?.accurate}
+								</option>
+								{mapAccurate?.map((accurate) => (
+									<option key={accurate.label} value={accurate.label}>
+										{accurate.label}
+									</option>
+								))}
+							</select>
+						</div>
+						<div
+							className="form-group"
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `1%`,
+								marginLeft: `15px`
+							}}
+						>
+							<label style={{ fontWeight: `bold` }} className="label">
+								Pembayar
+							</label>
+							<input
+								type="text"
+								style={{ width: `100%` }}
+								className="form-control"
+								{...register(`ppn`)}
+								value={
+									// if tax_name === "undefined" then dataTTB?.[0]?.ppn else tax_name
+									tax_name === `undefined` ? dataTTB?.[0]?.ppn : tax_name
+								}
 							/>
 						</div>
 						<div

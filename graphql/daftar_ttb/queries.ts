@@ -18,10 +18,16 @@ export const GET_DAFTAR_TTB = gql`
 			lebar
 			tinggi
 			koli
+			pembayar
+			ppn
+			accurate
 			alamat_tujuan
 			status
 			kategori
 			full_container
+			pembayar
+			ppn
+			accurate
 		}
 	}
 `

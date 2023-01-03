@@ -439,12 +439,15 @@ export default function Home() {
 									<Text style={styles.tableText}>{item.tinggi}</Text>
 								)}
 								<Text style={styles.tableText3}>
-									{(
-										item.panjang *
-										item.lebar *
-										item.tinggi *
-										item.koli
-									)?.toFixed(5)}
+									{
+										//make number not overlap or exceed the table
+										(
+											item.panjang *
+											item.lebar *
+											item.tinggi *
+											item.koli
+										).toFixed(2)
+									}
 								</Text>
 							</View>
 						))}
@@ -485,7 +488,7 @@ export default function Home() {
 									paddingRight: `10px`
 								}}
 							>
-								{Number(dataTTB?.[0]?.total_volume)?.toFixed(5)}
+								{Number(dataTTB?.[0]?.total_volume)?.toFixed(2)}
 							</Text>
 						</View>
 					</View>

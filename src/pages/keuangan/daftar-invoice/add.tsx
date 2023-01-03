@@ -2,7 +2,6 @@ import { gql, useMutation, useQuery } from "@apollo/client"
 import IconPlus from "@assets/icons/icon-plus-fill.svg"
 import IconTrash from "@assets/icons/icon-trash.svg"
 import AdminPage from "@components/admin/AdminPage.component"
-import Dashboard from "@components/dashboard/Dashboard.component"
 import FormRepeater from "@components/form/FormRepeater.component"
 import { Button, DatePicker, notification } from "antd"
 import { GET_ACCURATE } from "graphql/accurate/queries"
@@ -393,12 +392,18 @@ export default function Home() {
 			?.filter((item) => allTTB?.includes(item.ttb_number))
 			.map((item) => item.total_volume)
 
+		//get accurate
+		const accurate = dataDaftarTTB?.daftar_ttb
+			?.filter((item) => allTTB?.includes(item.ttb_number))
+			.map((item) => item.accurate)
+
 		setSelectedPengirim(pengirim[0])
 		setValue(`pengirim`, pengirim[0])
 		setValue(`penerima`, penerima[0])
 		setValue(`kota_tujuan`, kotaTujuan[0])
 		setValue(`total_volume_ttb`, totalVolume[0])
 		setValue(`tagihan`, totalTagihan)
+		setValue(`accurate`, accurate[0])
 	}
 
 	//handleChangeSJA
@@ -667,7 +672,10 @@ export default function Home() {
 				ppn_biaya_tambahan: String(ppnString),
 				harga_biaya_tambahan: String(subTotal2),
 				keterangan: formData.keterangan,
-				accurate: formData.accurate,
+				//find kode_barang from dataAccurate where nama_barang = formData.accurate
+				accurate: dataAccurate?.accurate
+					?.filter((item2) => item2.nama_barang === formData.accurate)
+					.map((item2) => item2.kode_barang)[0],
 				pengirim: String(idPelanggan),
 				total_tagihan: String(subAfterPPN),
 				tax: String(subPPN),
@@ -715,11 +723,9 @@ export default function Home() {
 		})
 
 		dataInvoice.map((item) => {
-			item.accurate = formData.accurate
-		})
-
-		dataInvoice.map((item) => {
-			item.accurate = formData.accurate
+			item.accurate = dataAccurate?.accurate
+				?.filter((item2) => item2.nama_barang === formData.accurate)
+				.map((item2) => item2.kode_barang)[0]
 		})
 
 		const dataReference = dataReferenceInvoice?.reference_invoice?.filter(
@@ -1111,20 +1117,11 @@ export default function Home() {
 							<label style={{ fontWeight: `bolder` }} className="label">
 								Nama Barang (Accurate)
 							</label>
-							<select
+							<input
+								style={{ width: `100%`, height: `38px` }}
 								{...register(`accurate`)}
-								style={{ width: `100%` }}
-								required
-							>
-								<option value="0">Pilih Integrasi Accurate</option>
-								{nama_barang?.map((item, index) => (
-									<option key={index} value={item.kode_barang}>
-										{` `}
-										{item.nama_barang}
-										{` `}
-									</option>
-								))}
-							</select>
+								disabled
+							/>
 						</div>
 						<div
 							style={{ width: `50%`, marginTop: `20px` }}
@@ -1416,6 +1413,4 @@ export default function Home() {
 		</AdminPage>
 	)
 }
-Home.getLayout = function getLayout(page) {
-	return <Dashboard>{page}</Dashboard>
-}
+Home.getLayout = function getLayout(page) {}

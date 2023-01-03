@@ -89,6 +89,9 @@ export default function Home() {
 
 	//seperate data and promise using setState and useEffect
 	const [dataApi, setDataApi] = useState([])
+
+	console.log(`dataApi`, dataApi)
+
 	useEffect(() => {
 		fetchApi().then((data) => setDataApi(data))
 	}, [])

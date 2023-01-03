@@ -27,7 +27,10 @@ const mutations = {
 				alamat_tujuan,
 				status,
 				kategori,
-				full_container
+				full_container,
+				pembayar,
+				ppn,
+				accurate
 			} = args.input
 
 			const daftar_ttb = await context.prisma.daftar_ttb.create({
@@ -49,7 +52,10 @@ const mutations = {
 					alamat_tujuan,
 					status,
 					kategori,
-					full_container
+					full_container,
+					pembayar,
+					ppn,
+					accurate
 				}
 			})
 
@@ -86,7 +92,10 @@ const mutations = {
 				alamat_tujuan,
 				status,
 				kategori,
-				full_container
+				full_container,
+				pembayar,
+				ppn,
+				accurate
 			} = args.input
 			let daftar_ttb
 
@@ -111,7 +120,10 @@ const mutations = {
 					alamat_tujuan,
 					status,
 					kategori,
-					full_container
+					full_container,
+					pembayar,
+					ppn,
+					accurate
 				}
 			})
 

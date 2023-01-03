@@ -192,7 +192,8 @@ export default function Home() {
 			pengirim: ttb.pengirim,
 			kota_tujuan: ttb.kota_tujuan,
 			total_volume: ttb.total_volume,
-			jenis_pengiriman: ttb.jenis_pengiriman
+			jenis_pengiriman: ttb.jenis_pengiriman,
+			ppn: ttb.ppn
 		}
 	})
 	//make a loop to merge duplicate ttb number
@@ -219,13 +220,15 @@ export default function Home() {
 	})
 
 	//get tipe ppn
-	const tipePPN = filterCustomer?.[0]?.tipe_ppn
+	const tipePPN = filterTTB?.[0]?.ppn
+
+	console.log(`tipePPN`, tipePPN)
 
 	//get only number from tipe ppn
 	const tipePPNNumber = tipePPN?.replace(/[^0-9]/g, ``)
 
 	//if tipe_ppn is 1% then return 1.01 if 10% then return 1.1
-	const tipePPNPercentage = tipePPNNumber / 100
+	const tipePPNPercentage = Number(tipePPNNumber) / 100
 
 	const PPN =
 		watch(`total_volume_ttb`) !== 0
@@ -696,7 +699,11 @@ export default function Home() {
 									type="text"
 									placeholder="total tagihan"
 									{...register(`total_tagihan`)}
-									value={tagihans}
+									value={
+										tagihans === 0
+											? filterSalesOrdered?.[0]?.total_tagihan
+											: tagihans
+									}
 									readOnly
 								/>
 								<p style={{ fontSize: `10px` }}>Include PPN 1%</p>

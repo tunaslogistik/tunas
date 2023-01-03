@@ -289,6 +289,9 @@ model daftar_ttb {
   status           String
   kategori         String
   full_container   String
+  pembayar         String
+  ppn              String
+  accurate         String
 }
 
 model daftar_tujuan {

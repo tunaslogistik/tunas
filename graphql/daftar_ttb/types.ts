@@ -21,6 +21,9 @@ export const types = gql`
 		status: String
 		kategori: String
 		full_container: String
+		pembayar: String
+		ppn: String
+		accurate: String
 	}
 
 	type daftar_ttb {
@@ -47,6 +50,9 @@ export const types = gql`
 		status: String
 		kategori: String
 		full_container: String
+		pembayar: String
+		ppn: String
+		accurate: String
 	}
 
 	input UpdateDaftar_ttbInput {
@@ -69,6 +75,9 @@ export const types = gql`
 		status: String
 		kategori: String
 		full_container: String
+		pembayar: String
+		ppn: String
+		accurate: String
 	}
 
 	type MutateDaftar_ttbResponse {

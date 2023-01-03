@@ -13,7 +13,7 @@ export default async function handler({}, res) {
 
 	try {
 		const result = await fetch(
-			`https://public.accurate.id/accurate/api/tax/list.do?Scope: tax_view`,
+			`https://public.accurate.id/accurate/api/tax/list.do?Scope: tax_view&sp.pageSize=10000`,
 			requestOptions
 		)
 		const data = await result.json()

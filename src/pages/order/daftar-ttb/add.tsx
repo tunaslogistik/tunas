@@ -7,6 +7,7 @@ import { Button, DatePicker, Form, Input, Select, Space, message } from "antd"
 
 import Checkbox from "antd/lib/checkbox/Checkbox"
 import TextArea from "antd/lib/input/TextArea"
+import { GET_ACCURATE } from "graphql/accurate/queries"
 import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import { GET_JENIS_PENGIRIMAN } from "graphql/jenis_pengiriman/queries"
@@ -15,6 +16,7 @@ import { GET_REFERENCE_TTB } from "graphql/reference_ttb/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { CREATE_DAFTAR_TTB } from "../../../../graphql/daftar_ttb/mutations"
 //get data
@@ -54,10 +56,12 @@ export default function Home() {
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	//GET DATA REFERENCE TTB
 	const { data: dataReferenceTtb } = useQuery(GET_REFERENCE_TTB)
+	//GET DATA ACCURATE
+	const { data: dataAccurate } = useQuery(GET_ACCURATE)
 
 	const router = useRouter()
 	const setForm = useForm()
-	const { control, reset, register, watch } = setForm
+	const { control, reset, register, watch, setValue } = setForm
 
 	const [createDaftar_ttb] = useMutation(CREATE_DAFTAR_TTB, {
 		refetchQueries: [{ query: GET_DATA }]
@@ -77,10 +81,24 @@ export default function Home() {
 		updateReferenceTtb({ variables: { input: data } })
 	}
 
-	const { Option } = Select
-	const handleChange = (value: string[]) => {
-		console.log(`selected ${value}`)
+	//setPPN
+
+	const handleChange = (value) => {
+		setValue(`ppn`, value)
+		setPpn(value)
 	}
+
+	const [ppn, setPpn] = useState(``)
+
+	console.log(`ppn`, ppn)
+	//get data from dataaccurate where ppn = nama_barang
+	const dataAccuratePpn = dataAccurate?.accurate?.filter(
+		(item: any) => item.nama_barang === ppn
+	)
+
+	const tax_name = String(dataAccuratePpn?.[0]?.taxName)
+
+	const { Option } = Select
 	function addLeadingZeros(num, totalLength) {
 		return String(num).padStart(totalLength, `0`)
 	}
@@ -88,8 +106,6 @@ export default function Home() {
 	//watch k
 
 	const onFinish = (values: any) => {
-		//get data ttb length
-		const dataLength = data.daftar_ttb.length + 1
 		//get nama barang inside values
 		const panjang = values?.daftar_ttb?.map((item: any) => {
 			return item.panjang
@@ -127,7 +143,10 @@ export default function Home() {
 					alamat_tujuan: values.alamat_tujuan,
 					status: `TTB`,
 					kategori: String(values.kategori),
-					full_container: String(values.full_container)
+					full_container: String(values.full_container),
+					pembayar: values.pembayar,
+					ppn: tax_name,
+					accurate: values.accurate
 				}
 			})
 			//count array of object length
@@ -249,6 +268,15 @@ export default function Home() {
 			label: customer.nama_customer
 		}
 	})
+
+	//map data accurate
+	const mapAccurate = dataAccurate?.accurate?.map((accurate) => {
+		return {
+			label: accurate.nama_barang,
+			ppn: accurate.taxName
+		}
+	})
+
 	return (
 		<AdminPage
 			parent={
@@ -280,34 +308,78 @@ export default function Home() {
 								}
 							]}
 						>
-							<DatePicker format="DD-MM-YYYY" style={{ width: `100%` }} />
+							<DatePicker
+								format="DD-MM-YYYY"
+								style={{ width: `100%`, height: `38px` }}
+							/>
 						</Form.Item>
-						<label style={{ fontWeight: `bold` }} className="label">
-							Pengirim
-						</label>
-						<Form.Item
-							name="pengirim"
-							rules={[
-								{
-									required: true,
-									message: `Pengirim tidak boleh kosong`
-								}
-							]}
+						<div
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `1%`
+							}}
 						>
-							<Select
-								style={{ width: `100%` }}
-								placeholder="Pilih Pengirim"
-								onChange={handleChange}
+							<label style={{ fontWeight: `bold` }} className="label">
+								Pengirim
+							</label>
+							<Form.Item
+								name="pengirim"
+								rules={[
+									{
+										required: true,
+										message: `Pengirim tidak boleh kosong`
+									}
+								]}
 							>
-								{mapCustomer?.map((customer) => {
-									return (
-										<Option key={customer.label} value={customer.label}>
-											{customer.label}
-										</Option>
-									)
-								})}
-							</Select>
-						</Form.Item>
+								<Select
+									style={{ width: `100%`, height: `38px` }}
+									placeholder="Pilih Pengirim"
+								>
+									{mapCustomer?.map((customer) => {
+										return (
+											<Option key={customer.label} value={customer.label}>
+												{customer.label}
+											</Option>
+										)
+									})}
+								</Select>
+							</Form.Item>
+						</div>
+						<div
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `1%`,
+								marginLeft: `15px`
+							}}
+						>
+							<label style={{ fontWeight: `bold` }} className="label">
+								Pembayar
+							</label>
+							<Form.Item
+								name="pembayar"
+								rules={[
+									{
+										required: true,
+										message: `Pengirim tidak boleh kosong`
+									}
+								]}
+							>
+								<Select
+									style={{ width: `100%`, height: `38px` }}
+									placeholder="Pilih Pembayar"
+								>
+									{mapCustomer?.map((customer) => {
+										return (
+											<Option key={customer.label} value={customer.label}>
+												{customer.label}
+											</Option>
+										)
+									})}
+								</Select>
+							</Form.Item>
+						</div>
 						<div
 							style={{
 								display: `inline-block`,
@@ -359,7 +431,6 @@ export default function Home() {
 								<Select
 									style={{ width: `100%`, height: `38px` }}
 									placeholder="Pilih kode tujuan"
-									onChange={handleChange}
 								>
 									{mapTujuan?.map((tujuan) => {
 										return (
@@ -393,7 +464,6 @@ export default function Home() {
 							>
 								<Select
 									placeholder="Pilih Jenis Pengiriman"
-									onChange={handleChange}
 									style={{ width: `100%`, height: `38px` }}
 									key="jenis_pengiriman"
 								>
@@ -507,6 +577,68 @@ export default function Home() {
 								</>
 							)}
 						</Form.List>
+						<div
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `1%`
+							}}
+						>
+							<label style={{ fontWeight: `bold` }} className="label">
+								Accurate
+							</label>
+							<Form.Item
+								name="accurate"
+								rules={[
+									{
+										required: true,
+										message: `Accurate tidak boleh kosong`
+									}
+								]}
+							>
+								<Select
+									style={{ width: `100%`, height: `38px` }}
+									placeholder="Pilih Integrasi Accurate"
+									//setPPn and get data from accurate where nama barang = value
+
+									onChange={(value) => {
+										setPpn(value)
+									}}
+								>
+									{mapAccurate?.map((accurate) => {
+										return (
+											<Option key={accurate.label} value={accurate.label}>
+												{accurate.label}
+											</Option>
+										)
+									})}
+								</Select>
+							</Form.Item>
+						</div>
+						<div
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `1%`,
+								marginLeft: `15px`
+							}}
+						>
+							<label style={{ fontWeight: `bold` }} className="label">
+								PPN
+							</label>
+							<div>
+								<input
+									style={{
+										width: `100%`,
+										height: `33px`,
+										fontSize: `13px`,
+										paddingLeft: `10px`
+									}}
+									value={tax_name}
+									disabled
+								/>
+							</div>
+						</div>
 						<Form.Item name="full_container" valuePropName="checked">
 							<Checkbox>Full container</Checkbox>
 						</Form.Item>

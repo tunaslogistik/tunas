@@ -94,7 +94,8 @@ export default function Home() {
 			pengirim: ttb.pengirim,
 			kota_tujuan: ttb.kota_tujuan,
 			total_volume: ttb.total_volume,
-			jenis_pengiriman: ttb.jenis_pengiriman
+			jenis_pengiriman: ttb.jenis_pengiriman,
+			ppn: ttb.ppn
 		}
 	})
 	//make a loop to merge duplicate ttb number
@@ -117,19 +118,23 @@ export default function Home() {
 		return item.nomor_ttb === getValues(`nomor_ttb`)
 	})
 
+	console.log(`filterTTB2`, filterTTB2)
+
 	//turn dataCustomer.tipe_ppn to percentage where nama_customer === filterTTB2.pengirim
 	const filterCustomer = dataCustomer?.customer.filter((item) => {
 		return item.nama_customer === filterTTB2?.[0]?.pengirim
 	})
 
 	//get tipe ppn
-	const tipePPN = filterCustomer?.[0]?.tipe_ppn
+	const tipePPN = filterTTB2?.[0]?.ppn
 
 	//get only number from tipe ppn
 	const tipePPNNumber = tipePPN?.replace(/[^0-9]/g, ``)
 
+	console.log(`tipePPNNumber`, tipePPNNumber)
+
 	//convert tipePPN to percentage
-	const tipePPNPercentage = tipePPNNumber / 100
+	const tipePPNPercentage = Number(tipePPNNumber) / 100
 
 	const PPN =
 		getValues(`total_volume_ttb`) !== 0

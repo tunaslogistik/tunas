@@ -68,9 +68,13 @@ export default function Home() {
 	const { setLoading } = useLoading()
 	const { data } = useQuery(GET_DATA)
 	//GET DAFTAR TTB
-	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
+	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB, {
+		pollInterval: 200
+	})
 	//GET DAFTAR SALES ORDER
-	const { data: dataDaftarSalesOrder } = useQuery(GET_DAFTAR_SALES_ORDER)
+	const { data: dataDaftarSalesOrder } = useQuery(GET_DAFTAR_SALES_ORDER, {
+		pollInterval: 200
+	})
 	//GET CUSTOMER
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	//GET DAFTAR ACCURATE
@@ -160,6 +164,7 @@ export default function Home() {
 
 			//convert nomor_surat_jalan to array of object and assign `nomor_surat_jalanA.${index}`
 			const test = nomor_surat_jalan?.map((item, index) => {
+				handleChangeSJA(item, index)
 				return { [`nomor_surat_jalanA.${index}`]: item }
 			})
 
@@ -532,6 +537,10 @@ export default function Home() {
 			?.filter((item) => allTTB?.includes(item.ttb_number))
 			.map((item) => item.total_volume)
 
+		const accurate = dataDaftarTTB?.daftar_ttb
+			?.filter((item) => allTTB?.includes(item.ttb_number))
+			.map((item) => item.accurate)
+
 		//if pengirim > 1, then pengirim = pengirim[0] else pengirim
 		setValue(
 			`pengirimA[${index}]`,
@@ -553,6 +562,7 @@ export default function Home() {
 			`tagihanA[${index}]`,
 			totalTagihan?.length > 1 ? totalTagihan[0] : totalTagihan
 		)
+		setValue(`accurate`, accurate?.length > 1 ? accurate[0] : accurate)
 	}
 
 	//for selected no sja length call handleChangeSJA
@@ -661,7 +671,7 @@ export default function Home() {
 	const tempTotal = sumTotal ? sumTotal : 0
 	const subTotal = subTotal1 + subTotal4 + tempTotal
 
-	console.log(`subTotal`, subTotal4)
+	console.log(`subTotal`, tempTotal)
 
 	const subAfterPPN = sum_bersih + subTotal3 + sum_total_ppn
 
@@ -779,7 +789,9 @@ export default function Home() {
 				id_biaya_tambahan: String(mapBiayaTambahan?.[0]),
 				id_biaya_utama: String(filteredData?.[0]?.id_biaya_utama),
 				total_tagihan: String(subAfterPPN),
-				accurate: dataDaftarInvoice?.daftar_invoice?.[0]?.accurate,
+				accurate: dataAccurate?.accurate
+					?.filter((item2) => item2.nama_barang === formData.accurate)
+					.map((item2) => item2.kode_barang)[0],
 				pengirim: dataDaftarInvoice?.daftar_invoice?.[0]?.pengirim,
 				subtotal: String(subTotal),
 				subtotal_tambahan: String(subTotal4),
@@ -813,6 +825,14 @@ export default function Home() {
 		})
 
 		dataInvoice.map((item) => {
+			item.accurate = dataAccurate?.accurate
+				?.filter((item2) => item2.nama_barang === String(watch(`accurate`)))
+				.map((item2) => item2.kode_barang)[0]
+		})
+
+		console.log(`dataInvoice`, formData.accurate)
+
+		dataInvoice.map((item) => {
 			//sum koli from ttb where nomor ttb = nomor ttb
 			item.total_koli = String(
 				dataDaftarTTB?.daftar_ttb
@@ -833,6 +853,8 @@ export default function Home() {
 		const dataInvoice_final = dataInvoice.filter(
 			(item) => item.nomor_surat_jalan !== undefined
 		)
+
+		console.log(`dataInvoice_final`, dataInvoice_final)
 
 		// //get only pengirim, nomor_invoice, jenis_biaya_tambahan,id_biaya_tambahan and harga_biaya_tambahan
 		// const dataBiaya_tambahan = dataInvoice_final.map((item) => {
@@ -875,6 +897,8 @@ export default function Home() {
 		}
 		router.push(`/keuangan/daftar-invoice`)
 	}
+
+	console.log(`watch accurate`, watch(`accurate`))
 	return (
 		<AdminPage
 			parent={
@@ -1181,23 +1205,11 @@ export default function Home() {
 									<label style={{ fontWeight: `bolder` }} className="label">
 										Nama Barang (Accurate)
 									</label>
-									<select
-										{...register(`jenis_biaya_tambahan`)}
-										style={{ width: `100%` }}
-										required
-									>
-										<option value="0">Pilih Biaya Tambahan</option>
-										{
-											//from nama_barang
-											dataAccurate?.accurate?.map((item, index) => (
-												<option key={index} value={item.kode_barang}>
-													{` `}
-													{item.nama_barang}
-													{` `}
-												</option>
-											))
-										}
-									</select>
+									<input
+										style={{ width: `100%`, height: `38px` }}
+										{...register(`accurate`)}
+										disabled
+									/>
 								</div>
 							)
 						}
