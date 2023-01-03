@@ -1,78 +1,39 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import Access from "@components/util/Access.component"
 import { supabase } from "@utils/supabase"
 import { Button, Modal, Table, message } from "antd"
 import TextArea from "antd/lib/input/TextArea"
+import { GET_DAFTAR_WORKORDER_BY_ID } from "graphql/daftar_workorder/queries"
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { ChangeEvent, useState } from "react"
 import { useForm } from "react-hook-form"
 import { UPDATE_DAFTAR_WORKORDER } from "../../../../graphql/daftar_workorder/mutations"
-//get data using id
-const GET_DATA = gql`
-	query daftar_workorder {
-		daftar_workorder {
-			id
-			nomor_workorder
-			kendaraan
-			nomor_container
-			nomor_seal
-			kota_tujuan
-			komentar_container
-			komentar_muat_barang
-			komentar_menuju_pelabuhan
-			komentar_tiba_pelabuhan
-			komentar_muatan
-			komentar_destinasi
-			komentar_kapal_sandar
-			komentar_barang_terkirim
-			tanggal_wo
-			tanggal_container
-			tanggal_muat_barang
-			tanggal_menuju_pelabuhan
-			tanggal_tiba_pelabuhan
-			tanggal_muatan
-			tanggal_destinasi
-			tanggal_kapal_sandar
-			tanggal_barang_terkirim
-			nomor_kendaraan
-			nama_supir
-			nama_kenek
-			wa_supir
-			wa_kenek
-			photo_container
-			photo_container_seal
-			photo_surat_jalan_stackful
-			photo_surat_jalan_pabrik
-			photo_surat_pengantar
-			photo_seal_pelabuhan
-			photo_kapal_sandar
-			photo_barang_terkirim
-			nama_kapal
-			status
-		}
-	}
-`
 
-export default function SettingUserEdit() {
+export default function Home() {
 	const router = useRouter()
 	const { id } = router.query
 
 	const setForm = useForm()
 	const { register } = setForm
 
-	const { data } = useQuery(GET_DATA, {
-		variables: { id: parseInt(id as string) },
+	const { data } = useQuery(GET_DAFTAR_WORKORDER_BY_ID, {
+		variables: { id: Number(id) },
 		pollInterval: 100
 	})
 
+	//make data into array of object
+	const dataSource = data?.daftar_workorder_by_id
+		? [data?.daftar_workorder_by_id]
+		: []
+
 	const [updateDaftrWorkorder] = useMutation(UPDATE_DAFTAR_WORKORDER, {
-		refetchQueries: [{ query: GET_DATA }]
+		refetchQueries: [{ query: GET_DAFTAR_WORKORDER_BY_ID }]
 	})
 
 	const updateData = (data) => {
@@ -675,10 +636,10 @@ export default function SettingUserEdit() {
 	]
 
 	//map data container from data
-	const dataContainer = data?.daftar_workorder?.map((item) => {
+	const dataContainer = dataSource?.map((item) => {
 		return {
 			key: item.id,
-			status: `AMBIL CONTAINER`,
+			status: `CONTAINER`,
 			tanggal: item.tanggal_container,
 			photo: item.photo_container,
 			photo_container_seal: item.photo_container_seal,
@@ -687,7 +648,7 @@ export default function SettingUserEdit() {
 	})
 
 	//map data muat barang from data
-	const dataMuatBarang = data?.daftar_workorder?.map((item) => {
+	const dataMuatBarang = dataSource?.map((item) => {
 		return {
 			key: item.id,
 			status: `MUAT BARANG`,
@@ -699,7 +660,7 @@ export default function SettingUserEdit() {
 	})
 
 	//map data menuju pelabuhan from data
-	const dataMenujuPelabuhan = data?.daftar_workorder?.map((item) => {
+	const dataMenujuPelabuhan = dataSource?.map((item) => {
 		return {
 			key: item.id,
 			status: `MENUJU PELABUHAN`,
@@ -709,7 +670,7 @@ export default function SettingUserEdit() {
 	})
 
 	//map data tiba pelabuhan from data
-	const dataTibaPelabuhan = data?.daftar_workorder?.map((item) => {
+	const dataTibaPelabuhan = dataSource?.map((item) => {
 		return {
 			key: item.id,
 			status: `TIBA PELABUHAN`,
@@ -721,7 +682,7 @@ export default function SettingUserEdit() {
 	})
 
 	//map data muatan from data
-	const dataMuatan = data?.daftar_workorder?.map((item) => {
+	const dataMuatan = dataSource?.map((item) => {
 		return {
 			key: item.id,
 			status: `PINDAH MUATAN`,
@@ -732,7 +693,7 @@ export default function SettingUserEdit() {
 	})
 
 	//map data destinasi from data
-	const dataDestinasi = data?.daftar_workorder?.map((item) => {
+	const dataDestinasi = dataSource?.map((item) => {
 		return {
 			key: item.id,
 			status: `MENUJU DESTINASI`,
@@ -743,7 +704,7 @@ export default function SettingUserEdit() {
 	})
 
 	//map data kapal sandar
-	const dataKapalSandar = data?.daftar_workorder?.map((item) => {
+	const dataKapalSandar = dataSource?.map((item) => {
 		return {
 			key: item.id,
 			status: `KAPAL SANDAR`,
@@ -753,7 +714,7 @@ export default function SettingUserEdit() {
 	})
 
 	//map data barang terkirim
-	const dataBarangTerkirim = data?.daftar_workorder?.map((item) => {
+	const dataBarangTerkirim = dataSource?.map((item) => {
 		return {
 			key: item.id,
 			status: `BARANG TERKIRIM`,
@@ -786,34 +747,35 @@ export default function SettingUserEdit() {
 										borderColor: `black`
 									}}
 									onClick={() => {
-										if (data?.daftar_workorder[0]?.status === ``) {
+										if (data?.daftar_workorder_by_id?.status === ``) {
 											setVisibleContainer(true)
 										} else if (
-											data?.daftar_workorder[0]?.status === `container`
+											data?.daftar_workorder_by_id?.status === `container`
 										) {
 											setVisibleMuatBarang(true)
 										} else if (
-											data?.daftar_workorder[0]?.status === `muat_barang`
+											data?.daftar_workorder_by_id?.status === `muat_barang`
 										) {
 											setVisibleMenujuPelabuhan(true)
 										} else if (
-											data?.daftar_workorder[0]?.status === `menuju_pelabuhan`
+											data?.daftar_workorder_by_id?.status ===
+											`menuju_pelabuhan`
 										) {
 											setVisibleTibaPelabuhan(true)
 										} else if (
-											data?.daftar_workorder[0]?.status === `tiba_pelabuhan`
+											data?.daftar_workorder_by_id?.status === `tiba_pelabuhan`
 										) {
 											setVisibleMuatan(true)
 										} else if (
-											data?.daftar_workorder[0]?.status === `pindah_muatan`
+											data?.daftar_workorder_by_id?.status === `pindah_muatan`
 										) {
 											setVisibleDestinasi(true)
 										} else if (
-											data?.daftar_workorder[0]?.status === `destinasi`
+											data?.daftar_workorder_by_id?.status === `destinasi`
 										) {
 											setVisibleKapalSandar(true)
 										} else if (
-											data?.daftar_workorder[0]?.status === `Kapal_Sandar`
+											data?.daftar_workorder_by_id?.status === `Kapal_Sandar`
 										) {
 											setVisibleTerkirim(true)
 										} else {
@@ -843,7 +805,7 @@ export default function SettingUserEdit() {
 							<p style={{ display: `inline-block` }}>
 								Tanggal Workorder :{` `}
 								<p style={{ fontWeight: `bold`, display: `inline-block` }}>
-									{moment(data?.daftar_workorder[0]?.tanggal_wo).format(
+									{moment(data?.daftar_workorder_by_id?.tanggal_wo).format(
 										`DD/MM/YYYY`
 									)}
 								</p>
@@ -853,7 +815,7 @@ export default function SettingUserEdit() {
 							<p style={{ display: `inline-block` }}>
 								Kota Tujuan :{` `}
 								<p style={{ fontWeight: `bold`, display: `inline-block` }}>
-									{data?.daftar_workorder[0]?.kota_tujuan}
+									{data?.daftar_workorder_by_id?.kota_tujuan}
 								</p>
 							</p>
 						</p>
@@ -861,7 +823,7 @@ export default function SettingUserEdit() {
 							<p style={{ display: `inline-block` }}>
 								No. Container :{` `}
 								<p style={{ fontWeight: `bold`, display: `inline-block` }}>
-									{data?.daftar_workorder[0]?.nomor_container}
+									{data?.daftar_workorder_by_id?.nomor_container}
 								</p>
 							</p>
 						</p>
@@ -869,7 +831,7 @@ export default function SettingUserEdit() {
 							<p style={{ display: `inline-block` }}>
 								No. Seal :{` `}
 								<p style={{ fontWeight: `bold`, display: `inline-block` }}>
-									{data?.daftar_workorder[0]?.nomor_seal}
+									{data?.daftar_workorder_by_id?.nomor_seal}
 								</p>
 							</p>
 						</p>
@@ -889,7 +851,7 @@ export default function SettingUserEdit() {
 							<p style={{ display: `inline-block` }}>
 								Nomor Kendaraan :{` `}
 								<p style={{ fontWeight: `bold`, display: `inline-block` }}>
-									{data?.daftar_workorder[0]?.nomor_kendaraan}
+									{data?.daftar_workorder_by_id?.nomor_kendaraan}
 								</p>
 							</p>
 						</p>
@@ -897,7 +859,7 @@ export default function SettingUserEdit() {
 							<p style={{ display: `inline-block` }}>
 								Tipe Kendaraan :{` `}
 								<p style={{ fontWeight: `bold`, display: `inline-block` }}>
-									{data?.daftar_workorder[0]?.kendaraan}
+									{data?.daftar_workorder_by_id?.kendaraan}
 								</p>
 							</p>
 						</p>
@@ -905,8 +867,8 @@ export default function SettingUserEdit() {
 							<p style={{ display: `inline-block` }}>
 								Supir :{` `}
 								<p style={{ fontWeight: `bold`, display: `inline-block` }}>
-									{data?.daftar_workorder[0]?.nama_supir} /{` `}
-									{data?.daftar_workorder[0]?.wa_supir}
+									{data?.daftar_workorder_by_id?.nama_supir} /{` `}
+									{data?.daftar_workorder_by_id?.wa_supir}
 								</p>
 							</p>
 						</p>
@@ -914,8 +876,8 @@ export default function SettingUserEdit() {
 							<p style={{ display: `inline-block` }}>
 								Kenek :{` `}
 								<p style={{ fontWeight: `bold`, display: `inline-block` }}>
-									{data?.daftar_workorder[0]?.nama_kenek} / {` `}
-									{data?.daftar_workorder[0]?.wa_kenek}
+									{data?.daftar_workorder_by_id?.nama_kenek} / {` `}
+									{data?.daftar_workorder_by_id?.wa_kenek}
 								</p>
 							</p>
 						</p>
@@ -1320,7 +1282,6 @@ export default function SettingUserEdit() {
 		</AdminPage>
 	)
 }
-
-SettingUserEdit.getLayout = function getLayout(page) {
+Home.getLayout = function getLayout(page) {
 	return <Dashboard>{page}</Dashboard>
 }

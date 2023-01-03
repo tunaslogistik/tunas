@@ -104,6 +104,7 @@ export const typeDefs = gql`
 
 		daftar_invoice: [daftar_invoice!]
 		daftar_workorder: [daftar_workorder!]
+		daftar_workorder_by_id(id: Int): daftar_workorder
 
 		daftar_biaya_tambahan: [daftar_biaya_tambahan!]
 

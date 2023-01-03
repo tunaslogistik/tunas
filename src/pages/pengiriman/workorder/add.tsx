@@ -197,7 +197,7 @@ export default function Home() {
 			for (let i = 0; i < merged.length; i++) {
 				createData(merged[i])
 			}
-			router.push(`/daftar_workorder`)
+			router.push(`/pengiriman/workorder`)
 			message.success(`Data Berhasil Disimpan`)
 		} catch (error) {
 			console.log(error)
