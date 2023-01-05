@@ -2,6 +2,7 @@ import { gql, useMutation, useQuery } from "@apollo/client"
 import IconPlus from "@assets/icons/icon-plus-fill.svg"
 import IconTrash from "@assets/icons/icon-trash.svg"
 import AdminPage from "@components/admin/AdminPage.component"
+import Dashboard from "@components/dashboard/Dashboard.component"
 import FormRepeater from "@components/form/FormRepeater.component"
 import { Button, DatePicker, notification } from "antd"
 import { GET_ACCURATE } from "graphql/accurate/queries"
@@ -1413,4 +1414,6 @@ export default function Home() {
 		</AdminPage>
 	)
 }
-Home.getLayout = function getLayout(page) {}
+Home.getLayout = function getLayout(page) {
+	return <Dashboard>{page}</Dashboard>
+}

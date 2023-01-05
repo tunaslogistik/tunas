@@ -35,6 +35,7 @@ const inputStyles = {
 }
 
 export default function Home() {
+	const [loading, setLoading] = useState(false)
 	const { data } = useQuery(GET_DATA)
 	const setForm = useForm()
 
@@ -81,8 +82,13 @@ export default function Home() {
 
 	//fetch api from
 	const fetchApi = async () => {
+		//loading
+		setLoading(true)
 		const res = await fetch(`/api/tax`)
 		const data = await res.json()
+
+		//loading
+		setLoading(false)
 		//return data
 		return data
 	}
@@ -93,7 +99,13 @@ export default function Home() {
 	console.log(`dataApi`, dataApi)
 
 	useEffect(() => {
-		fetchApi().then((data) => setDataApi(data))
+		//loading
+		setLoading(true)
+		fetchApi().then((data) => {
+			setDataApi(data)
+			//loading
+			setLoading(false)
+		})
 	}, [])
 
 	return (
@@ -158,6 +170,7 @@ export default function Home() {
 													className="form-control"
 													style={inputStyle}
 													id="nama_barang"
+													placeholder="Nama Barang"
 													required
 												/>
 											</div>
@@ -207,13 +220,17 @@ export default function Home() {
 														}}
 														id="tax"
 													>
-														{dataApi.map((item, index) => {
-															return (
-																<option key={index} value={item.taxInfo}>
-																	{item.taxInfo}
-																</option>
-															)
-														})}
+														{dataApi === null ? (
+															<option value="0">Loading...</option>
+														) : (
+															dataApi.map((item, index) => {
+																return (
+																	<option key={index} value={item.taxInfo}>
+																		{item.taxInfo}
+																	</option>
+																)
+															})
+														)}
 													</select>
 												</div>
 											</div>
