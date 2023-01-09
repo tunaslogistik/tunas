@@ -148,21 +148,49 @@ export default function Home() {
 		// }
 	]
 
+	//split fildered data nomor_ttb by ,
+	const splitNomorTTB = filteredData?.map((item) => {
+		return item.nomor_ttb.split(`,`)
+	})
+
+	//split fildered data nomor_surat_jalan by ,
+	const splitNomorSuratJalan = filteredData?.map((item) => {
+		return item.nomor_surat_jalan.split(`,`)
+	})
+
 	//DATA FOr table with date moment
 	const dataTable = filteredData?.map((item) => {
 		return {
 			id: item.id,
 			nomor_invoice: item.nomor_invoice,
+			// nomor_ttb: splitNomorTTB
+			nomor_ttb: String(
+				splitNomorTTB?.map((item) => {
+					return item[0]
+				})
+			),
 			pengirim: dataTTB?.daftar_ttb.find(
 				(ttb) => ttb.ttb_number === item.nomor_ttb
 			)?.pengirim,
-			nomor_ttb: item.nomor_ttb,
-			nomor_surat_jalan: item.nomor_surat_jalan,
+			//get only 1 nomor surat jalan
+			nomor_surat_jalan: String(
+				String(
+					splitNomorTTB?.map((item) => {
+						return item[0]
+					})
+				)
+			),
 			nomor_container: item.nomor_container,
 			nomor_seal: item.nomor_seal,
 			volume: item.total_volume,
 			kota_tujuan: dataTTB?.daftar_ttb.find(
-				(ttb) => ttb.ttb_number === item.nomor_ttb
+				(ttb) =>
+					ttb.ttb_number ===
+					String(
+						splitNomorTTB?.map((item) => {
+							return item[0]
+						})
+					)
 			)?.kota_tujuan,
 			nama_tujuan: dataTujuan?.daftar_tujuan.find(
 				(tujuan) => tujuan.kode_tujuan === item.kode_tujuan
@@ -171,6 +199,8 @@ export default function Home() {
 			total_ttb: item.total_ttb
 		}
 	})
+
+	console.log(`data table`, dataTable)
 	//merge duplicate data nomor ttb
 	const mergeData = dataTable?.reduce((acc, current) => {
 		const x = acc.find((item) => item.nomor_invoice === current.nomor_invoice)

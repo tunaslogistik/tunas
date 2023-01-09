@@ -154,97 +154,6 @@ const mutations = {
 			console.log(error)
 			throw new Error(error)
 		}
-		// else {
-		// 	try {
-		// 		const url = `https://public.accurate.id/accurate/api/sales-invoice/save.do?Scope: sales_invoice_save`
-		// 		const data = {
-		// 			Scope: `sales_invoice_save`,
-		// 			//get only 1 pengirim from args.input
-		// 			customerNo: args.input[0].pengirim,
-		// 			Number: args.input[0].nomor_invoice,
-		// 			detailItem: [
-		// 				{
-		// 					itemNo: args.input[0].accurate,
-		// 					unitPrice: args.input[0].harga_surat_jalan
-		// 				},
-		// 				{
-		// 					itemNo: args.input[0].jenis_biaya_tambahan,
-		// 					unitPrice: args.input[0].harga_biaya_tambahan
-		// 				}
-		// 			],
-		// 			salesQuotation: {
-		// 				number: args.input[0].nomor_ttb
-		// 			},
-		// 			deliveryOrder: {
-		// 				number: args.input[0].nomor_surat_jalan
-		// 			},
-		// 			transDate: moment(args.input[0].tanggal_invoice).format(`DD/MM/YYYY`),
-		// 			branchName: `jakarta`,
-		// 			taxAmount: args.input[0].tax,
-		// 			description: args.input[0].keterangan
-		// 		}
-		// 		// make POST FUNCTION  axios
-		// 		const axios = require(`axios`)
-		// 		const response = await axios.post(url, data, {
-		// 			headers: {
-		// 				Authorization: `Bearer 8b9f1e47-3f48-47bc-87f0-ab9f3aecd515`,
-		// 				"X-Session-ID": `22f7af2e-1016-4c26-911f-91dd48b69c3b`
-		// 			}
-		// 		})
-
-		// 		console.log(response.data)
-		// 		const idInvoice = response.data.r.id
-
-		// 		args.input.id = idInvoice
-
-		// 		console.log(`id invoice`, idInvoice)
-		// 		const daftar_invoice = await context.prisma.daftar_invoice.createMany({
-		// 			data: args.input.map((item) => ({
-		// 				id: idInvoice,
-		// 				nomor_invoice: item.nomor_invoice,
-		// 				nomor_surat_jalan: item.nomor_surat_jalan,
-		// 				nomor_ttb: item.nomor_ttb,
-		// 				vendor_pelayanan: item.vendor_pelayanan,
-		// 				tanggal_invoice: item.tanggal_invoice,
-		// 				koli: item.koli,
-		// 				volume: item.volume,
-		// 				total_koli: item.total_koli,
-		// 				harga_surat_jalan: item.harga_surat_jalan,
-		// 				total_volume: item.total_volume,
-		// 				tanggal_keberangkatan: item.tanggal_keberangkatan,
-		// 				nama_kapal: item.nama_kapal,
-		// 				nomor_container: item.nomor_container,
-		// 				nomor_seal: item.nomor_seal,
-		// 				nama_barang: item.nama_barang,
-		// 				harga: item.harga,
-		// 				harga_biaya_tambahan: item.harga_biaya_tambahan,
-		// 				ppn_biaya_tambahan: item.ppn_biaya_tambahan,
-		// 				keterangan: item.keterangan,
-		// 				accurate: item.accurate,
-		// 				pengirim: item.pengirim,
-		// 				total_tagihan: item.total_tagihan,
-		// 				tax: item.tax,
-		// 				subtotal: item.subtotal,
-		// 				jenis_biaya_tambahan: item.jenis_biaya_tambahan,
-		// 				id_biaya_tambahan: item.id_biaya_tambahan,
-		// 				id_biaya_utama: String(response.data.r.detailItem[0].id),
-		// 				subtotal_tambahan: item.subtotal_tambahan
-		// 			})),
-
-		// 			//data id = response.data.r.id
-		// 			skipDuplicates: true
-		// 		})
-		// 		return {
-		// 			code: `200`,
-		// 			success: true,
-		// 			message: `Successfully create new user`,
-		// 			daftar_invoice
-		// 		}
-		// 	} catch (error) {
-		// 		console.log(error)
-		// 		throw new Error(error)
-		// 	}
-		// }
 	},
 	updateDaftar_invoice: async (_parent, args, context: Context) => {
 		try {
@@ -257,7 +166,10 @@ const mutations = {
 					{
 						itemNo: args.input[0].accurate,
 						unitPrice: args.input[0].harga_surat_jalan,
-						departmentName: args.input[0].kota_tujuan
+						departmentName: args.input[0].kota_tujuan,
+						useTax2: String(true),
+						useTax1: String(true),
+						useTax3: String(true)
 					}
 				],
 				salesQuotation: {
@@ -269,29 +181,51 @@ const mutations = {
 				transDate: moment(args.input[0].tanggal_invoice).format(`DD/MM/YYYY`),
 				branchName: `jakarta`,
 				taxAmount: args.input[0].tax,
-				description: args.input[0].keterangan
+				description: args.input[0].ketbiaya_tambahan_ppnerangan
 			}
 
 			//split args.input.jenis_biaya_tambahan by ,
 			const jenis_biaya_tambahan = args.input[0].itemNo_join.split(`,`)
 
+			console.log(`jenis_biaya_tambahan`, jenis_biaya_tambahan)
+
+			//for jenis_biaya_tambahan.length if false then value = args.input[0].biaya_tambahan_non_ppn else biaya_tambahan_ppn
+			for (let i = 0; i < jenis_biaya_tambahan.length; i++) {
+				if (jenis_biaya_tambahan[i] === ``) {
+					jenis_biaya_tambahan[i] = args.input[0].biaya_tambahan_non_ppn
+				} else {
+					jenis_biaya_tambahan[i] = args.input[0].biaya_tambahan_ppn
+				}
+			}
+
+			console.log(`jenis_biaya_tambahan`, jenis_biaya_tambahan)
+
 			//split harga by ,
 			const harga = args.input[0].biaya_tambahan_join.split(`,`)
 
-			//kota tujuan
-			const kota_tujuan = args.input[0].kota_tujuan
+			const departmentName = args.input[0].kota_tujuan
 
-			for (let i = 0; i < jenis_biaya_tambahan.length; i++) {
+			//for jenis_biaya_tambahan.length push to data.detailItem
+			for (let i = 0; i < harga.length; i++) {
 				//if jenis_biaya_tambahan[i] !== "" push to data.detailItem
-				if (jenis_biaya_tambahan[i] !== ``) {
+				if (harga[i] !== ``) {
 					data.detailItem.push({
 						//if jenis_biaya_tambahan[i] !== true itemNo = args.input[0].biaya_tambahan_non_ppn else biaya_tambahan_ppn
-						itemNo:
-							jenis_biaya_tambahan[i] !== `true`
-								? args.input[0].biaya_tambahan_non_ppn
-								: args.input[0].biaya_tambahan_ppn,
+						itemNo: jenis_biaya_tambahan[i],
 						unitPrice: harga[i],
-						departmentName: kota_tujuan
+						departmentName,
+						useTax1:
+							jenis_biaya_tambahan[i] !== args.input[0].biaya_tambahan_ppn
+								? `false`
+								: `true`,
+						useTax2:
+							jenis_biaya_tambahan[i] !== args.input[0].biaya_tambahan_ppn
+								? `false`
+								: `true`,
+						useTax3:
+							jenis_biaya_tambahan[i] !== args.input[0].biaya_tambahan_ppn
+								? `false`
+								: `true`
 					})
 				}
 			}
@@ -315,11 +249,13 @@ const mutations = {
 			// console.log(data)
 			let daftar_invoice
 			//map data from args.input update many
+
+			console.log(`id invoices`, args.input[0].id)
 			await Promise.all(
 				(daftar_invoice = args.input.map(async (input) => {
 					return await context.prisma.daftar_invoice.update({
 						where: {
-							id: input.id
+							id: args.input[0].id
 						},
 						data: {
 							id: idInvoice,

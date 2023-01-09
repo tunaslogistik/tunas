@@ -202,10 +202,11 @@ export default function Home() {
 	//get tujuan
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 
+	//split nomor ttb by comma
+	const nomor_ttb_split = daftar_invoice?.[0]?.nomor_ttb?.split(`,`)
+
 	//return nomor ttb from daftar surat jalan
-	const nomor_ttb = daftar_invoice?.map((item) => {
-		return item.nomor_ttb
-	})
+	const nomor_ttb = nomor_ttb_split
 
 	//filter data by ttb number in nomor_ttb daftar_invoice
 	const datadaftarTTB = dataTtb?.daftar_ttb?.filter((item) => {

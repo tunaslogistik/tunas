@@ -10,7 +10,6 @@ import { DashboardContext } from "@contexts/DashboardContext.context"
 import useLoading from "@hooks/useLoading.hook"
 import { Button, Popconfirm, notification } from "antd"
 import { GET_ACCURATE } from "graphql/accurate/queries"
-import { GET_CUSTOMER } from "graphql/customer/queries"
 import { GET_DAFTAR_BIAYA_TAMBAHAN } from "graphql/daftar_biaya_tambahan/queries"
 import {
 	DELETE_DAFTAR_INVOICE,
@@ -37,13 +36,10 @@ export default function Home() {
 	//id from router
 	const id = router.query.id
 
-	const setForm = useForm()
-	const { control, register, watch, handleSubmit, setValue, reset } = setForm
-
-	const { setLoading } = useLoading()
 	const { data } = useQuery(GET_DAFTAR_SURAT_JALAN, {
 		pollInterval: 200
 	})
+
 	//GET DAFTAR TTB
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB, {
 		pollInterval: 200
@@ -52,8 +48,6 @@ export default function Home() {
 	const { data: dataDaftarSalesOrder } = useQuery(GET_DAFTAR_SALES_ORDER, {
 		pollInterval: 200
 	})
-	//GET CUSTOMER
-	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	//GET DAFTAR ACCURATE
 	const { data: dataAccurate } = useQuery(GET_ACCURATE)
 	//GET DAFTAR BIAYA TAMBAHAN
@@ -66,6 +60,14 @@ export default function Home() {
 	const [selectednoSJA, setselectednoSJA] = useState([])
 	const [selectedBiayaTambahan, setBiayaTambahan] = useState()
 	const [selectedBiayaTambahan2, setBiayaTambahan2] = useState()
+
+	const setForm = useForm()
+	const { control, register, watch, handleSubmit, setValue, reset } = setForm
+
+	const { setLoading } = useLoading()
+
+	//refetch data
+	const { refetch } = useQuery(GET_DAFTAR_INVOICE)
 
 	const { data: dataDaftarInvoice } = useQuery(GET_DAFTAR_INVOICE, {
 		onCompleted({ daftar_invoice }) {
@@ -90,6 +92,10 @@ export default function Home() {
 			//split PPN by comma
 			const PPN = dataInvoice[0]?.jenis_biaya_tambahan.split(`,`)
 
+			//split nomor_surat_jalan by comma
+			const nomor_surat_jalan_split =
+				dataInvoice[0]?.nomor_surat_jalan.split(`,`)
+
 			const nama_barang_harga = nama_barang?.map((item, index) => {
 				return {
 					nama_barang: item,
@@ -97,10 +103,6 @@ export default function Home() {
 					tipe_ppn: PPN[index]
 				}
 			})
-
-			// const jenis_biaya_tambahan_split = PPN?.map((item) => {
-			// 	item.split(`,`)
-			// })
 
 			//reset data to newArray
 			var newArray = nama_barang_harga?.map((item) => {
@@ -112,34 +114,56 @@ export default function Home() {
 			})
 
 			//for data invoice length set nomor_surat_jalanA[index] with nomor_surat_jalan from dataInvoice
-			const nomor_surat_jalan = []
-			for (let i = 0; i < dataInvoice.length; i++) {
-				nomor_surat_jalan.push(dataInvoice[i]?.nomor_surat_jalan)
-			}
+			const nomor_surat_jalan = nomor_surat_jalan_split
 
 			//if newArray.nama_barang is not "" || "undefined" then reset({ newArray }) else not
 			newArray?.map((item) => {
 				if (item.nama_barang !== `` || item.nama_barang !== `undefined`) {
 					reset({ newArray })
+					router.replace(router.asPath)
 				}
 			})
 
 			//convert nomor_surat_jalan to array of object and assign `nomor_surat_jalanA.${index}`
 			const test = nomor_surat_jalan?.map((item, index) => {
-				handleChangeSJA(item, index)
 				return { [`nomor_surat_jalanA.${index}`]: item }
 			})
 
+			console.log(`test`, test)
+
 			setselectednoSJA(nomor_surat_jalan)
 
+			//for nomor_surat_jalan_split length set selectednoSJA
+			for (let i = 0; i < nomor_surat_jalan_split.length; i++) {
+				selectednoSJA[i] = nomor_surat_jalan_split[i]
+			}
+
 			reset({ test })
-		}
+		},
+		//refetch query if error
+		onError() {
+			refetch()
+		},
+		pollInterval: 1000
 	})
+	console.log(`dataDaftarInvoice` + dataDaftarInvoice)
 
 	//get data from dataDaftarInvoice where id = id
 	const filteredData = dataDaftarInvoice?.daftar_invoice?.filter(
 		(item) => item.id === parseInt(id as string)
 	)
+
+	//split nomor_surat_jalan by comma and set to selectednoSJA
+	const nomor_surat_jalan_split =
+		filteredData?.[0]?.nomor_surat_jalan.split(`,`)
+
+	//get length of nomor_surat_jalan_split
+	const nomor_surat_jalan_split_length = nomor_surat_jalan_split?.length
+
+	//for nomor_surat_jalan_split length set selectednoSJA
+	for (let i = 0; i < nomor_surat_jalan_split_length; i++) {
+		selectednoSJA[i] = nomor_surat_jalan_split[i]
+	}
 
 	//get nomor_invoice but remove last number after slahs but not dont remove the slash itself
 	const nomor_invoice = filteredData?.[0]?.nomor_invoice.split(`/`)
@@ -215,6 +239,8 @@ export default function Home() {
 		selectednoSJA?.includes(item.nomor_surat_jalan)
 	)
 
+	console.log(`dataInvoice`, dataInvoice)
+
 	const [updateDaftar_invoice] = useMutation(UPDATE_DAFTAR_INVOICE, {
 		refetchQueries: [{ query: GET_DAFTAR_INVOICE }]
 	})
@@ -282,6 +308,10 @@ export default function Home() {
 		hargaSatuanSplit.push(item.split(`,`))
 	})
 
+	const hargaSatuanSplitReplace = hargaSatuanSplit?.map((item) =>
+		item.map((item) => (item === `` ? 0 : item))
+	)
+
 	//join
 	const hargaSatuanJoin = hargaSatuanSplit?.map((item) => item.join(`,`))
 
@@ -304,7 +334,7 @@ export default function Home() {
 	const tipe_ppnJoinComma = tipe_ppnJoin?.join(`,`)
 
 	//sum hargaSatuanSplit
-	const sumHargaSatuan = hargaSatuanSplit?.map((item) =>
+	const sumHargaSatuan = hargaSatuanSplitReplace?.map((item) =>
 		item.reduce((a, b) => parseInt(a) + parseInt(b), 0)
 	)
 
@@ -313,8 +343,6 @@ export default function Home() {
 		(a, b) => parseInt(a) + parseInt(b),
 		0
 	)
-
-	console.log(`sumTotals`, sumTotal)
 
 	//for tipe_Ppns length find taxName in accurate where tipe_ppns === kode_barang
 	const taxNames = []
@@ -365,8 +393,6 @@ export default function Home() {
 
 	const sum_total_ppn = sumHargaTotal()
 
-	console.log(`sum_total_ppns`, sum_total_ppn)
-
 	const sum_bersih = sumHargaSebelumPpn()
 
 	const filteredSuratJalan = data?.daftar_surat_jalan.filter((item) => {
@@ -397,15 +423,11 @@ export default function Home() {
 	//watch kota_tujuanA[0]
 	const kota_tujuan = watch(`kota_tujuanA[0]`)
 
-	console.log(`kota_tujuan`, kota_tujuan)
-
 	const nama_tujuan = dataDaftarTujuan?.daftar_tujuan
 		?.filter((item) => {
 			return item.kode_tujuan === String(kota_tujuan)
 		})
 		.map((item) => item.nama_tujuan)
-
-	console.log(`nama_tujuan`, nama_tujuan)
 
 	const filteredSuratJalan3 = filteredSuratJalan2?.filter((item) => {
 		if (kota_tujuan) {
@@ -487,18 +509,18 @@ export default function Home() {
 			totalTagihan?.length > 1 ? totalTagihan[0] : totalTagihan
 		)
 		setValue(`accurate`, accurate?.length > 1 ? accurate[0] : accurate)
-		setAccurate(accurate[0])
-		setBiayaTambahan(biaya_tambahan_ppn[0])
-		setBiayaTambahan2(biaya_tambahan_non_ppn[0])
+		setAccurate(accurate?.[0])
+		setBiayaTambahan(biaya_tambahan_ppn?.[0])
+		setBiayaTambahan2(biaya_tambahan_non_ppn?.[0])
+
+		//refresh without reload
+		router.replace(router.asPath)
 	}
 
 	//for selected no sja length call handleChangeSJA
 	useEffect(() => {
-		for (let i = 0; i < selectednoSJA.length; i++) {
-			handleChangeSJA(selectednoSJA[i], i)
-		}
+		selectednoSJA.map((item, index) => handleChangeSJA(item, index))
 	}, [selectednoSJA])
-
 	//get nomor_ttb from surat jalan where nomor surat jalan = selectednoSJA
 	const nomorTTB = data?.daftar_surat_jalan.filter((item) => {
 		return selectednoSJA.includes(item.nomor_surat_jalan)
@@ -511,11 +533,6 @@ export default function Home() {
 	const termPayment = dataDaftarSalesOrder?.daftar_sales_order
 		?.filter((item) => allTTB?.includes(item.nomor_ttb))
 		.map((item) => item.term_payment)
-
-	//get pengirim
-	const pengirim = dataDaftarTTB?.daftar_ttb
-		?.filter((item) => allTTB?.includes(item.ttb_number))
-		.map((item) => item.pengirim)
 
 	const allHarga = watch(`tagihan`) ? watch(`tagihan`) : 0
 	const allHargaA = watch(`tagihanA`) ? watch(`tagihanA`) : [0]
@@ -587,8 +604,6 @@ export default function Home() {
 	const tempTotal = sumTotal ? sumTotal : 0
 	const subTotal = subTotal1 + subTotal4 + tempTotal
 
-	console.log(`subTotal`, tempTotal)
-
 	const subAfterPPN = sum_bersih + subTotal3 + sum_total_ppn
 
 	const subPPN = subAfterPPN - subTotal
@@ -597,10 +612,7 @@ export default function Home() {
 
 	const onSubmit = async (formData) => {
 		//merge formData.nomor_surat_jalanA and formData.nomor_surat_jalan
-		const nomorSuratJalan = [
-			...formData.nomor_surat_jalanA,
-			formData.nomor_surat_jalan
-		]
+		const nomorSuratJalan = [...formData.nomor_surat_jalanA]
 
 		//get nama barang from newArray formData
 		const namaBarang = formData.newArray.map((item) => item.nama_barang)
@@ -620,6 +632,17 @@ export default function Home() {
 		const namaBarangJoins = namaBarangString + `,` + namaBarangJoin
 		const hargaJoins = hargaString + `,` + hargaSatuanJoin
 		const ppnJoins = ppnString + `,` + tipe_ppnJoinComma
+
+		//get nomor ttb where nomor surat jalan = nomorSuratJalan
+		const nomorTtb = data?.daftar_surat_jalan
+			?.filter((item) => nomorSuratJalan.includes(item.nomor_surat_jalan))
+			.map((item) => item.nomor_ttb)
+
+		//join nomor ttb into 1 string with ,
+		const nomorTtbString = nomorTtb.join(`,`)
+
+		//join nomor surat jalan into 1 string with ,
+		const nomorSuratJalanString = nomorSuratJalan.join(`,`)
 
 		const dataInvoice = nomorSuratJalan?.map((item, index) => {
 			return {
@@ -735,8 +758,6 @@ export default function Home() {
 				.map((item2) => item2.kode_barang)[0]
 		})
 
-		console.log(`dataInvoice`, formData.accurate)
-
 		dataInvoice.map((item) => {
 			//sum koli from ttb where nomor ttb = nomor ttb
 			item.total_koli = String(
@@ -759,7 +780,13 @@ export default function Home() {
 			(item) => item.nomor_surat_jalan !== undefined
 		)
 
-		console.log(`dataInvoice_final`, dataInvoice_final)
+		dataInvoice.map((item) => {
+			item.nomor_ttb = nomorTtbString
+		})
+
+		dataInvoice.map((item) => {
+			item.nomor_surat_jalan = nomorSuratJalanString
+		})
 
 		// //get only pengirim, nomor_invoice, jenis_biaya_tambahan,id_biaya_tambahan and harga_biaya_tambahan
 		// const dataBiaya_tambahan = dataInvoice_final.map((item) => {
@@ -781,7 +808,7 @@ export default function Home() {
 				"Content-Type": `application/json`
 			},
 			body: JSON.stringify({
-				id: dataInvoice_final.map((item) => item.id)
+				id: Number(id)
 			})
 		})
 
@@ -803,7 +830,6 @@ export default function Home() {
 		router.push(`/keuangan/daftar-invoice`)
 	}
 
-	console.log(`watch accurate`, watch(`accurate`))
 	return (
 		<AdminPage
 			parent={
@@ -969,6 +995,7 @@ export default function Home() {
 												onChange={(e) => {
 													handleChangeSJA(e.target.value, index)
 													selectednoSJA[index] = e.target.value
+													router.replace(router.asPath)
 												}}
 												style={{ width: `100%` }}
 												required
@@ -1103,22 +1130,23 @@ export default function Home() {
 								</div>
 							)
 						})}
-						{
-							//if harga is not empty show this if not hidden
-							harga !== `` && (
-								<div className="field" style={{ marginTop: `1%` }}>
-									<label style={{ fontWeight: `bolder` }} className="label">
-										Nama Barang (Accurate)
-									</label>
-									<input
-										style={{ width: `100%`, height: `38px` }}
-										{...register(`accurate`)}
-										value={selectedAccurate}
-										disabled
-									/>
-								</div>
-							)
-						}
+						<div className="field" style={{ marginTop: `1%` }}>
+							<label style={{ fontWeight: `bolder` }} className="label">
+								Nama Barang (Accurate)
+							</label>
+							<input
+								style={{ width: `100%`, height: `38px` }}
+								{...register(`accurate`)}
+								defaultValue={
+									//find data from accurate where kode barang is equal to kode barang
+									dataAccurate?.accurate.find(
+										(item) => item.kode_barang === filteredData?.[0]?.accurate
+									)?.nama_barang
+								}
+								value={selectedAccurate}
+								disabled
+							/>
+						</div>
 						<div style={{ marginTop: `2%` }}>
 							<label
 								style={{ fontWeight: `bold`, paddingLeft: `5px` }}
@@ -1302,7 +1330,7 @@ export default function Home() {
 									placeholder="Text input"
 									name="tanggal_invoice"
 									{...register(`tanggal_invoice`)}
-									defaultValue={dataInvoice?.[0]?.tanggal_invoice}
+									defaultValue={filteredData?.[0]?.tanggal_invoice}
 								/>
 							</div>
 						</div>
@@ -1343,7 +1371,7 @@ export default function Home() {
 									className="textarea"
 									placeholder="Keterangan"
 									{...register(`keterangan`)}
-									defaultValue={dataInvoice?.[0]?.keterangan}
+									defaultValue={filteredData?.[0]?.keterangan}
 									required
 								/>
 							</div>

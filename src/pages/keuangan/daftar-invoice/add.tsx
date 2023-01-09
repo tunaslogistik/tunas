@@ -45,7 +45,7 @@ export default function Home() {
 	const { data: dataAccurate } = useQuery(GET_ACCURATE)
 
 	const setForm = useForm()
-	const { control, register, watch, handleSubmit, setValue } = setForm
+	const { control, register, watch, handleSubmit, setValue, reset } = setForm
 
 	useEffect(() => {
 		formRef.current?.setFieldsValue({
@@ -98,6 +98,11 @@ export default function Home() {
 
 	const nomor_sJ = mergeSelected()
 
+	const getDataSj = () => {
+		//refresh page without reload
+		router.replace(router.asPath)
+	}
+
 	//get all ttb number from surat jalan where nomor surat jalan is selected
 	const getTTB = () => {
 		const ttb = data?.daftar_surat_jalan
@@ -143,6 +148,11 @@ export default function Home() {
 		hargaSatuanSplit.push(item.split(`,`))
 	})
 
+	//for hargaSatuanSplit if Nan replace with 0
+	const hargaSatuanSplitReplace = hargaSatuanSplit?.map((item) =>
+		item.map((item) => (item === `` ? 0 : item))
+	)
+
 	//join
 	const hargaSatuanJoin = hargaSatuanSplit?.map((item) => item.join(`,`))
 
@@ -164,7 +174,7 @@ export default function Home() {
 	const tipe_ppnJoinComma = tipe_ppnJoin?.join(`,`)
 
 	//sum hargaSatuanSplit
-	const sumHargaSatuan = hargaSatuanSplit?.map((item) =>
+	const sumHargaSatuan = hargaSatuanSplitReplace?.map((item) =>
 		item.reduce((a, b) => parseInt(a) + parseInt(b), 0)
 	)
 
@@ -221,8 +231,6 @@ export default function Home() {
 	const sum_total_ppn = sumHargaTotal()
 
 	const sum_bersih = sumHargaSebelumPpn()
-
-	console.log(`sumHargaSebelumPpn`, sumHargaSebelumPpn())
 
 	const filteredSuratJalan = data?.daftar_surat_jalan.filter((item) => {
 		if (watch(`nomor_surat_jalan`) && watch(`nomor_surat_jalanA`)) {
@@ -364,7 +372,6 @@ export default function Home() {
 	//handleChangeSJA
 	const handleChangeSJA = (value, index) => {
 		//getdata
-
 		selectednoSJA[index] = value
 		//get nomor ttb from surat jalan where nomor surat jalan = value
 		const nomorTTB = data?.daftar_surat_jalan.filter((item) => {
@@ -405,6 +412,8 @@ export default function Home() {
 		setValue(`kota_tujuanA[${index}]`, kotaTujuan[0])
 		setValue(`total_volume_ttbA[${index}]`, totalVolume[0])
 		setValue(`tagihanA[${index}]`, totalTagihan)
+
+		mergeSelected()
 	}
 
 	//get nomor_ttb from surat jalan where nomor surat jalan = selectednoSJatas
@@ -484,8 +493,6 @@ export default function Home() {
 
 	const subAfterPPN = sum_bersih + parseInt(subTotal3) + sum_total_ppn
 
-	console.log(`subTotals`, sum_total_ppn)
-
 	const subPPN = subAfterPPN - subTotal
 
 	function addLeadingZeros(num, totalLength) {
@@ -501,6 +508,8 @@ export default function Home() {
 			...(formData.nomor_surat_jalanA ? formData.nomor_surat_jalanA : []),
 			formData.nomor_surat_jalan
 		].map((item) => item)
+
+		console.log(`nomor_surat_jalan`, nomor_surat_jalan)
 
 		//get nama barang from newArray formData
 		const namaBarang = formData.newArray.map((item) => item.nama_barang)
@@ -525,6 +534,16 @@ export default function Home() {
 
 		//join ppn with ppn join
 		const ppnJoins = ppnString + `,` + tipe_ppnJoinComma
+
+		//join nomor ttb into 1 string with ,
+		const nomorTtb = data?.daftar_surat_jalan
+			?.filter((item) => nomor_surat_jalan.includes(item.nomor_surat_jalan))
+			.map((item) => item.nomor_ttb)
+
+		const nomorTtbString = nomorTtb.join(`,`)
+
+		//join nomor surat jalan into 1 string with ,
+		const nomorSuratJalanString = nomor_surat_jalan.join(`,`)
 
 		const dataInvoice = nomor_surat_jalan?.map((item, index) => {
 			return {
@@ -683,6 +702,14 @@ export default function Home() {
 					`/` +
 					addLeadingZeros(dataReference[0].increment + 1, 4)
 			}
+		})
+
+		dataInvoice.map((item) => {
+			item.nomor_ttb = nomorTtbString
+		})
+
+		dataInvoice.map((item) => {
+			item.nomor_surat_jalan = nomorSuratJalanString
 		})
 
 		console.log(`dataInvoice`, dataInvoice)
@@ -909,6 +936,7 @@ export default function Home() {
 												onChange={(e) => {
 													handleChangeSJA(e.target.value, index)
 													selectednoSJA[index] = e.target.value
+													getDataSj()
 												}}
 												style={{ width: `100%` }}
 												required
@@ -924,6 +952,9 @@ export default function Home() {
 															<option
 																key={ttb.nomor_surat_jalan}
 																value={ttb.nomor_surat_jalan}
+																onChange={(e) => {
+																	mergeSelected()
+																}}
 															>
 																{ttb.nomor_surat_jalan}
 															</option>
@@ -1032,6 +1063,9 @@ export default function Home() {
 											onClick={(e) => {
 												e.preventDefault()
 												remove(index)
+												selectednoSJA.splice(index, 1)
+												selectednoSJA.filter((item) => item !== ``)
+												mergeSelected()
 											}}
 											role="img"
 										>
