@@ -86,8 +86,6 @@ export default function Home() {
 
 	const { data: dataDaftarInvoice } = useQuery(GET_DAFTAR_INVOICE, {
 		onCompleted({ daftar_invoice }) {
-			//set loading true
-			setLoading(true)
 			// const data = daftar_invoice
 			const filteredData = daftar_invoice?.filter(
 				(item) => item.id === parseInt(id as string)
@@ -152,8 +150,6 @@ export default function Home() {
 			setselectednoSJA(nomor_surat_jalan)
 
 			reset({ test })
-
-			setLoading(false)
 		}
 	})
 
@@ -1134,6 +1130,7 @@ export default function Home() {
 									<input
 										style={{ width: `100%`, height: `38px` }}
 										{...register(`accurate`)}
+										value={selectedAccurate}
 										disabled
 									/>
 								</div>
