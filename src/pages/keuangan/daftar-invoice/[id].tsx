@@ -81,7 +81,7 @@ export default function Home() {
 				(item) => item.nomor_invoice === nomor_invoice
 			)
 
-			//split nama_barang by comma
+			//split nama_barang using comma
 			const nama_barang = dataInvoice[0]?.nama_barang.split(`,`)
 
 			//split harga by comma
