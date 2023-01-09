@@ -140,7 +140,7 @@ model daftar_sales_order {
   pengirim            String
   kota_tujuan         String
   nomor_sales_order   String
-  total_volume        Int
+  total_volume        String
   harga               Int
   harga_sesudah_ppn   Int      @default(0)
   dp                  Int
@@ -208,41 +208,43 @@ model daftar_biaya_tambahan {
 }
 
 model daftar_invoice {
-  id                    Int    @id @default(autoincrement())
-  nomor_surat_jalan     String
-  nomor_invoice         String
-  nomor_ttb             String
-  vendor_pelayanan      String
-  tanggal_invoice       String
-  tanggal_keberangkatan String
-  nomor_container       String
-  nama_kapal            String
-  koli                  String
-  volume                String
-  total_koli            String
-  total_volume          String
-  nomor_seal            String
-  nama_barang           String
-  jenis_biaya_tambahan  String @default("null")
-  id_biaya_tambahan     String @default("null")
-  id_biaya_utama        String @default("null")
-  harga_surat_jalan     String @default("null")
-  harga_biaya_tambahan  String
-  ppn_biaya_tambahan    String
-  harga                 String
-  accurate              String
-  keterangan            String
-  pengirim              String
-  total_tagihan         String
-  tax                   String
-  subtotal              String
-  subtotal_tambahan     String
-  biaya_tambahan_sales  String @default("null")
-  itemNo_sales_order    String @default("null")
-  biaya_tambahan_join   String @default("null")
-  itemNo_join           String @default("null")
-  nama_barang_join      String @default("null")
-  kota_tujuan           String @default("null")
+  id                     Int    @id @default(autoincrement())
+  nomor_surat_jalan      String
+  nomor_invoice          String
+  nomor_ttb              String
+  vendor_pelayanan       String
+  tanggal_invoice        String
+  tanggal_keberangkatan  String
+  nomor_container        String
+  nama_kapal             String
+  koli                   String
+  volume                 String
+  total_koli             String
+  total_volume           String
+  nomor_seal             String
+  nama_barang            String
+  jenis_biaya_tambahan   String @default("null")
+  id_biaya_tambahan      String @default("null")
+  id_biaya_utama         String @default("null")
+  harga_surat_jalan      String @default("null")
+  harga_biaya_tambahan   String
+  ppn_biaya_tambahan     String
+  harga                  String
+  accurate               String
+  keterangan             String
+  pengirim               String
+  total_tagihan          String
+  tax                    String
+  subtotal               String
+  subtotal_tambahan      String
+  biaya_tambahan_sales   String @default("null")
+  itemNo_sales_order     String @default("null")
+  biaya_tambahan_join    String @default("null")
+  itemNo_join            String @default("null")
+  nama_barang_join       String @default("null")
+  kota_tujuan            String @default("null")
+  biaya_tambahan_ppn     String @default("null")
+  biaya_tambahan_non_ppn String @default("null")
 }
 
 model daftar_packing_list {
@@ -270,28 +272,30 @@ model daftar_packing_list {
 }
 
 model daftar_ttb {
-  id               Int    @id @default(autoincrement())
-  ttb_number       String
-  pengirim         String
-  kota_tujuan      String
-  tanggal_diterima String
-  nama_penerima    String
-  jenis_pengiriman String
-  nomor_telepon    String
-  total_volume     String
-  nama_barang      String
-  panjang          String
-  lebar            String
-  tinggi           String
-  koli             String
-  container_size   String
-  alamat_tujuan    String
-  status           String
-  kategori         String
-  full_container   String
-  pembayar         String
-  ppn              String
-  accurate         String
+  id                     Int    @id @default(autoincrement())
+  ttb_number             String
+  pengirim               String
+  kota_tujuan            String
+  tanggal_diterima       String
+  nama_penerima          String
+  jenis_pengiriman       String
+  nomor_telepon          String
+  total_volume           String
+  nama_barang            String
+  panjang                String
+  lebar                  String
+  tinggi                 String
+  koli                   String
+  container_size         String
+  alamat_tujuan          String
+  status                 String
+  kategori               String
+  full_container         String
+  pembayar               String
+  ppn                    String
+  accurate               String
+  biaya_tambahan         String @default("null")
+  biaya_tambahan_non_ppn String @default("null")
 }
 
 model daftar_tujuan {

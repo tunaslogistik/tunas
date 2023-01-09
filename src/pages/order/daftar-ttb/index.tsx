@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import { Table } from "antd"
@@ -14,33 +14,9 @@ import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import Link from "next/link"
 import router from "next/router"
+import { GET_DAFTAR_TTB } from "../../../../graphql/daftar_ttb/queries"
 
 //get DATA
-
-const GET_DATA = gql`
-	query daftar_ttb {
-		daftar_ttb {
-			id
-			ttb_number
-			pengirim
-			kota_tujuan
-			tanggal_diterima
-			nama_penerima
-			jenis_pengiriman
-			nomor_telepon
-			total_volume
-			nama_barang
-			panjang
-			lebar
-			tinggi
-			koli
-			alamat_tujuan
-			status
-			kategori
-			full_container
-		}
-	}
-`
 
 interface DataType {
 	id: number
@@ -63,7 +39,7 @@ interface DataType {
 }
 
 export default function Home() {
-	const { data, loading } = useQuery(GET_DATA)
+	const { data, loading } = useQuery(GET_DAFTAR_TTB)
 
 	//GET DAFTAR TUJUAN
 	const { data: dataTujuan } = useQuery(GET_DAFTAR_TUJUAN)

@@ -99,6 +99,8 @@ export default function Home() {
 
 	const tax_name = String(dataAccuratePpn?.[0]?.taxName)
 
+	console.log(`tax_name: `, tax_name)
+
 	//GET DATA ttb number where id eqaul to id
 	const dataTTB = data?.daftar_ttb?.filter(
 		(item) => item.id === parseInt(id as string)
@@ -154,8 +156,14 @@ export default function Home() {
 					kategori: String(formData.kategori),
 					full_container: String(formData.full_container),
 					accurate: String(formData.accurate),
-					ppn: String(formData.ppn),
-					pembayar: String(formData.pembayar)
+					//if formData is undefined then ppn = tax name
+					ppn:
+						formData.ppn === undefined
+							? String(tax_name)
+							: String(formData.ppn),
+					pembayar: String(formData.pembayar),
+					biaya_tambahan: String(formData.biaya_tambahan_ppn),
+					biaya_tambahan_non_ppn: String(formData.biaya_tambahan_non_ppn)
 				}
 			})
 
@@ -219,7 +227,8 @@ export default function Home() {
 	const mapAccurate = dataAccurate?.accurate?.map((accurate) => {
 		return {
 			label: accurate.nama_barang,
-			ppn: accurate.taxName
+			ppn: accurate.taxName,
+			kode_barang: accurate.kode_barang
 		}
 	})
 
@@ -620,6 +629,11 @@ export default function Home() {
 								]}
 							/>
 						</div>
+						<div>
+							<label style={{ fontWeight: `bold` }} className="label">
+								Setting accurate
+							</label>
+						</div>
 						<div
 							className="form-group"
 							style={{
@@ -674,6 +688,84 @@ export default function Home() {
 									tax_name === `undefined` ? dataTTB?.[0]?.ppn : tax_name
 								}
 							/>
+						</div>
+						<div
+							className="form-group"
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `1%`
+							}}
+						>
+							<label style={{ fontWeight: `bold` }} className="label">
+								Biaya Tambahan PPN
+							</label>
+							<select
+								className="form-control"
+								name="biaya_tambahan_ppn"
+								{...register(`biaya_tambahan_ppn`)}
+								style={{ width: `100%` }}
+								onChange={(e) => handleChange(e.target.value)}
+								required
+							>
+								<option
+									key={dataTTB?.[0]?.biaya_tambahan}
+									value={dataTTB?.[0]?.biaya_tambahan}
+								>
+									{
+										//from mapAccurate where kode_barang === dataTTB?.[0]?.biaya_tambahan then get label
+										mapAccurate?.filter(
+											(accurate) =>
+												accurate.kode_barang === dataTTB?.[0]?.biaya_tambahan
+										)[0]?.label
+									}
+								</option>
+								{mapAccurate?.map((accurate) => (
+									<option key={accurate.label} value={accurate.kode_barang}>
+										{accurate.label}
+									</option>
+								))}
+							</select>
+						</div>
+						<div
+							className="form-group"
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `1%`,
+								marginLeft: `15px`
+							}}
+						>
+							<label style={{ fontWeight: `bold` }} className="label">
+								Biaya Tambahan Non PPN
+							</label>
+							<select
+								className="form-control"
+								name="biaya_tambahan_non_ppn"
+								{...register(`biaya_tambahan_non_ppn`)}
+								style={{ width: `100%` }}
+								onChange={(e) => handleChange(e.target.value)}
+								required
+							>
+								<option
+									key={dataTTB?.[0]?.biaya_tambhan}
+									value={dataTTB?.[0]?.biaya_tambhan}
+								>
+									{
+										//from mapAccurate where kode_barang === dataTTB?.[0]?.biaya_tambahan then get label
+										mapAccurate?.filter(
+											(accurate) =>
+												accurate.kode_barang ===
+												dataTTB?.[0]?.biaya_tambahan_non_ppn
+										)[0]?.label
+									}
+								</option>
+								{mapAccurate?.map((accurate) => (
+									<option key={accurate.label} value={accurate.kode_barang}>
+										{accurate.label}
+									</option>
+								))}
+							</select>
 						</div>
 						<div
 							className="form-group"

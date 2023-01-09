@@ -1,5 +1,5 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import FormRepeater from "@components/form/FormRepeater.component"
@@ -17,27 +17,11 @@ import { useRouter } from "next/router"
 import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { CREATE_DAFTAR_SALES_ORDER } from "../../../../graphql/daftar_sales_order/mutations"
-
-const GET_DATA = gql`
-	query daftar_sales_order {
-		daftar_sales_order {
-			id
-			nomor_ttb
-			nomor_sales_order
-			total_volume
-			harga
-			total_tagihan
-			rekening
-			kota_tujuan
-			tanggal_sales_order
-			term_payment
-		}
-	}
-`
+import { GET_DAFTAR_SALES_ORDER } from "../../../../graphql/daftar_sales_order/queries"
 
 export default function Home() {
 	const { setLoading } = useLoading()
-	const { data } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DAFTAR_SALES_ORDER)
 
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
 	//GET DATA CUSTOMER
@@ -55,7 +39,7 @@ export default function Home() {
 		setForm
 
 	const [createDaftar_sales_order] = useMutation(CREATE_DAFTAR_SALES_ORDER, {
-		refetchQueries: [{ query: GET_DATA }]
+		refetchQueries: [{ query: GET_DAFTAR_SALES_ORDER }]
 	})
 
 	//create mutation function
@@ -75,12 +59,12 @@ export default function Home() {
 	}
 
 	//GET TAX OPTION DATAACCURATE TAXNAME
-	const taxName = dataAccurate?.accurate?.map((tax) => {
-		return {
-			label: tax.nama_barang,
-			value: tax.kode_barang
-		}
-	})
+	// const taxName = dataAccurate?.accurate?.map((tax) => {
+	// 	return {
+	// 		label: tax.nama_barang,
+	// 		value: tax.kode_barang
+	// 	}
+	// })
 
 	function addLeadingZeros(num, totalLength) {
 		return String(num).padStart(totalLength, `0`)
@@ -121,9 +105,9 @@ export default function Home() {
 	console.log(`filterTTB2`, filterTTB2)
 
 	//turn dataCustomer.tipe_ppn to percentage where nama_customer === filterTTB2.pengirim
-	const filterCustomer = dataCustomer?.customer.filter((item) => {
-		return item.nama_customer === filterTTB2?.[0]?.pengirim
-	})
+	// const filterCustomer = dataCustomer?.customer.filter((item) => {
+	// 	return item.nama_customer === filterTTB2?.[0]?.pengirim
+	// })
 
 	//get tipe ppn
 	const tipePPN = filterTTB2?.[0]?.ppn
@@ -155,33 +139,30 @@ export default function Home() {
 
 	const newArray1 = watch(`newArray`)
 
+	console.log(`newArray1`, newArray1)
+
 	const harga = newArray1?.map((item) => {
 		if (item.Harga === 0) {
 			return 0
 		} else {
-			if (
-				String(item.tipe_ppn) !== `null` ||
-				String(item.tipe_ppn) !== `` ||
-				String(item.tipe_ppn) !== `undefined`
-			) {
-				//find and get taxName from dataAccurate where item.tipe_ppn === kode_barang
-				const taxName = dataAccurate?.accurate?.find((tax) => {
-					return tax.kode_barang === item.tipe_ppn
-				})
-				return Number(taxName?.taxName?.replace(/[^0-9]/g, ``)) !== 0
-					? parseInt(item.Harga) +
-							(parseInt(item.Harga) *
-								Number(taxName?.taxName?.replace(/[^0-9]/g, ``))) /
-								100
-					: parseInt(item.Harga) + 0
+			if (String(item.tipe_ppn) === `true` || item.tipe_ppn === true) {
+				//return harga + (harga * tipePPNPercentage)
+				return (
+					parseInt(item.Harga) +
+					parseInt(item.Harga) * Number(tipePPNPercentage)
+				)
 			} else {
-				return parseInt(item.Harga)
+				return Number(item.Harga)
 			}
 		}
 	})
 
+	console.log(`harga`, harga)
+
 	//sum harga
 	const sumHarga = harga?.reduce((a, b) => parseInt(a + b), 0)
+
+	console.log(`sumHarga`, sumHarga)
 
 	//if sumHarga not empty then total + sumHarga
 	const total2 = sumHarga ? total + parseInt(sumHarga) : total
@@ -227,10 +208,10 @@ export default function Home() {
 			const hargaBarang = formData.newArray.map((item) => item.Harga)
 
 			//sum hargaBarang
-			const sumHargaBarang = hargaBarang.reduce(
-				(a, b) => parseInt(a) + parseInt(b),
-				0
-			)
+			// const sumHargaBarang = hargaBarang.reduce(
+			// 	(a, b) => parseInt(a) + parseInt(b),
+			// 	0
+			// )
 
 			//get ppn from newArray formData
 			const ppn = formData.newArray.map((item) => item.tipe_ppn)
@@ -262,7 +243,7 @@ export default function Home() {
 						) +
 						`/` +
 						addLeadingZeros(panjangSalesOrder, 4),
-					total_volume: parseInt(formData.total_volume_ttb),
+					total_volume: String(formData.total_volume_ttb),
 					harga: parseInt(formData.harga),
 					harga_sesudah_ppn: parseInt(harga_sesudah_ppn as any),
 					pengirim: formData.pengirim,
@@ -523,14 +504,8 @@ export default function Home() {
 								name="newArray"
 								inputNames={[`nama_barang`, `Harga`, `tipe_ppn`]}
 								inputLabels={[`Nama Barang`, `Harga`, `PPN`]}
-								inputTypes={[`text`, `text`, `select`]}
-								inputProps={[
-									{},
-									{},
-									{
-										options: taxName
-									}
-								]}
+								inputTypes={[`text`, `text`, `checkbox`]}
+								inputProps={[{}, {}, {}]}
 							/>
 						</div>
 						<div

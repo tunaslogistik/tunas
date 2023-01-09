@@ -1,6 +1,6 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons"
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import { Button, DatePicker, Form, Input, Select, Space, message } from "antd"
@@ -19,35 +19,11 @@ import { useRouter } from "next/router"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { CREATE_DAFTAR_TTB } from "../../../../graphql/daftar_ttb/mutations"
+import { GET_DAFTAR_TTB } from "../../../../graphql/daftar_ttb/queries"
 //get data
 
-const GET_DATA = gql`
-	query daftar_ttb {
-		daftar_ttb {
-			id
-			ttb_number
-			pengirim
-			kota_tujuan
-			tanggal_diterima
-			nama_penerima
-			jenis_pengiriman
-			nomor_telepon
-			nama_barang
-			container_size
-			panjang
-			lebar
-			tinggi
-			koli
-			alamat_tujuan
-			status
-			kategori
-			full_container
-		}
-	}
-`
-
 export default function Home() {
-	const { data } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DAFTAR_TTB)
 	//GET DATA JENIS PENGIRIMAN
 	const { data: dataJenisPengiriman } = useQuery(GET_JENIS_PENGIRIMAN)
 	//GET DATA DAFTAR TUJUAN
@@ -64,7 +40,7 @@ export default function Home() {
 	const { control, reset, register, watch, setValue } = setForm
 
 	const [createDaftar_ttb] = useMutation(CREATE_DAFTAR_TTB, {
-		refetchQueries: [{ query: GET_DATA }]
+		refetchQueries: [{ query: GET_DAFTAR_TTB }]
 	})
 
 	//create mutation function
@@ -146,7 +122,9 @@ export default function Home() {
 					full_container: String(values.full_container),
 					pembayar: values.pembayar,
 					ppn: tax_name,
-					accurate: values.accurate
+					accurate: values.accurate,
+					biaya_tambahan: values.biaya_tambahan_ppn,
+					biaya_tambahan_non_ppn: values.biaya_tambahan_non_ppn
 				}
 			})
 			//count array of object length
@@ -273,7 +251,8 @@ export default function Home() {
 	const mapAccurate = dataAccurate?.accurate?.map((accurate) => {
 		return {
 			label: accurate.nama_barang,
-			ppn: accurate.taxName
+			ppn: accurate.taxName,
+			kode_barang: accurate.kode_barang
 		}
 	})
 
@@ -577,6 +556,11 @@ export default function Home() {
 								</>
 							)}
 						</Form.List>
+						<div>
+							<label style={{ fontWeight: `bold` }} className="label">
+								Setting accurate
+							</label>
+						</div>
 						<div
 							style={{
 								display: `inline-block`,
@@ -634,9 +618,85 @@ export default function Home() {
 										fontSize: `13px`,
 										paddingLeft: `10px`
 									}}
-									value={tax_name}
+									value={
+										tax_name === `undefined`
+											? `Silahkan pilih integrasi accurate`
+											: tax_name
+									}
 									disabled
 								/>
+							</div>
+						</div>
+						<div
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `1%`
+							}}
+						>
+							<label style={{ fontWeight: `bold` }} className="label">
+								Biaya Tambahan PPN
+							</label>
+							<Form.Item
+								name="biaya_tambahan_ppn"
+								rules={[
+									{
+										required: true,
+										message: `Biaya Tambahan PPN tidak boleh kosong`
+									}
+								]}
+							>
+								<Select
+									style={{ width: `100%`, height: `38px` }}
+									placeholder="Pilih Integrasi Accurate"
+								>
+									{mapAccurate?.map((accurate) => {
+										return (
+											<Option key={accurate.label} value={accurate.kode_barang}>
+												{accurate.label}
+											</Option>
+										)
+									})}
+								</Select>
+							</Form.Item>
+						</div>
+						<div
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `1%`,
+								marginLeft: `15px`
+							}}
+						>
+							<label style={{ fontWeight: `bold` }} className="label">
+								Biaya Tambahan Non PPN
+							</label>
+							<div>
+								<Form.Item
+									name="biaya_tambahan_non_ppn"
+									rules={[
+										{
+											required: true,
+											message: `Biaya Tambahan PPN tidak boleh kosong`
+										}
+									]}
+								>
+									<Select
+										style={{ width: `100%`, height: `38px` }}
+										placeholder="Pilih Integrasi Accurate"
+									>
+										{mapAccurate?.map((accurate) => {
+											return (
+												<Option
+													key={accurate.label}
+													value={accurate.kode_barang}
+												>
+													{accurate.label}
+												</Option>
+											)
+										})}
+									</Select>
+								</Form.Item>
 							</div>
 						</div>
 						<Form.Item name="full_container" valuePropName="checked">

@@ -1,5 +1,5 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import IconPrint from "@assets/icons/icon-print.svg"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
@@ -21,36 +21,14 @@ import {
 	CREATE_DAFTAR_SALES_ORDER,
 	DELETE_DAFTAR_SALES_ORDER
 } from "../../../../graphql/daftar_sales_order/mutations"
-
-const GET_DATA = gql`
-	query daftar_sales_order {
-		daftar_sales_order {
-			id
-			nomor_ttb
-			nomor_sales_order
-			total_volume
-			harga
-			total_tagihan
-			kota_tujuan
-			rekening
-			dp
-			tanggal_sales_order
-			term_payment
-			nama_barang
-			harga_satuan
-			total_tagihan
-			tipe_ppn
-			total_harga_ttb
-		}
-	}
-`
+import { GET_DAFTAR_SALES_ORDER } from "../../../../graphql/daftar_sales_order/queries"
 
 export default function Home() {
 	const { setLoading } = useLoading()
 
 	const { state: dashboardState } = useContext(DashboardContext)
 
-	const username = dashboardState.auth.username
+	// const username = dashboardState.auth.username
 
 	const role = dashboardState.auth.userRole?.name
 
@@ -70,28 +48,21 @@ export default function Home() {
 
 	const setForm = useForm()
 
-	const taxName = dataAccurate?.accurate?.map((tax) => {
-		return {
-			label: tax.nama_barang,
-			value: tax.kode_barang
-		}
-	})
-
 	const { control, register, watch, handleSubmit, getValues, setValue, reset } =
 		setForm
 
-	const { data } = useQuery(GET_DATA, {
+	const { data } = useQuery(GET_DAFTAR_SALES_ORDER, {
 		onCompleted({ daftar_sales_order }) {
-			const data = daftar_sales_order
+			// const data = daftar_sales_order
 			const filteredData = daftar_sales_order?.filter(
 				(item) => item.id === parseInt(id as string)
 			)
-			const ttb_number = filteredData[0]?.nomor_ttb
-			const pengirim = filteredData[0]?.pengirim
+			// const ttb_number = filteredData[0]?.nomor_ttb
+			// const pengirim = filteredData[0]?.pengirim
 			//filter by kode_t
-			var sales = data.filter(function (el) {
-				return el.nomor_ttb === ttb_number && el.pengirim === pengirim
-			})
+			// var sales = data.filter(function (el) {
+			// 	return el.nomor_ttb === ttb_number && el.pengirim === pengirim
+			// })
 
 			reset({
 				nomor_ttb: filteredData[0]?.nomor_ttb,
@@ -130,7 +101,7 @@ export default function Home() {
 	})
 
 	const [createDaftar_sales_order] = useMutation(CREATE_DAFTAR_SALES_ORDER, {
-		refetchQueries: [{ query: GET_DATA }]
+		refetchQueries: [{ query: GET_DAFTAR_SALES_ORDER }]
 	})
 
 	//create mutation function
@@ -138,7 +109,7 @@ export default function Home() {
 		createDaftar_sales_order({ variables: { input: data } })
 	}
 	const [deleteDaftar_sales_order] = useMutation(DELETE_DAFTAR_SALES_ORDER, {
-		refetchQueries: [{ query: GET_DATA }]
+		refetchQueries: [{ query: GET_DAFTAR_SALES_ORDER }]
 	})
 	const deleteData = (id) => {
 		deleteDaftar_sales_order({ variables: { deleteDaftar_sales_orderId: id } })
@@ -153,26 +124,18 @@ export default function Home() {
 		(item) => item.id === parseInt(id as string)
 	)
 
-	const tipe_Ppns = filterSalesOrdered?.[0]?.tipe_ppn.split(`,`)
+	// const tipe_Ppns = filterSalesOrdered?.[0]?.tipe_ppn.split(`,`)
 
 	//for tipe_Ppns length find taxName in accurate where tipe_ppns === kode_barang
-	const taxNames = tipe_Ppns?.map((item) => {
-		const taxName = dataAccurate?.accurate?.filter(
-			(tax) => tax.kode_barang === item
-		)
-		return taxName?.[0]?.nama_barang
-	})
-
-	//reset data to  formRepeater
-	const mapOption = filterSalesOrdered?.map((item) => {
-		return {
-			label: taxNames,
-			value: taxNames
-		}
-	})
+	// const taxNames = tipe_Ppns?.map((item) => {
+	// 	const taxName = dataAccurate?.accurate?.filter(
+	// 		(tax) => tax.kode_barang === item
+	// 	)
+	// 	return taxName?.[0]?.nama_barang
+	// })
 
 	//split filtereddata.harga satuan by ,
-	const hargaSatuan = filterSalesOrdered?.[0]?.harga_satuan.split(`,`)
+	// const hargaSatuan = filterSalesOrdered?.[0]?.harga_satuan.split(`,`)
 
 	const dataFilterId = filterSalesOrdered?.map((item) => item.id)
 
@@ -215,9 +178,9 @@ export default function Home() {
 	})
 
 	//turn dataCustomer.tipe_ppn to percentage where nama_customer === filterTTB2.pengirim
-	const filterCustomer = dataCustomer?.customer?.filter((item) => {
-		return item.nama_customer === filterTTB?.[0]?.pengirim
-	})
+	// const filterCustomer = dataCustomer?.customer?.filter((item) => {
+	// 	return item.nama_customer === filterTTB?.[0]?.pengirim
+	// })
 
 	//get tipe ppn
 	const tipePPN = filterTTB?.[0]?.ppn
@@ -244,23 +207,14 @@ export default function Home() {
 		if (item.Harga === 0) {
 			return 0
 		} else {
-			if (
-				String(item.tipe_ppn) !== `null` ||
-				String(item.tipe_ppn) !== `` ||
-				String(item.tipe_ppn) !== `undefined`
-			) {
-				//find and get taxName from dataAccurate where item.tipe_ppn === kode_barang
-				const taxName = dataAccurate?.accurate?.find((tax) => {
-					return tax.kode_barang === item.tipe_ppn
-				})
-				return Number(taxName?.taxName?.replace(/[^0-9]/g, ``)) !== 0
-					? parseInt(item.Harga) +
-							(parseInt(item.Harga) *
-								Number(taxName?.taxName?.replace(/[^0-9]/g, ``))) /
-								100
-					: parseInt(item.Harga) + 0
+			if (String(item.tipe_ppn) === `true` || item.tipe_ppn === true) {
+				//return harga + (harga * tipePPNPercentage)
+				return (
+					parseInt(item.Harga) +
+					parseInt(item.Harga) * Number(tipePPNPercentage)
+				)
 			} else {
-				return parseInt(item.Harga)
+				return Number(item.Harga)
 			}
 		}
 	})
@@ -341,12 +295,12 @@ export default function Home() {
 			const hargaBarang = formData.newArray.map((item) => item.Harga)
 
 			//sum hargaBarang
-			const sumHargaBarang = hargaBarang?.reduce(
-				(a, b) => parseInt(a) + parseInt(b),
-				0
-			)
+			// const sumHargaBarang = hargaBarang?.reduce(
+			// 	(a, b) => parseInt(a) + parseInt(b),
+			// 	0
+			// )
 
-			//get ppn from newArray formData
+			//get ppn from newArray formData if not true then false
 			const ppn = formData.newArray.map((item) => item.tipe_ppn)
 
 			//join nama barang into 1 string with ,
@@ -364,7 +318,7 @@ export default function Home() {
 				return {
 					nomor_ttb: formData.nomor_ttb,
 					nomor_sales_order: filterSalesOrdered?.[0]?.nomor_sales_order,
-					total_volume: parseInt(formData.total_volume_ttb),
+					total_volume: String(formData.total_volume_ttb),
 					harga: parseInt(formData.harga),
 					pengirim: formData.pengirim,
 					harga_sesudah_ppn: parseInt(harga_sesudah_ppn as any),
@@ -395,6 +349,8 @@ export default function Home() {
 					return acc
 				}
 			}, [])
+
+			console.log(`myChildrenArrayMerge`, myChildrenArrayMerge)
 
 			for (let i = 0; i < myChildrenArrayMerge.length; i++) {
 				createData(myChildrenArrayMerge[i])
@@ -670,13 +626,18 @@ export default function Home() {
 								name="newArray"
 								inputNames={[`nama_barang`, `Harga`, `tipe_ppn`]}
 								inputLabels={[`Nama Barang`, `Harga`, `PPN`]}
-								inputTypes={[`text`, `text`, `select`]}
+								inputTypes={[`text`, `text`, `checkbox`]}
 								inputProps={[
 									{},
 									{},
 									{
-										options: taxName,
-										defaultValue: mapOption
+										onChange: (e) => {
+											if (e.target.checked) {
+												e.target.value = true
+											} else {
+												e.target.value = false
+											}
+										}
 									}
 								]}
 							/>

@@ -28,6 +28,8 @@ export const GET_DAFTAR_TTB = gql`
 			pembayar
 			ppn
 			accurate
+			biaya_tambahan
+			biaya_tambahan_non_ppn
 		}
 	}
 `

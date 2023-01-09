@@ -39,6 +39,8 @@ export const GET_DAFTAR_INVOICE = gql`
 			itemNo_join
 			nama_barang_join
 			kota_tujuan
+			biaya_tambahan_ppn
+			biaya_tambahan_non_ppn
 		}
 	}
 `

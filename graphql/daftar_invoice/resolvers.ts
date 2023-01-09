@@ -10,6 +10,7 @@ const queries = {
 const mutations = {
 	createDaftar_invoice: async (_parent, args, context: Context) => {
 		try {
+			console.log(`args`, args)
 			const url = `https://public.accurate.id/accurate/api/sales-invoice/save.do?Scope: sales_invoice_save`
 			const data = {
 				Scope: `sales_invoice_save`,
@@ -19,7 +20,10 @@ const mutations = {
 					{
 						itemNo: args.input[0].accurate,
 						unitPrice: args.input[0].harga_surat_jalan,
-						departmentName: args.input[0].kota_tujuan
+						departmentName: args.input[0].kota_tujuan,
+						useTax2: String(true),
+						useTax1: String(true),
+						useTax3: String(true)
 					}
 				],
 				salesQuotation: {
@@ -31,11 +35,24 @@ const mutations = {
 				transDate: moment(args.input[0].tanggal_invoice).format(`DD/MM/YYYY`),
 				branchName: `jakarta`,
 				taxAmount: args.input[0].tax,
-				description: args.input[0].keterangan
+				description: args.input[0].ketbiaya_tambahan_ppnerangan
 			}
 
 			//split args.input.jenis_biaya_tambahan by ,
 			const jenis_biaya_tambahan = args.input[0].itemNo_join.split(`,`)
+
+			console.log(`jenis_biaya_tambahan`, jenis_biaya_tambahan)
+
+			//for jenis_biaya_tambahan.length if false then value = args.input[0].biaya_tambahan_non_ppn else biaya_tambahan_ppn
+			for (let i = 0; i < jenis_biaya_tambahan.length; i++) {
+				if (jenis_biaya_tambahan[i] === ``) {
+					jenis_biaya_tambahan[i] = args.input[0].biaya_tambahan_non_ppn
+				} else {
+					jenis_biaya_tambahan[i] = args.input[0].biaya_tambahan_ppn
+				}
+			}
+
+			console.log(`jenis_biaya_tambahan`, jenis_biaya_tambahan)
 
 			//split harga by ,
 			const harga = args.input[0].biaya_tambahan_join.split(`,`)
@@ -43,13 +60,26 @@ const mutations = {
 			const departmentName = args.input[0].kota_tujuan
 
 			//for jenis_biaya_tambahan.length push to data.detailItem
-			for (let i = 0; i < jenis_biaya_tambahan.length; i++) {
+			for (let i = 0; i < harga.length; i++) {
 				//if jenis_biaya_tambahan[i] !== "" push to data.detailItem
-				if (jenis_biaya_tambahan[i] !== ``) {
+				if (harga[i] !== ``) {
 					data.detailItem.push({
+						//if jenis_biaya_tambahan[i] !== true itemNo = args.input[0].biaya_tambahan_non_ppn else biaya_tambahan_ppn
 						itemNo: jenis_biaya_tambahan[i],
 						unitPrice: harga[i],
-						departmentName
+						departmentName,
+						useTax1:
+							jenis_biaya_tambahan[i] !== args.input[0].biaya_tambahan_ppn
+								? `false`
+								: `true`,
+						useTax2:
+							jenis_biaya_tambahan[i] !== args.input[0].biaya_tambahan_ppn
+								? `false`
+								: `true`,
+						useTax3:
+							jenis_biaya_tambahan[i] !== args.input[0].biaya_tambahan_ppn
+								? `false`
+								: `true`
 					})
 				}
 			}
@@ -106,7 +136,9 @@ const mutations = {
 					biaya_tambahan_join: item.biaya_tambahan_join,
 					itemNo_join: item.itemNo_join,
 					nama_barang_join: item.nama_barang_join,
-					kota_tujuan: item.kota_tujuan
+					kota_tujuan: item.kota_tujuan,
+					biaya_tambahan_ppn: item.biaya_tambahan_ppn,
+					biaya_tambahan_non_ppn: item.biaya_tambahan_non_ppn
 				})),
 
 				//data id = response.data.r.id
@@ -253,7 +285,11 @@ const mutations = {
 				//if jenis_biaya_tambahan[i] !== "" push to data.detailItem
 				if (jenis_biaya_tambahan[i] !== ``) {
 					data.detailItem.push({
-						itemNo: jenis_biaya_tambahan[i],
+						//if jenis_biaya_tambahan[i] !== true itemNo = args.input[0].biaya_tambahan_non_ppn else biaya_tambahan_ppn
+						itemNo:
+							jenis_biaya_tambahan[i] !== `true`
+								? args.input[0].biaya_tambahan_non_ppn
+								: args.input[0].biaya_tambahan_ppn,
 						unitPrice: harga[i],
 						departmentName: kota_tujuan
 					})
@@ -320,7 +356,9 @@ const mutations = {
 							biaya_tambahan_join: input.biaya_tambahan_join,
 							itemNo_join: input.itemNo_join,
 							nama_barang_join: input.nama_barang_join,
-							kota_tujuan: input.kota_tujuan
+							kota_tujuan: input.kota_tujuan,
+							biaya_tambahan_ppn: input.biaya_tambahan_ppn,
+							biaya_tambahan_non_ppn: input.biaya_tambahan_non_ppn
 						}
 					})
 				}))

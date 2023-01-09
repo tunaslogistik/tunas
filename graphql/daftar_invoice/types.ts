@@ -37,6 +37,8 @@ export const types = gql`
 		itemNo_join: String
 		nama_barang_join: String
 		kota_tujuan: String
+		biaya_tambahan_ppn: String
+		biaya_tambahan_non_ppn: String
 	}
 
 	type daftar_invoice {
@@ -79,6 +81,8 @@ export const types = gql`
 		itemNo_join: String
 		nama_barang_join: String
 		kota_tujuan: String
+		biaya_tambahan_ppn: String
+		biaya_tambahan_non_ppn: String
 	}
 
 	input UpdateDaftar_invoiceInput {
@@ -117,6 +121,8 @@ export const types = gql`
 		itemNo_join: String
 		nama_barang_join: String
 		kota_tujuan: String
+		biaya_tambahan_ppn: String
+		biaya_tambahan_non_ppn: String
 	}
 
 	type MutateDaftar_invoiceResponse {

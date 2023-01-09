@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-import { gql, useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component_print"
 import {
@@ -18,25 +18,9 @@ import moment from "moment"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import { GET_CUSTOMER } from "../../../../../graphql/customer/queries"
+import { GET_DAFTAR_SALES_ORDER } from "../../../../../graphql/daftar_sales_order/queries"
 import { GET_DAFTAR_TTB } from "../../../../../graphql/daftar_ttb/queries"
 
-const GET_DATA = gql`
-	query daftar_sales_order {
-		daftar_sales_order {
-			id
-			nomor_ttb
-			nomor_sales_order
-			total_volume
-			harga
-			pengirim
-			kota_tujuan
-			rekening
-			total_tagihan
-			tanggal_sales_order
-			term_payment
-		}
-	}
-`
 //Helvetica-Bold from react-pdf
 Font.register({
 	family: `Helvetica-Bold`,
@@ -131,7 +115,7 @@ const styles = StyleSheet.create({
 	}
 })
 export default function Home() {
-	const { data } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DAFTAR_SALES_ORDER)
 	const { data: data_TTB } = useQuery(GET_DAFTAR_TTB)
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	//get daftar tujuan
@@ -348,7 +332,13 @@ export default function Home() {
 							Tujuan:
 						</Text>
 						<Text style={{ paddingTop: `3px`, fontSize: `10px`, flex: 1 }}>
-							Harga:
+							Harga (Inc. PPN):
+						</Text>
+						<Text style={{ paddingTop: `3px`, fontSize: `10px`, flex: 1 }}>
+							Nama Biaya Tambahan:
+						</Text>
+						<Text style={{ paddingTop: `3px`, fontSize: `10px`, flex: 1 }}>
+							Biaya Tambahan:
 						</Text>
 						<Text style={{ paddingTop: `5px`, fontSize: `10px`, flex: 1 }}>
 							Total Tagihan:
@@ -431,7 +421,25 @@ export default function Home() {
 								fontSize: `10px`
 							}}
 						>
-							{dataSalesOrderfilter?.[0]?.harga}
+							{dataSalesOrderfilter?.[0]?.harga_sesudah_ppn}
+						</Text>
+						<Text
+							style={{
+								paddingTop: `5px`,
+								fontFamily: `Helvetica-Bold`,
+								fontSize: `10px`
+							}}
+						>
+							{dataSalesOrderfilter?.[0]?.nama_barang}
+						</Text>
+						<Text
+							style={{
+								paddingTop: `5px`,
+								fontFamily: `Helvetica-Bold`,
+								fontSize: `10px`
+							}}
+						>
+							{dataSalesOrderfilter?.[0]?.harga_total}
 						</Text>
 						<Text
 							style={{

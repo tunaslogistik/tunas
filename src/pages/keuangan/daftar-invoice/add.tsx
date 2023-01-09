@@ -1,4 +1,5 @@
-import { gql, useMutation, useQuery } from "@apollo/client"
+/* eslint-disable array-callback-return */
+import { useMutation, useQuery } from "@apollo/client"
 import IconPlus from "@assets/icons/icon-plus-fill.svg"
 import IconTrash from "@assets/icons/icon-trash.svg"
 import AdminPage from "@components/admin/AdminPage.component"
@@ -7,8 +8,6 @@ import FormRepeater from "@components/form/FormRepeater.component"
 import { Button, DatePicker, notification } from "antd"
 import { GET_ACCURATE } from "graphql/accurate/queries"
 import { GET_CUSTOMER } from "graphql/customer/queries"
-import { CREATE_DAFTAR_BIAYA_TAMBAHAN } from "graphql/daftar_biaya_tambahan/mutations"
-import { GET_DAFTAR_BIAYA_TAMBAHAN } from "graphql/daftar_biaya_tambahan/queries"
 import { CREATE_DAFTAR_INVOICE } from "graphql/daftar_invoice/mutations"
 import { GET_DAFTAR_SALES_ORDER } from "graphql/daftar_sales_order/queries"
 import { GET_DAFTAR_TTB } from "graphql/daftar_ttb/queries"
@@ -21,43 +20,14 @@ import router from "next/router"
 import { useEffect, useRef, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { GET_DAFTAR_INVOICE } from "../../../../graphql/daftar_invoice/queries"
-
-//get data
-
-const GET_DATA = gql`
-	query daftar_surat_jalan {
-		daftar_surat_jalan {
-			id
-			nomor_surat_jalan
-			nomor_ttb
-			nama_kapal
-			vendor_pelayanan
-			kota_tujuan
-			tanggal_surat_jalan
-			tanggal_keberangkatan
-			nomor_container
-			nomor_seal
-			keterangan
-		}
-	}
-`
-
-//get data
-const GET_INVOICE = gql`
-	query daftar_invoice {
-		daftar_invoice {
-			nomor_invoice
-			nomor_surat_jalan
-		}
-	}
-`
+import { GET_DAFTAR_SURAT_JALAN } from "../../../../graphql/daftar_surat_jalan/queries"
 
 export default function Home() {
 	//use loading
 	const [loading, setLoading] = useState(false)
 	//set load
 	const formRef = useRef(null)
-	const { data } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DAFTAR_SURAT_JALAN)
 	//GET DAFTAR TTB
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB)
 	//GET DAFTAR SALES ORDER
@@ -65,9 +35,7 @@ export default function Home() {
 	//GET CUSTOMER
 	const { data: dataCustomer } = useQuery(GET_CUSTOMER)
 	//GET DAFTAR INVOICE
-	const { data: dataDaftarInvoice } = useQuery(GET_INVOICE)
-	//GET DAFTAR BIAYA TAMBAHAN
-	const { data: dataDaftarBiayaTambahan } = useQuery(GET_DAFTAR_BIAYA_TAMBAHAN)
+	const { data: dataDaftarInvoice } = useQuery(GET_DAFTAR_INVOICE)
 	//GET DAFTAR TUJUAN
 	const { data: dataDaftarTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 	//GET REFERENCE INVOICE
@@ -77,8 +45,7 @@ export default function Home() {
 	const { data: dataAccurate } = useQuery(GET_ACCURATE)
 
 	const setForm = useForm()
-	const { control, register, watch, handleSubmit, setValue, getValues, reset } =
-		setForm
+	const { control, register, watch, handleSubmit, setValue } = setForm
 
 	useEffect(() => {
 		formRef.current?.setFieldsValue({
@@ -94,19 +61,6 @@ export default function Home() {
 	//create mutation function
 	const createDataInvoice = (data) => {
 		createDaftar_invoice({ variables: { input: data } })
-	}
-
-	//CREATE DAFTAR BIAYA TAMBAHAN
-	const [createDaftar_biaya_tambahan] = useMutation(
-		CREATE_DAFTAR_BIAYA_TAMBAHAN,
-		{
-			refetchQueries: [{ query: GET_DAFTAR_INVOICE }]
-		}
-	)
-
-	//create mutation function
-	const createDataBiayaTambahan = (data) => {
-		createDaftar_biaya_tambahan({ variables: { input: data } })
 	}
 
 	//UPDATE REFERENCE INVOICE
@@ -127,6 +81,9 @@ export default function Home() {
 	const [selectednoSJatas, setselectednoSJatas] = useState()
 	const [selectednoSJA] = useState([])
 	const [selectedPengirm, setSelectedPengirim] = useState()
+	const [selectedAccurate, setAccurate] = useState()
+	const [selectedBiayaTambahan, setBiayaTambahan] = useState()
+	const [selectedBiayaTambahan2, setBiayaTambahan2] = useState()
 
 	//map get idPelanggan dataCustomer where nama_customer = selectedPengirim
 	const idPelanggan = dataCustomer?.customer
@@ -216,13 +173,6 @@ export default function Home() {
 		(a, b) => parseInt(a) + parseInt(b),
 		0
 	)
-
-	const taxName = dataAccurate?.accurate?.map((tax) => {
-		return {
-			label: tax?.nama_barang,
-			value: tax?.kode_barang
-		}
-	})
 
 	//for tipe_Ppns length find taxName in accurate where tipe_ppns === kode_barang
 	const taxNames = []
@@ -366,11 +316,6 @@ export default function Home() {
 		//allTTB = nomorTTB[0].nomor_ttb
 		const allTTB = nomorTTB[0].nomor_ttb
 
-		//get sales order where nomor ttb = allTTB
-		const allSalesOrder = dataDaftarSalesOrder?.daftar_sales_order
-			?.filter((item) => allTTB?.includes(item.nomor_ttb))
-			.map((item) => item.nomor_sales_order)
-
 		//get total tagihan from sales order where nomor ttb include ttb_temp
 		const totalTagihan = dataDaftarSalesOrder?.daftar_sales_order
 			?.filter((item) => ttb_temp?.includes(item.nomor_ttb))
@@ -397,6 +342,12 @@ export default function Home() {
 		const accurate = dataDaftarTTB?.daftar_ttb
 			?.filter((item) => allTTB?.includes(item.ttb_number))
 			.map((item) => item.accurate)
+		const biaya_tambahan_ppn = dataDaftarTTB?.daftar_ttb
+			?.filter((item) => allTTB?.includes(item.ttb_number))
+			.map((item) => item.biaya_tambahan)
+		const biaya_tambahan_non_ppn = dataDaftarTTB?.daftar_ttb
+			?.filter((item) => allTTB?.includes(item.ttb_number))
+			.map((item) => item.biaya_tambahan_non_ppn)
 
 		setSelectedPengirim(pengirim[0])
 		setValue(`pengirim`, pengirim[0])
@@ -405,6 +356,9 @@ export default function Home() {
 		setValue(`total_volume_ttb`, totalVolume[0])
 		setValue(`tagihan`, totalTagihan)
 		setValue(`accurate`, accurate[0])
+		setAccurate(accurate[0])
+		setBiayaTambahan(biaya_tambahan_ppn[0])
+		setBiayaTambahan2(biaya_tambahan_non_ppn[0])
 	}
 
 	//handleChangeSJA
@@ -416,14 +370,6 @@ export default function Home() {
 		const nomorTTB = data?.daftar_surat_jalan.filter((item) => {
 			return item.nomor_surat_jalan === value
 		})
-
-		//temp nomor ttb
-		const ttb_temp = data?.daftar_surat_jalan
-			.filter((item) => {
-				return item.nomor_surat_jalan === value
-			})
-			.map((item) => item.nomor_ttb)
-
 		//allTTB = nomorTTB[0].nomor_ttb
 		const allTTB = nomorTTB[0].nomor_ttb
 
@@ -474,21 +420,6 @@ export default function Home() {
 		?.filter((item) => allTTB?.includes(item.nomor_ttb))
 		.map((item) => item.term_payment)
 
-	//get pengirim
-	const pengirim = dataDaftarTTB?.daftar_ttb
-		?.filter((item) => allTTB?.includes(item.ttb_number))
-		.map((item) => item.pengirim)
-
-	//get ppn from customer where nama_customer = pengirim?.[0]
-	const ppn = dataCustomer?.customer
-		?.filter((item) => item.nama_customer === pengirim?.[0])
-		.map((item) => item.tipe_ppn)
-
-	//get dataAccurate.accurate where taxName = ppn?.[0]
-	const nama_barang = dataAccurate?.accurate?.filter(
-		(item) => item.taxName === ppn?.[0]
-	)
-
 	const allHarga = watch(`tagihan`) ? watch(`tagihan`) : 0
 
 	const allHargaA = watch(`tagihanA`) ? watch(`tagihanA`) : [0]
@@ -503,12 +434,6 @@ export default function Home() {
 	//harga from newArray if 0 set array 0
 	const newArray1 = watch(`newArray`)
 
-	//get tipe_ppn from newArray
-	const tipe_ppns = newArray1?.map((item) => item.tipe_ppn)
-
-	//join
-	const tipe_ppn_tambahan = tipe_ppns?.join(`,`)
-
 	const harga_awal = newArray1?.map((item) => {
 		return item.Harga
 	})
@@ -520,23 +445,25 @@ export default function Home() {
 	//if subtotal 2 nan set 0
 	const subTotal4 = isNaN(subTotal_awal) ? 0 : subTotal_awal
 
+	const tipePPN = selectedAccurate
+
+	const tipePPNNumber = String(tipePPN)?.replace(/[^0-9]/g, ``)
+
+	//if tipe_ppn is 1% then return 1.01 if 10% then return 1.1
+	const tipePPNPercentage = Number(tipePPNNumber) / 100
+
 	const harga = newArray1?.map((item) => {
 		if (item.Harga === 0) {
 			return 0
 		} else {
-			if (
-				String(item.tipe_ppn) !== `null` ||
-				String(item.tipe_ppn) !== `` ||
-				String(item.tipe_ppn) !== `undefined`
-			) {
-				const taxName = dataAccurate?.accurate?.find((tax) => {
-					return tax.kode_barang === item.tipe_ppn
-				})
-				return Number(taxName?.taxName?.replace(/[^0-9]/g, ``)) !== 0
-					? parseInt(item.Harga) + parseInt(item.Harga) * taxName?.taxName
-					: parseInt(item.Harga) + 0
+			if (String(item.tipe_ppn) === `true` || item.tipe_ppn === true) {
+				//return harga + (harga * tipePPNPercentage)
+				return (
+					parseInt(item.Harga) +
+					parseInt(item.Harga) * Number(tipePPNPercentage)
+				)
 			} else {
-				return parseInt(item.Harga)
+				return Number(item.Harga)
 			}
 		}
 	})
@@ -667,7 +594,6 @@ export default function Home() {
 				nama_barang: namaBarangString,
 				harga: hargaString,
 				jenis_biaya_tambahan: String(ppnString),
-				id_biaya_tambahan: `undefined`,
 				id_biaya_utama: `undefined`,
 				harga_surat_jalan: String(subTotal1),
 				ppn_biaya_tambahan: String(ppnString),
@@ -687,7 +613,9 @@ export default function Home() {
 				biaya_tambahan_join: String(hargaJoins),
 				itemNo_join: String(ppnJoins),
 				nama_barang_join: String(namaBarangJoins),
-				kota_tujuan: String(nama_tujuan)
+				kota_tujuan: String(nama_tujuan),
+				biaya_tambahan_ppn: selectedBiayaTambahan,
+				biaya_tambahan_non_ppn: selectedBiayaTambahan2
 			}
 		})
 
@@ -1209,17 +1137,13 @@ export default function Home() {
 											</label>
 											<div className="control">
 												<input
-													style={{ width: `100%` }}
+													//checkbox
+													type={`checkbox`}
+													style={{ width: `20px`, height: `20px` }}
 													className="input"
-													type="text"
-													placeholder="Tipe PPN"
-													defaultValue={
-														//find from dataAccurate where item.tipe_ppn === kodeBarang
-														dataAccurate?.accurate.find(
-															(data) => data.kode_barang === item.tipe_ppn
-														)?.nama_barang
-													}
+													checked={item.tipe_ppn}
 													{...register(`tipePpn.${index}`)}
+													disabled
 													readOnly
 												/>
 											</div>
@@ -1245,14 +1169,8 @@ export default function Home() {
 								name="newArray"
 								inputNames={[`nama_barang`, `Harga`, `tipe_ppn`]}
 								inputLabels={[`Nama Barang`, `Harga`, `PPN`]}
-								inputTypes={[`text`, `text`, `select`]}
-								inputProps={[
-									{},
-									{},
-									{
-										options: taxName
-									}
-								]}
+								inputTypes={[`text`, `text`, `checkbox`]}
+								inputProps={[{}, {}, {}]}
 							/>
 						</div>
 
@@ -1291,6 +1209,58 @@ export default function Home() {
 								</text>
 							</div>
 						</div>
+						{/* <div
+							className="field"
+							style={{
+								display: `inline-block`,
+								width: `calc(50% - 8px)`,
+								marginTop: `5%`
+							}}
+						>
+							<label style={{ fontWeight: `bolder` }} className="label">
+								Biaya Tambahan PPN
+							</label>
+							<div className="control">
+								<input
+									style={{
+										display: `inline-block`,
+										width: `100%`
+									}}
+									className="input"
+									type="text"
+									placeholder="Biaya TambahanPPN"
+									{...register(`biaya_tambahan_ppn`, { required: true })}
+									required
+									readOnly
+								/>
+							</div>
+						</div>
+						<div
+							className="field"
+							style={{ display: `inline-block`, width: `calc(50% - 8px)` }}
+						>
+							<label
+								style={{ fontWeight: `bolder`, marginLeft: `10px` }}
+								className="label"
+							>
+								Biaya Tambahan Non PPN
+							</label>
+							<div className="control">
+								<input
+									style={{
+										display: `inline-block`,
+										width: `calc(120% - 8px)`,
+										margin: `0 8px`
+									}}
+									className="input"
+									type="text"
+									placeholder="Biaya Tambahan Non PPN"
+									{...register(`biaya_tambahan_non_ppn`, { required: true })}
+									required
+									readOnly
+								/>
+							</div>
+						</div> */}
 						<div
 							className="field"
 							style={{

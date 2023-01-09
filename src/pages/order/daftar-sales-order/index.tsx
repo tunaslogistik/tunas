@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import AdminPage from "@components/admin/AdminPage.component"
 import Dashboard from "@components/dashboard/Dashboard.component"
 import { DashboardContext } from "@contexts/DashboardContext.context"
@@ -12,25 +12,9 @@ import { useForm } from "react-hook-form"
 import Access from "@components/util/Access.component"
 import { GET_DAFTAR_TUJUAN } from "graphql/daftar_tujuan/queries"
 import Router from "next/router"
+import { GET_DAFTAR_SALES_ORDER } from "../../../../graphql/daftar_sales_order/queries"
 
 //get DATA
-
-const GET_DATA = gql`
-	query daftar_sales_order {
-		daftar_sales_order {
-			id
-			nomor_ttb
-			nomor_sales_order
-			total_volume
-			pengirim
-			harga
-			total_tagihan
-			kota_tujuan
-			tanggal_sales_order
-			term_payment
-		}
-	}
-`
 
 interface DataType {
 	id: number
@@ -61,7 +45,9 @@ export default function Home() {
 		(user) => user.username === username
 	)?.role
 
-	const { data, loading } = useQuery(GET_DATA)
+	const { data, loading } = useQuery(GET_DAFTAR_SALES_ORDER, {
+		pollInterval: 1000
+	})
 
 	useEffect(() => {
 		console.log(data)
@@ -78,7 +64,7 @@ export default function Home() {
 		setSearch(e.target.value)
 	}
 	//make filtered data
-	const filteredData = data?.daftar_sales_order.filter((item) => {
+	const filteredData = data?.daftar_sales_order?.filter((item) => {
 		return (
 			item.nomor_sales_order.toLowerCase().includes(search.toLowerCase()) ||
 			item.pengirim.toLowerCase().includes(search.toLowerCase())

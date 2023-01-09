@@ -5,7 +5,7 @@ export const types = gql`
 		id: Int
 		nomor_ttb: String
 		nomor_sales_order: String
-		total_volume: Int
+		total_volume: String
 		harga: Int
 		pengirim: String
 		kota_tujuan: String
@@ -31,7 +31,7 @@ export const types = gql`
 		id: Int
 		nomor_ttb: String
 		nomor_sales_order: String
-		total_volume: Int
+		total_volume: String
 		pengirim: String
 		rekening: String
 		harga: Int
@@ -53,7 +53,7 @@ export const types = gql`
 		id: Int
 		nomor_ttb: String
 		nomor_sales_order: String
-		total_volume: Int
+		total_volume: String
 		kota_tujuan: String
 		pengirim: String
 		rekening: String

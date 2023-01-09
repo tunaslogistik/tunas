@@ -24,6 +24,8 @@ export const types = gql`
 		pembayar: String
 		ppn: String
 		accurate: String
+		biaya_tambahan: String
+		biaya_tambahan_non_ppn: String
 	}
 
 	type daftar_ttb {
@@ -53,6 +55,8 @@ export const types = gql`
 		pembayar: String
 		ppn: String
 		accurate: String
+		biaya_tambahan: String
+		biaya_tambahan_non_ppn: String
 	}
 
 	input UpdateDaftar_ttbInput {
@@ -78,6 +82,8 @@ export const types = gql`
 		pembayar: String
 		ppn: String
 		accurate: String
+		biaya_tambahan: String
+		biaya_tambahan_non_ppn: String
 	}
 
 	type MutateDaftar_ttbResponse {

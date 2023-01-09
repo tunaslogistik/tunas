@@ -11,13 +11,8 @@ import useLoading from "@hooks/useLoading.hook"
 import { Button, Popconfirm, notification } from "antd"
 import { GET_ACCURATE } from "graphql/accurate/queries"
 import { GET_CUSTOMER } from "graphql/customer/queries"
-import {
-	CREATE_DAFTAR_BIAYA_TAMBAHAN,
-	UPDATE_DAFTAR_BIAYA_TAMBAHAN
-} from "graphql/daftar_biaya_tambahan/mutations"
 import { GET_DAFTAR_BIAYA_TAMBAHAN } from "graphql/daftar_biaya_tambahan/queries"
 import {
-	CREATE_DAFTAR_INVOICE,
 	DELETE_DAFTAR_INVOICE,
 	UPDATE_DAFTAR_INVOICE
 } from "graphql/daftar_invoice/mutations"
@@ -54,7 +49,7 @@ const GET_DATA = gql`
 export default function Home() {
 	const { state: dashboardState } = useContext(DashboardContext)
 
-	const username = dashboardState.auth.username
+	// const username = dashboardState.auth.username
 
 	const role = dashboardState.auth.userRole?.name
 
@@ -62,8 +57,7 @@ export default function Home() {
 	const id = router.query.id
 
 	const setForm = useForm()
-	const { control, register, watch, handleSubmit, setValue, reset, getValues } =
-		setForm
+	const { control, register, watch, handleSubmit, setValue, reset } = setForm
 
 	const { setLoading } = useLoading()
 	const { data } = useQuery(GET_DATA)
@@ -85,16 +79,16 @@ export default function Home() {
 	const { data: dataDaftarTujuan } = useQuery(GET_DAFTAR_TUJUAN)
 
 	const [selectednoSJatas, setselectednoSJatas] = useState()
+	const [selectedAccurate, setAccurate] = useState()
 	const [selectednoSJA, setselectednoSJA] = useState([])
-
-	//refetch data
-	const { refetch } = useQuery(GET_DAFTAR_INVOICE)
+	const [selectedBiayaTambahan, setBiayaTambahan] = useState()
+	const [selectedBiayaTambahan2, setBiayaTambahan2] = useState()
 
 	const { data: dataDaftarInvoice } = useQuery(GET_DAFTAR_INVOICE, {
 		onCompleted({ daftar_invoice }) {
 			//set loading true
 			setLoading(true)
-			const data = daftar_invoice
+			// const data = daftar_invoice
 			const filteredData = daftar_invoice?.filter(
 				(item) => item.id === parseInt(id as string)
 			)
@@ -103,7 +97,7 @@ export default function Home() {
 
 			//get all invoice where invoice = nomor_invoice
 			const dataInvoice = dataDaftarInvoice?.daftar_invoice.filter(
-				(item) => item.nomor_invoice == nomor_invoice
+				(item) => item.nomor_invoice === nomor_invoice
 			)
 
 			//split nama_barang by comma
@@ -123,29 +117,16 @@ export default function Home() {
 				}
 			})
 
-			const jenis_biaya_tambahan_split = PPN?.map((item) => {
-				item.split(`,`)
-			})
-
-			//map jenis_biaya_tambahan_split to label and value to array of object
-			const jenis_biaya_tambahan_label_value = jenis_biaya_tambahan_split?.map(
-				(item) => {
-					//find from dataAccurate where kode_barang = item
-					const accurate = dataAccurate?.accurate?.find(
-						(item2) => item2.kode_barang == item
-					)
-					return {
-						label: accurate?.nama_barang,
-						value: accurate?.kode_barang
-					}
-				}
-			)
+			// const jenis_biaya_tambahan_split = PPN?.map((item) => {
+			// 	item.split(`,`)
+			// })
 
 			//reset data to newArray
 			var newArray = nama_barang_harga?.map((item) => {
 				return {
 					nama_barang: item.nama_barang,
-					Harga: item.harga
+					Harga: item.harga,
+					tipe_ppn: item.tipe_ppn
 				}
 			})
 
@@ -188,7 +169,7 @@ export default function Home() {
 
 	//get all data from datdaftarinvoice  where nomor_invoice = nomor_invoice
 	const mapInvoice = dataDaftarInvoice?.daftar_invoice.filter(
-		(item) => item.nomor_invoice == filteredData?.[0]?.nomor_invoice
+		(item) => item.nomor_invoice === filteredData?.[0]?.nomor_invoice
 	)
 
 	//get jenis_biaya_tambahan from mapInvoice and split by ,
@@ -221,18 +202,18 @@ export default function Home() {
 	//get all data from databiayatambahan where nomor_invoice = nomor_invoice
 	const mapBiayaTambahan =
 		dataDaftarBiayaTambahan?.daftar_biaya_tambahan
-			.filter((item) => item.nomor_invoice == filteredData?.[0]?.nomor_invoice)
+			.filter((item) => item.nomor_invoice === filteredData?.[0]?.nomor_invoice)
 			.map((item) => item.id_biaya_tambahan) || []
 
 	//get accurate from dataDaftarInvoice where id = id
-	const accurate = filteredData?.[0]?.accurate
+	// const accurate = filteredData?.[0]?.accurate
 
-	const check1 = filteredData?.[0]?.jenis_biaya_tambahan
+	// const check1 = filteredData?.[0]?.jenis_biaya_tambahan
 
-	//get id dataaccurate where kode_barang = accurate
-	const idAccurate = dataAccurate?.accurate
-		.filter((item) => item.kode_barang == accurate)
-		.map((item) => item.id)
+	// //get id dataaccurate where kode_barang = accurate
+	// const idAccurate = dataAccurate?.accurate
+	// 	.filter((item) => item.kode_barang == accurate)
+	// 	.map((item) => item.id)
 
 	//get id all invoice where invoice = nomor_invoice
 	const idInvoice = mapInvoice?.map((item) => item.id)
@@ -255,25 +236,6 @@ export default function Home() {
 		selectednoSJA?.includes(item.nomor_surat_jalan)
 	)
 
-	const [createDaftar_invoice] = useMutation(CREATE_DAFTAR_INVOICE, {
-		refetchQueries: [{ query: GET_DATA }]
-	})
-
-	//create mutation function
-	const createDataInvoice = (data) => {
-		createDaftar_invoice({ variables: { input: data } })
-	}
-
-	//create mutation biaya tambahan
-	const [createBiaya_tambahan] = useMutation(CREATE_DAFTAR_BIAYA_TAMBAHAN, {
-		refetchQueries: [{ query: GET_DATA }]
-	})
-
-	//create mutation function
-	const createDataBiaya_tambahan = (data) => {
-		createBiaya_tambahan({ variables: { input: data } })
-	}
-
 	const [updateDaftar_invoice] = useMutation(UPDATE_DAFTAR_INVOICE, {
 		refetchQueries: [{ query: GET_DAFTAR_INVOICE }]
 	})
@@ -283,18 +245,7 @@ export default function Home() {
 		updateDaftar_invoice({ variables: { input: data } })
 	}
 
-	const [updateDaftar_biaya_tambahan] = useMutation(
-		UPDATE_DAFTAR_BIAYA_TAMBAHAN,
-		{
-			refetchQueries: [{ query: GET_DATA }]
-		}
-	)
-
-	//update mutation function
-	const updateDataBiaya_tambahan = (data) => {
-		updateDaftar_biaya_tambahan({ variables: { input: data } })
-	}
-	const { fields, append, remove } = useFieldArray({
+	const { fields, remove } = useFieldArray({
 		control,
 		name: `test`
 	})
@@ -385,13 +336,6 @@ export default function Home() {
 	)
 
 	console.log(`sumTotals`, sumTotal)
-
-	const taxName = dataAccurate?.accurate?.map((tax) => {
-		return {
-			label: tax.nama_barang,
-			value: tax.kode_barang
-		}
-	})
 
 	//for tipe_Ppns length find taxName in accurate where tipe_ppns === kode_barang
 	const taxNames = []
@@ -510,11 +454,6 @@ export default function Home() {
 		//allTTB = nomorTTB[0].nomor_ttb
 		const allTTB = nomorTTB?.[0]?.nomor_ttb
 
-		//get sales order where nomor ttb = allTTB
-		const allSalesOrder = dataDaftarSalesOrder?.daftar_sales_order
-			?.filter((item) => allTTB?.includes(item.nomor_ttb))
-			.map((item) => item.nomor_sales_order)
-
 		//get total tagihan from sales order where nomor sales order = allSalesOrder
 		const totalTagihan = dataDaftarSalesOrder?.daftar_sales_order
 			?.filter((item) => ttb_temp?.includes(item.nomor_ttb))
@@ -540,6 +479,12 @@ export default function Home() {
 		const accurate = dataDaftarTTB?.daftar_ttb
 			?.filter((item) => allTTB?.includes(item.ttb_number))
 			.map((item) => item.accurate)
+		const biaya_tambahan_ppn = dataDaftarTTB?.daftar_ttb
+			?.filter((item) => allTTB?.includes(item.ttb_number))
+			.map((item) => item.biaya_tambahan)
+		const biaya_tambahan_non_ppn = dataDaftarTTB?.daftar_ttb
+			?.filter((item) => allTTB?.includes(item.ttb_number))
+			.map((item) => item.biaya_tambahan_non_ppn)
 
 		//if pengirim > 1, then pengirim = pengirim[0] else pengirim
 		setValue(
@@ -563,6 +508,9 @@ export default function Home() {
 			totalTagihan?.length > 1 ? totalTagihan[0] : totalTagihan
 		)
 		setValue(`accurate`, accurate?.length > 1 ? accurate[0] : accurate)
+		setAccurate(accurate[0])
+		setBiayaTambahan(biaya_tambahan_ppn[0])
+		setBiayaTambahan2(biaya_tambahan_non_ppn[0])
 	}
 
 	//for selected no sja length call handleChangeSJA
@@ -589,11 +537,6 @@ export default function Home() {
 	const pengirim = dataDaftarTTB?.daftar_ttb
 		?.filter((item) => allTTB?.includes(item.ttb_number))
 		.map((item) => item.pengirim)
-
-	//get ppn from customer where nama_customer = pengirim?.[0]
-	const ppn = dataCustomer?.customer
-		?.filter((item) => item.nama_customer === pengirim?.[0])
-		.map((item) => item.tipe_ppn)
 
 	const allHarga = watch(`tagihan`) ? watch(`tagihan`) : 0
 	const allHargaA = watch(`tagihanA`) ? watch(`tagihanA`) : [0]
@@ -624,10 +567,6 @@ export default function Home() {
 		return item.Harga
 	})
 
-	const ppn_awal = newArray1?.map((item) => {
-		return item.ppn
-	})
-
 	const subTotal_awal = harga_awal?.reduce((a, b) => {
 		return parseInt(a) + parseInt(b)
 	}, 0)
@@ -635,28 +574,26 @@ export default function Home() {
 	//if subtotal 2 nan set 0
 	const subTotal4 = isNaN(subTotal_awal) ? 0 : subTotal_awal
 
+	const tipePPN = selectedAccurate
+
+	const tipePPNNumber = String(tipePPN)?.replace(/[^0-9]/g, ``)
+
+	//if tipe_ppn is 1% then return 1.01 if 10% then return 1.1
+	const tipePPNPercentage = Number(tipePPNNumber) / 100
+
 	//get harga from newArray1 Harga and if ppn true then  Harga *( ppn /100)
 	const harga = newArray1?.map((item) => {
 		if (item.Harga === 0) {
 			return 0
 		} else {
-			if (
-				String(item.tipe_ppn) !== `null` ||
-				String(item.tipe_ppn) !== `` ||
-				String(item.tipe_ppn) !== `undefined` ||
-				String(item.tipe_ppn) !== undefined
-			) {
-				const taxName = dataAccurate?.accurate?.find((tax) => {
-					return tax.kode_barang === item.tipe_ppn
-				})
+			if (String(item.tipe_ppn) === `true` || item.tipe_ppn === true) {
+				//return harga + (harga * tipePPNPercentage)
 				return (
 					parseInt(item.Harga) +
-					(parseInt(item.Harga) *
-						Number(taxName?.taxName?.replace(/[^0-9]/g, ``))) /
-						100
+					parseInt(item.Harga) * Number(tipePPNPercentage)
 				)
 			} else {
-				return parseInt(item.Harga)
+				return Number(item.Harga)
 			}
 		}
 	})
@@ -676,19 +613,6 @@ export default function Home() {
 	const subAfterPPN = sum_bersih + subTotal3 + sum_total_ppn
 
 	const subPPN = subAfterPPN - subTotal
-
-	function addLeadingZeros(num, totalLength) {
-		return String(num).padStart(totalLength, `0`)
-	}
-
-	//count dataDaftarInvoice length
-	const count = dataDaftarInvoice?.daftar_invoice.length + 1
-
-	const deleteAll = () => {
-		idInvoice.map((item) => {
-			deleteData(item)
-		})
-	}
 
 	const nomor_update = String(nomor_invoice2 + `/` + watch(`nomor_invoice`))
 
@@ -800,7 +724,9 @@ export default function Home() {
 				biaya_tambahan_join: String(hargaJoins),
 				itemNo_join: String(ppnJoins),
 				nama_barang_join: String(namaBarangJoins),
-				kota_tujuan: String(nama_tujuan)
+				kota_tujuan: String(nama_tujuan),
+				biaya_tambahan_ppn: selectedBiayaTambahan,
+				biaya_tambahan_non_ppn: selectedBiayaTambahan2
 			}
 		})
 
@@ -1294,20 +1220,18 @@ export default function Home() {
 												PPN
 											</label>
 											<div className="control">
-												<input
-													style={{ width: `100%` }}
-													className="input"
-													type="text"
-													placeholder="Tipe PPN"
-													defaultValue={
-														//find from dataAccurate where item.tipe_ppn === kodeBarang
-														dataAccurate?.accurate.find(
-															(data) => data.kode_barang === item.tipe_ppn
-														)?.nama_barang
-													}
-													{...register(`tipePpn.${index}`)}
-													readOnly
-												/>
+												<div className="control">
+													<input
+														//checkbox
+														type={`checkbox`}
+														style={{ width: `20px`, height: `20px` }}
+														className="input"
+														checked={item.tipe_ppn}
+														{...register(`tipePpn.${index}`)}
+														disabled
+														readOnly
+													/>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -1331,14 +1255,15 @@ export default function Home() {
 								name="newArray"
 								inputNames={[`nama_barang`, `Harga`, `tipe_ppn`]}
 								inputLabels={[`Nama Barang`, `Harga`, `PPN`]}
-								inputTypes={[`text`, `text`, `select`]}
+								inputTypes={[`text`, `text`, `checkbox`]}
 								inputProps={[
 									{},
 									{},
 									{
-										options: taxName,
-										placeholder: `Pilih PPN`,
-										defaultValue: mapOption
+										style: {
+											width: `20px`,
+											height: `20px`
+										}
 									}
 								]}
 							/>

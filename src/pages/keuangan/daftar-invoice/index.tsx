@@ -82,7 +82,7 @@ export default function Home() {
 		setSearch(e.target.value)
 	}
 	//make filtered data
-	const filteredData = data?.daftar_invoice.filter((item) => {
+	const filteredData = data?.daftar_invoice?.filter((item) => {
 		return item.nomor_invoice.toLowerCase().includes(search.toLowerCase())
 	})
 	//make antd table with search

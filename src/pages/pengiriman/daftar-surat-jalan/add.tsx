@@ -93,6 +93,83 @@ export default function Home() {
 	)
 	const isFullContainer = selectedTTB?.full_container
 
+	//MAP DATA DAFTAR TTB
+	const mapDaftarTTB = dataDaftarTTB?.daftar_ttb?.map((ttb) => {
+		return {
+			nomor_ttb: ttb.ttb_number,
+			nama_penerima: ttb.nama_penerima,
+			pengirim: ttb.pengirim,
+			kota_tujuan: ttb.kota_tujuan,
+			total_volume: ttb.total_volume,
+			koli: ttb.koli
+		}
+	})
+	//make a loop to merge duplicate ttb number
+	const mergeTTB = mapDaftarTTB?.reduce((acc, curr) => {
+		if (!acc.some((item) => item.nomor_ttb === curr.nomor_ttb)) {
+			acc.push(curr)
+		}
+		return acc
+	}, [])
+
+	const ttb_number = selectednoTTBatas
+
+	//get all ttb number in surat jalan
+	const getAllTTBNumber = data?.daftar_surat_jalan?.map((suratJalan) => {
+		return suratJalan.nomor_ttb
+	})
+
+	//filter ttb where ttb number in daftar muat_barang and not in surat jalan
+	const filterTTB = mergeTTB?.filter((ttb) => {
+		return dataDaftarMuatBarang?.daftar_muat_barang.some(
+			(item) =>
+				item.nomor_ttb === ttb.nomor_ttb &&
+				!String(ttb_number)?.includes(ttb.nomor_ttb) &&
+				item.nomor_ttb &&
+				!getAllTTBNumber?.includes(ttb.nomor_ttb) &&
+				!selectednoTTBA.includes(ttb.nomor_ttb)
+		)
+	})
+
+	const handleChangeTTB = (value) => {
+		const data = mergeTTB?.find((item) => item.nomor_ttb === value)
+		setSelectednoTTBatas(value)
+		setValue(`nomor_ttbatas`, selectednoTTBatas)
+		setValue(`pengirim`, data.pengirim)
+		setValue(`penerima`, data.nama_penerima)
+		setValue(`kota_tujuan`, data.kota_tujuan)
+		setValue(`total_volume_ttb`, data.total_volume)
+		setValue(`koli`, data.koli)
+	}
+
+	const handleChangeTTBA = (value, index) => {
+		const data = mergeTTB?.find((item) => item.nomor_ttb === value)
+		selectednoTTBA[index] = data?.nomor_ttb
+		setValue(`pengirimA[${index}]`, data.pengirim)
+		setValue(`penerimaA[${index}]`, data.nama_penerima)
+		setValue(`kota_tujuanA[${index}]`, data.kota_tujuan)
+		setValue(`total_volume_ttbA[${index}]`, data.total_volume)
+		setValue(`koliA[${index}]`, data.koli)
+	}
+
+	useEffect(() => {
+		// setValue(`total_tagihan`, total)
+		console.log(`watch`, watch(`harga`))
+	}, [watch])
+
+	const filterDaftarMuatBarang =
+		dataDaftarMuatBarang?.daftar_muat_barang.filter((item) => {
+			return item.nomor_ttb === watch(`nomor_ttb`)
+		})
+
+	const namaKapal = filterDaftarMuatBarang?.[0]?.nama_kapal
+
+	console.log(`namaKapal`, namaKapal)
+
+	setValue(`nomor_container`, filterDaftarMuatBarang?.[0]?.nomor_container)
+	setValue(`nomor_seal`, filterDaftarMuatBarang?.[0]?.nomor_seal)
+	setValue(`vendor_pelayaran`, filterDaftarMuatBarang?.[0]?.vendor_pelayanan)
+
 	async function onSubmit(formData) {
 		setLoading(true)
 		try {
@@ -181,7 +258,9 @@ export default function Home() {
 							tanggal_surat_jalan: formData.tanggal_surat_jalan,
 							nomor_container: formData.nomor_container,
 							nomor_seal: formData.nomor_seal,
-							nama_kapal: formData.nama_kapal,
+							//if namaKapal !== undefined || "" || null ||"null" then namaKapal else formData.nama_kapal
+							nama_kapal:
+								namaKapal !== `undefined` ? namaKapal : formData.nama_kapal,
 							tanggal_keberangkatan: formData.tanggal_keberangkatan,
 							keterangan: formData.keterangan
 						})
@@ -200,12 +279,15 @@ export default function Home() {
 
 			//sum volume
 			const sumVolume = myChildrenArrayMerge2.reduce((acc, cur) => {
-				return parseInt(acc) + parseInt(cur.volume)
+				return Number(acc) + Number(cur.volume)
 			}, 0)
 
 			myChildrenArrayMerge2.map((item) => {
 				item.total_koli = String(sumKoli)
 				item.total_volume = String(sumVolume)
+				//if namaKapal !== undefined || "" || null ||"null" then namaKapal else formData.nama_kapal
+				item.nama_kapal =
+					namaKapal !== `undefined` ? namaKapal : formData.nama_kapal
 			})
 
 			const dataReference =
@@ -282,6 +364,8 @@ export default function Home() {
 				}
 			}
 
+			console.log(`myChildrenArrayMerge2`, myChildrenArrayMerge2)
+
 			const increment =
 				String(
 					moment.unix(formData.tanggal_surat_jalan / 1000).format(`MM`)
@@ -318,79 +402,6 @@ export default function Home() {
 		}
 		setLoading(false)
 	}
-
-	//MAP DATA DAFTAR TTB
-	const mapDaftarTTB = dataDaftarTTB?.daftar_ttb?.map((ttb) => {
-		return {
-			nomor_ttb: ttb.ttb_number,
-			nama_penerima: ttb.nama_penerima,
-			pengirim: ttb.pengirim,
-			kota_tujuan: ttb.kota_tujuan,
-			total_volume: ttb.total_volume,
-			koli: ttb.koli
-		}
-	})
-	//make a loop to merge duplicate ttb number
-	const mergeTTB = mapDaftarTTB?.reduce((acc, curr) => {
-		if (!acc.some((item) => item.nomor_ttb === curr.nomor_ttb)) {
-			acc.push(curr)
-		}
-		return acc
-	}, [])
-
-	const ttb_number = selectednoTTBatas
-
-	//get all ttb number in surat jalan
-	const getAllTTBNumber = data?.daftar_surat_jalan?.map((suratJalan) => {
-		return suratJalan.nomor_ttb
-	})
-
-	//filter ttb where ttb number in daftar muat_barang and not in surat jalan
-	const filterTTB = mergeTTB?.filter((ttb) => {
-		return dataDaftarMuatBarang?.daftar_muat_barang.some(
-			(item) =>
-				item.nomor_ttb === ttb.nomor_ttb &&
-				!String(ttb_number)?.includes(ttb.nomor_ttb) &&
-				item.nomor_ttb &&
-				!getAllTTBNumber?.includes(ttb.nomor_ttb) &&
-				!selectednoTTBA.includes(ttb.nomor_ttb)
-		)
-	})
-
-	const handleChangeTTB = (value) => {
-		const data = mergeTTB?.find((item) => item.nomor_ttb === value)
-		setSelectednoTTBatas(value)
-		setValue(`nomor_ttbatas`, selectednoTTBatas)
-		setValue(`pengirim`, data.pengirim)
-		setValue(`penerima`, data.nama_penerima)
-		setValue(`kota_tujuan`, data.kota_tujuan)
-		setValue(`total_volume_ttb`, data.total_volume)
-		setValue(`koli`, data.koli)
-	}
-
-	const handleChangeTTBA = (value, index) => {
-		const data = mergeTTB?.find((item) => item.nomor_ttb === value)
-		selectednoTTBA[index] = data?.nomor_ttb
-		setValue(`pengirimA[${index}]`, data.pengirim)
-		setValue(`penerimaA[${index}]`, data.nama_penerima)
-		setValue(`kota_tujuanA[${index}]`, data.kota_tujuan)
-		setValue(`total_volume_ttbA[${index}]`, data.total_volume)
-		setValue(`koliA[${index}]`, data.koli)
-	}
-
-	useEffect(() => {
-		// setValue(`total_tagihan`, total)
-		console.log(`watch`, watch(`harga`))
-	}, [watch])
-
-	const filterDaftarMuatBarang =
-		dataDaftarMuatBarang?.daftar_muat_barang.filter((item) => {
-			return item.nomor_ttb === watch(`nomor_ttb`)
-		})
-
-	setValue(`nomor_container`, filterDaftarMuatBarang?.[0]?.nomor_container)
-	setValue(`nomor_seal`, filterDaftarMuatBarang?.[0]?.nomor_seal)
-	setValue(`vendor_pelayaran`, filterDaftarMuatBarang?.[0]?.vendor_pelayanan)
 
 	return (
 		<AdminPage
