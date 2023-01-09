@@ -1,5 +1,5 @@
 /* eslint-disable array-callback-return */
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import IconPrint from "@assets/icons/icon-print.svg"
 import IconTrash from "@assets/icons/icon-trash.svg"
 import AdminPage from "@components/admin/AdminPage.component"
@@ -25,26 +25,7 @@ import Link from "next/link"
 import router from "next/router"
 import { useContext, useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
-
-//get data
-
-const GET_DATA = gql`
-	query daftar_surat_jalan {
-		daftar_surat_jalan {
-			id
-			nomor_surat_jalan
-			nomor_ttb
-			nama_kapal
-			vendor_pelayanan
-			tanggal_surat_jalan
-			kota_tujuan
-			tanggal_keberangkatan
-			nomor_container
-			nomor_seal
-			keterangan
-		}
-	}
-`
+import { GET_DAFTAR_SURAT_JALAN } from "../../../../graphql/daftar_surat_jalan/queries"
 
 export default function Home() {
 	const { state: dashboardState } = useContext(DashboardContext)
@@ -60,7 +41,9 @@ export default function Home() {
 	const { control, register, watch, handleSubmit, setValue, reset } = setForm
 
 	const { setLoading } = useLoading()
-	const { data } = useQuery(GET_DATA)
+	const { data } = useQuery(GET_DAFTAR_SURAT_JALAN, {
+		pollInterval: 200
+	})
 	//GET DAFTAR TTB
 	const { data: dataDaftarTTB } = useQuery(GET_DAFTAR_TTB, {
 		pollInterval: 200
@@ -215,7 +198,7 @@ export default function Home() {
 	const idInvoice = mapInvoice?.map((item) => item.id)
 
 	const [deleteDaftar_invoice] = useMutation(DELETE_DAFTAR_INVOICE, {
-		refetchQueries: [{ query: GET_DATA }]
+		refetchQueries: [{ query: GET_DAFTAR_INVOICE }]
 	})
 
 	const deleteData = (id) => {
